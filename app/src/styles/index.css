@@ -1,0 +1,31 @@
+@import "./tokens.css";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .hanzi-text {
+    @apply font-medium tracking-wide;
+    font-size: 1.75rem;
+  }
+  .pinyin-text {
+    color: rgb(var(--rgb-pinyin));
+    font-style: italic;
+    font-size: 1.125rem;
+  }
+  .card {
+    @apply bg-surface rounded-card shadow-card border border-divider/40 p-4;
+  }
+  .chip {
+    @apply rounded-chip px-3 py-1 text-sm bg-primary-soft text-primary;
+  }
+  .btn-primary {
+    @apply rounded-btn px-4 py-2 bg-primary text-white font-medium active:opacity-80 transition;
+  }
+  .btn-ghost {
+    @apply rounded-btn px-3 py-2 text-fg active:bg-divider/50 transition;
+  }
+  .tab-link {
+    @apply flex flex-col items-center justify-center gap-0.5 py-2 text-xs text-muted aria-[current=page]:text-primary;
+  }
+}

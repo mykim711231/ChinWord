@@ -1,4 +1,4 @@
-# ChinVoca — 중국어 어휘 학습 PWA 설계서
+# ChinWord — 중국어 어휘 학습 PWA 설계서
 
 > **문서 버전**: v1.0
 > **작성일**: 2026-05-24
@@ -17,7 +17,7 @@
 | 음성 | 디바이스 내장 Web Speech API (TTS) 또는 오픈소스 TTS 사전 합성 mp3 |
 | 분석 도구 | **미설치** (사용자 추적 없음) |
 | 알림 | 웹 푸시 미사용 |
-| 앱 아이콘 | 텍스트 마크 "Chi·Voca" SVG |
+| 앱 아이콘 | 텍스트 마크 "Chin·Word" SVG |
 | 용량 정책 | **단말기 디스크 점유 최소화** — 앱 셸만 precache, 콘텐츠는 lazy 로드, 사용자 캐시 정리 가능 |
 | 저작권 | **모든 예문 직접 창작, 예문 미제공** — 단어·병음·뜻·필순·한자풀이만 제공. Footer 저작권 표기 + About 페이지 안내문 의무 |
 
@@ -48,7 +48,7 @@
 
 **Footer (모든 화면 하단):**
 ```
-© ChinVoca. All content is self-created. All Rights Reserved.
+© ChinWord. All content is self-created. All Rights Reserved.
 ```
 
 **About 페이지 (설정 → 정보):**
@@ -253,7 +253,7 @@ export type ContentBundle = {
 
 ```
 ┌──────────────────────────────────┐
-│  ☰  ChinVoca 中国语           ⚙  │  ← 상단바
+│  ☰  ChinWord 中国语           ⚙  │  ← 상단바
 ├──────────────────────────────────┤
 │                                  │
 │  ╭────────────────────────╮      │
@@ -462,8 +462,8 @@ export type ContentBundle = {
 ┌──────────────────────────────────┐
 │ ← 정보                           │
 ├──────────────────────────────────┤
-│  [ChinVoca 로고]                 │
-│  ChinVoca 中国语                 │
+│  [ChinWord 로고]                 │
+│  ChinWord 中国语                 │
 │  v1.0.0 · 빌드 2026-05           │
 │                                  │
 │  ──────────────────────────      │
@@ -490,7 +490,7 @@ export type ContentBundle = {
 │  내부에만 저장됩니다.            │
 │                                  │
 └──────────────────────────────────┘
-  © ChinVoca. All content is
+  © ChinWord. All content is
   self-created. All Rights Reserved.
 ```
 
