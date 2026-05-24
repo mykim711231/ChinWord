@@ -1,5 +1,6 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useMemo } from "react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { TopBar } from "@/components/TopBar";
 import { PageShell } from "@/components/PageShell";
 import { SpeakerButton } from "@/components/SpeakerButton";
@@ -109,19 +110,21 @@ export default function VocabDetail() {
       <div className="flex justify-between mt-6">
         <button
           type="button"
-          className="btn-ghost"
+          className="btn-ghost inline-flex items-center gap-1 disabled:opacity-40"
           onClick={() => gotoNeighbor(-1)}
           disabled={!prev}
         >
-          ◀ 이전
+          <ChevronLeft size={18} aria-hidden />
+          <span>이전</span>
         </button>
         <button
           type="button"
-          className="btn-ghost"
+          className="btn-ghost inline-flex items-center gap-1 disabled:opacity-40"
           onClick={() => gotoNeighbor(1)}
           disabled={!next}
         >
-          다음 ▶
+          <span>다음</span>
+          <ChevronRight size={18} aria-hidden />
         </button>
       </div>
     </PageShell>

@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { clear as idbClear } from "idb-keyval";
+import { ChevronRight } from "lucide-react";
 import { TopBar } from "@/components/TopBar";
 import { PageShell } from "@/components/PageShell";
 import {
@@ -166,7 +167,7 @@ export default function Settings() {
             <div className="font-medium">정보</div>
             <div className="text-xs text-muted mt-0.5">버전 · 라이선스 · 콘텐츠 안내</div>
           </div>
-          <span aria-hidden>→</span>
+          <ChevronRight size={18} aria-hidden className="text-muted" />
         </Link>
       </div>
     </PageShell>

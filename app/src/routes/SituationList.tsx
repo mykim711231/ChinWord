@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Link, useParams } from "react-router-dom";
+import { Play, Square } from "lucide-react";
 import { TopBar } from "@/components/TopBar";
 import { PageShell } from "@/components/PageShell";
 import { FavStar } from "@/components/FavStar";
@@ -58,10 +59,20 @@ export default function SituationList() {
           <button
             type="button"
             onClick={playAll}
-            className="btn-ghost text-sm"
+            className="btn-ghost text-sm inline-flex items-center gap-1"
             aria-pressed={playing}
           >
-            {playing ? "■ 정지" : "▶ 이어듣기"}
+            {playing ? (
+              <>
+                <Square size={14} aria-hidden />
+                <span>정지</span>
+              </>
+            ) : (
+              <>
+                <Play size={14} aria-hidden />
+                <span>이어듣기</span>
+              </>
+            )}
           </button>
         }
       />
@@ -79,7 +90,7 @@ export default function SituationList() {
                   : "bg-surface text-fg border-divider")
               }
             >
-              {g.emoji} {g.title}
+              {g.title}
             </Link>
           ))}
         </div>

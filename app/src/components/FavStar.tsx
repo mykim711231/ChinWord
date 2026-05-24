@@ -1,3 +1,4 @@
+import { Star } from "lucide-react";
 import { useFavorites } from "@/state/favorites";
 
 export function FavStar({ id, className }: { id: string; className?: string }) {
@@ -11,10 +12,15 @@ export function FavStar({ id, className }: { id: string; className?: string }) {
       aria-label={has ? "즐겨찾기 해제" : "즐겨찾기 추가"}
       className={
         className ??
-        "btn-ghost text-xl"
+        "inline-flex items-center justify-center w-11 h-11 rounded-lg hover:bg-primary-soft"
       }
     >
-      <span className={has ? "text-accent" : "text-muted"}>{has ? "★" : "☆"}</span>
+      <Star
+        size={20}
+        aria-hidden
+        fill={has ? "currentColor" : "none"}
+        className={has ? "text-accent" : "text-muted"}
+      />
     </button>
   );
 }

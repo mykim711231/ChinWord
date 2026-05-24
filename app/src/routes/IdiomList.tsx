@@ -1,5 +1,6 @@
 import { Link, useParams } from "react-router-dom";
 import { useMemo } from "react";
+import { Sparkles } from "lucide-react";
 import { TopBar } from "@/components/TopBar";
 import { PageShell } from "@/components/PageShell";
 import { FavStar } from "@/components/FavStar";
@@ -44,7 +45,10 @@ export default function IdiomList() {
     <PageShell>
       <TopBar title="고사성어" subtitle="9개 주제" />
       <section className="mt-2">
-        <div className="text-xs text-muted px-1 mb-1">📜 오늘의 성어</div>
+        <div className="text-xs text-muted px-1 mb-1 inline-flex items-center gap-1">
+          <Sparkles size={12} aria-hidden />
+          <span>오늘의 성어</span>
+        </div>
         <Link to={`/idiom/${featured.entry.id}`} className="card block hover:shadow-lg transition">
           <div className="text-center">
             <div className="hanzi-text text-3xl">{featured.entry.word}</div>
@@ -67,9 +71,8 @@ export default function IdiomList() {
               to={`/idioms/${g.id}`}
               className="card flex flex-col items-center text-center hover:shadow-lg transition py-5"
             >
-              <div className="text-3xl" aria-hidden>{g.emoji}</div>
-              <div className="font-semibold mt-2">{g.title}</div>
-              <div className="text-xs text-muted">{g.titleZh}</div>
+              <div className="font-semibold">{g.title}</div>
+              <div className="text-xs text-muted mt-0.5">{g.titleZh}</div>
               <div className="text-[11px] text-muted mt-1">{g.count}개</div>
             </Link>
           ))}

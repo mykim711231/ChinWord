@@ -1,4 +1,5 @@
 import { Component, type ReactNode } from "react";
+import { AlertTriangle } from "lucide-react";
 
 type State = { error: Error | null };
 
@@ -23,7 +24,9 @@ export class ErrorBoundary extends Component<{ children: ReactNode }, State> {
       return (
         <div className="min-h-screen flex items-center justify-center px-6 py-12 bg-bg text-fg">
           <div className="max-w-md w-full text-center">
-            <div className="text-5xl mb-3" aria-hidden>⚠️</div>
+            <div className="mb-3 flex justify-center text-primary" aria-hidden>
+              <AlertTriangle size={40} />
+            </div>
             <h1 className="text-xl font-semibold mb-2">화면을 표시할 수 없습니다</h1>
             <p className="text-sm text-muted mb-4">
               일시적인 오류가 발생했습니다. 새로고침 또는 홈으로 이동해 보세요.

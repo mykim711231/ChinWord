@@ -7,7 +7,7 @@ export default function About() {
       <TopBar title="정보" back />
 
       <div className="card mt-2 text-center">
-        <img src="/ChinWord/logo.svg" alt="ChinWord" className="w-20 h-20 mx-auto" />
+        <img src={`${import.meta.env.BASE_URL}logo.svg`} alt="ChinWord" className="w-20 h-20 mx-auto" />
         <div className="font-bold text-lg mt-2">ChinWord 中国语</div>
         <div className="text-xs text-muted">
           v0.1.0 · 빌드 {new Date().toISOString().slice(0, 7)}

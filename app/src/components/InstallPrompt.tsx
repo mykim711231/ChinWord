@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Smartphone } from "lucide-react";
 import { useSettings } from "@/state/settings";
 
 type BeforeInstallEvent = Event & {
@@ -53,7 +54,9 @@ export function InstallPrompt() {
       className="fixed inset-x-0 bottom-20 z-50 mx-auto max-w-screen-sm px-4"
     >
       <div className="card flex items-start gap-3 shadow-xl">
-        <div className="text-2xl" aria-hidden>📲</div>
+        <div className="text-primary flex-none mt-0.5" aria-hidden>
+          <Smartphone size={22} />
+        </div>
         <div className="flex-1 text-sm">
           <div className="font-semibold mb-1">홈 화면에 설치하기</div>
           {isIos ? (

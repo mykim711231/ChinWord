@@ -1,10 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 import HanziWriter from "hanzi-writer";
+import { Play, RotateCw } from "lucide-react";
 
 /** A single Chinese character with animated stroke order via hanzi-writer. */
 export function HanziWriterCard({
   char,
-  size = 180,
+  size = 90,
 }: {
   char: string;
   size?: number;
@@ -20,7 +21,7 @@ export function HanziWriterCard({
       writerRef.current = HanziWriter.create(containerRef.current, char, {
         width: size,
         height: size,
-        padding: 8,
+        padding: 4,
         strokeAnimationSpeed: 1.2,
         delayBetweenStrokes: 120,
         showOutline: true,
@@ -28,7 +29,6 @@ export function HanziWriterCard({
         strokeColor: "#DC2626",
         outlineColor: "#E5E7EB",
         radicalColor: "#F59E0B",
-        // hanzi-writer-data is loaded on demand from jsDelivr by default
         charDataLoader: (charToLoad, onComplete, onError) => {
           const url =
             `https://cdn.jsdelivr.net/npm/hanzi-writer-data@latest/` +
@@ -54,12 +54,16 @@ export function HanziWriterCard({
     };
   }, [char, size]);
 
-  const replay = () => writerRef.current?.animateCharacter();
-  const loop = () => writerRef.current?.loopCharacterAnimation();
+  const replay = (): void => {
+    writerRef.current?.animateCharacter();
+  };
+  const loop = (): void => {
+    writerRef.current?.loopCharacterAnimation();
+  };
 
   return (
-    <div className="card flex flex-col items-center gap-2">
-      <div className="text-sm text-muted">{char}</div>
+    <div className="card flex flex-col items-center gap-1 p-2">
+      <div className="text-xs text-muted">{char}</div>
       <div
         ref={containerRef}
         className="bg-white dark:bg-slate-100 rounded-md"
@@ -68,11 +72,27 @@ export function HanziWriterCard({
         role="img"
       />
       {error ? (
-        <div className="text-xs text-muted">{error}</div>
+        <div className="text-[10px] text-muted">{error}</div>
       ) : (
-        <div className="flex gap-2">
-          <button type="button" onClick={replay} className="btn-ghost text-sm">▶ 재생</button>
-          <button type="button" onClick={loop} className="btn-ghost text-sm">⟳ 반복</button>
+        <div className="flex gap-1">
+          <button
+            type="button"
+            onClick={replay}
+            className="inline-flex items-center gap-1 px-2 py-1 text-xs text-fg hover:bg-primary-soft rounded"
+            aria-label="재생"
+          >
+            <Play size={12} aria-hidden />
+            <span>재생</span>
+          </button>
+          <button
+            type="button"
+            onClick={loop}
+            className="inline-flex items-center gap-1 px-2 py-1 text-xs text-fg hover:bg-primary-soft rounded"
+            aria-label="반복"
+          >
+            <RotateCw size={12} aria-hidden />
+            <span>반복</span>
+          </button>
         </div>
       )}
     </div>

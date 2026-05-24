@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
+import { GraduationCap, CheckCircle2, Frown, Meh, Smile } from "lucide-react";
 import { TopBar } from "@/components/TopBar";
 import { PageShell } from "@/components/PageShell";
 import { SpeakerButton } from "@/components/SpeakerButton";
@@ -29,7 +30,9 @@ export default function Flashcards() {
       <PageShell>
         <TopBar title="플래시카드" />
         <div className="card text-center mt-6">
-          <div className="text-3xl mb-2">🃏</div>
+          <div className="mb-2 flex justify-center text-primary">
+            <GraduationCap size={36} aria-hidden />
+          </div>
           <p className="text-sm text-muted">
             아직 추가된 카드가 없습니다. 단어/성어 상세에서 "+ 복습에 추가"를 눌러주세요.
           </p>
@@ -50,7 +53,9 @@ export default function Flashcards() {
       <PageShell>
         <TopBar title="플래시카드" />
         <div className="card text-center mt-6">
-          <div className="text-3xl mb-2">✅</div>
+          <div className="mb-2 flex justify-center text-success">
+            <CheckCircle2 size={36} aria-hidden />
+          </div>
           <div className="font-semibold">오늘 복습 완료!</div>
           {nextDue ? (
             <div className="text-xs text-muted mt-2">
@@ -108,14 +113,29 @@ export default function Flashcards() {
 
       {flipped ? (
         <div className="grid grid-cols-3 gap-2 mt-4">
-          <button type="button" className="btn-ghost border border-divider" onClick={() => onAnswer("hard")}>
-            😖 어려움
+          <button
+            type="button"
+            className="btn-ghost border border-divider inline-flex items-center justify-center gap-1"
+            onClick={() => onAnswer("hard")}
+          >
+            <Frown size={16} aria-hidden />
+            <span>어려움</span>
           </button>
-          <button type="button" className="btn-ghost border border-divider" onClick={() => onAnswer("ok")}>
-            😐 보통
+          <button
+            type="button"
+            className="btn-ghost border border-divider inline-flex items-center justify-center gap-1"
+            onClick={() => onAnswer("ok")}
+          >
+            <Meh size={16} aria-hidden />
+            <span>보통</span>
           </button>
-          <button type="button" className="btn-primary" onClick={() => onAnswer("easy")}>
-            😊 쉬움
+          <button
+            type="button"
+            className="btn-primary inline-flex items-center justify-center gap-1"
+            onClick={() => onAnswer("easy")}
+          >
+            <Smile size={16} aria-hidden />
+            <span>쉬움</span>
           </button>
         </div>
       ) : (
