@@ -28,12 +28,28 @@ export default defineConfig({
         ],
       },
       workbox: {
+        // tts mp3 까지 precache 하면 초기 설치 페이로드가 10MB+ 로 폭증한다.
+        // 정적 자산(public/tts/*.mp3)이 dist 에 함께 배포되므로 런타임 CacheFirst 로
+        // 처음 재생 시점에만 캐시한다 — 평균 학습자는 사용한 단어만 받게 된다.
         globPatterns: ["**/*.{js,css,html,svg,ico,woff2}"],
+        // mp3 한 파일이 평균 20~50KB → 1,300개 합쳐도 30MB 미만.
+        // 단일 PWA 캐시 한도 기본 2MB 를 넘으므로 maximumFileSizeToCacheInBytes 도 상향.
+        maximumFileSizeToCacheInBytes: 5 * 1024 * 1024,
         runtimeCaching: [
           {
             urlPattern: /\/data\/.*\.json$/,
             handler: "StaleWhileRevalidate",
             options: { cacheName: "content-json" },
+          },
+          {
+            urlPattern: /\/tts\/.*\.mp3$/,
+            handler: "CacheFirst",
+            options: {
+              cacheName: "tts-mp3",
+              // 매니페스트 ~1,300 항목 + 안전 마진.
+              expiration: { maxEntries: 2000, maxAgeSeconds: 60 * 60 * 24 * 365 },
+              cacheableResponse: { statuses: [0, 200] },
+            },
           },
           {
             urlPattern: /hanzi-writer-data/,

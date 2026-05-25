@@ -1,5 +1,6 @@
 // build-content.ts
-// Doc/Markdown/Phase*/{situations,idioms}/*.md -> app/src/data/*.json
+// Doc/Markdown/{situations,idioms}/Vol0[1-3]/*.md -> app/src/data/*.json
+// (Vol01 → Phase01, Vol02 → Phase02, Vol03 → Phase03 for legacy ID compatibility)
 import { readFileSync, writeFileSync, readdirSync, mkdirSync, statSync } from "node:fs";
 import { resolve, join, basename } from "node:path";
 import { createHash } from "node:crypto";
@@ -241,16 +242,31 @@ function parseIdiomFile(filePath: string, phase: Phase): IdiomGroup {
   };
 }
 
+/**
+ * New layout: Doc/Markdown/{situations,idioms}/Vol0X/*.md
+ * Vol01 ↔ Phase01, Vol02 ↔ Phase02, Vol03 ↔ Phase03 — `phase` is kept as the
+ * internal ID so existing JSON consumers (vocab-meta `phase`, lessonsByVolume
+ * mapping) need no changes.
+ */
+const VOL_TO_PHASE: Record<string, Phase> = {
+  Vol01: "Phase01",
+  Vol02: "Phase02",
+  Vol03: "Phase03",
+};
+
 function main() {
   mkdirSync(OUT_DIR, { recursive: true });
 
   const vocabGroups: VocabGroup[] = [];
   const idiomGroups: IdiomGroup[] = [];
 
-  for (const phase of ["Phase01", "Phase02", "Phase03"] as const) {
-    const phaseDir = join(SRC_DIR, phase);
-    const sitDir = join(phaseDir, "situations");
-    const idiomDir = join(phaseDir, "idioms");
+  const sitRoot = join(SRC_DIR, "situations");
+  const idiomRoot = join(SRC_DIR, "idioms");
+
+  for (const vol of ["Vol01", "Vol02", "Vol03"] as const) {
+    const phase = VOL_TO_PHASE[vol];
+    const sitDir = join(sitRoot, vol);
+    const idiomDir = join(idiomRoot, vol);
 
     for (const f of listFiles(sitDir)) vocabGroups.push(parseVocabFile(f, phase));
     for (const f of listFiles(idiomDir)) idiomGroups.push(parseIdiomFile(f, phase));

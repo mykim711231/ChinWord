@@ -45,15 +45,13 @@ export default function Header(): JSX.Element {
           </Link>
         </div>
         <nav className="flex items-center gap-1">
-          {!onHome && (
-            <Link
-              to="/search"
-              aria-label="검색"
-              className="w-11 h-11 inline-flex items-center justify-center rounded-lg hover:bg-primary-soft text-fg"
-            >
-              <SearchIcon size={20} aria-hidden />
-            </Link>
-          )}
+          <Link
+            to="/search"
+            aria-label="검색"
+            className="w-11 h-11 inline-flex items-center justify-center rounded-lg hover:bg-primary-soft text-fg"
+          >
+            <SearchIcon size={20} aria-hidden />
+          </Link>
           <Link
             to="/about"
             aria-label="정보"

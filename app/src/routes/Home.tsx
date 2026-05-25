@@ -30,7 +30,7 @@ export default function Home() {
             <div className="text-xs text-muted mt-1">— {today.group.title}</div>
           </div>
           <div className="flex justify-center mt-2">
-            <SpeakerButton text={today.entry.word} />
+            <SpeakerButton text={today.entry.word} pinyin={today.entry.pinyin} />
           </div>
         </Link>
       </section>
@@ -41,7 +41,7 @@ export default function Home() {
             <BookOpen size={16} aria-hidden className="text-primary" />
             <span>상황별 단어</span>
           </h2>
-          <Link to="/situations" className="text-sm text-primary inline-flex items-center gap-0.5">
+          <Link to="/words/1" className="text-sm text-primary inline-flex items-center gap-0.5">
             <span>모두 보기</span>
             <ChevronRight size={14} aria-hidden />
           </Link>
@@ -67,7 +67,7 @@ export default function Home() {
             <ScrollText size={16} aria-hidden className="text-primary" />
             <span>고사성어</span>
           </h2>
-          <Link to="/idioms" className="text-sm text-primary inline-flex items-center gap-0.5">
+          <Link to="/idioms/1" className="text-sm text-primary inline-flex items-center gap-0.5">
             <span>모두 보기</span>
             <ChevronRight size={14} aria-hidden />
           </Link>
@@ -76,7 +76,7 @@ export default function Home() {
           {contentMeta.idioms.slice(0, 2).map((g) => (
             <Link
               key={g.id}
-              to={`/idioms/${g.id}`}
+              to={`/idiom-group/${g.id}`}
               className="card flex flex-col items-center text-center hover:shadow-lg transition py-5"
             >
               <div className="font-semibold">{g.title}</div>

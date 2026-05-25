@@ -1,148 +1,251 @@
-import { useMemo, useState } from "react";
-import { Link } from "react-router-dom";
-import { GraduationCap, CheckCircle2, Frown, Meh, Smile } from "lucide-react";
+import { useMemo } from "react";
+import { Link, Navigate, useNavigate, useParams } from "react-router-dom";
+import { Play, Layers } from "lucide-react";
 import { TopBar } from "@/components/TopBar";
 import { PageShell } from "@/components/PageShell";
-import { SpeakerButton } from "@/components/SpeakerButton";
+import {
+  buildListenQueue,
+  lessonsByVolume,
+  type Volume,
+} from "@/lib/content";
+import {
+  useFlashcards,
+  type FlashcardScope,
+} from "@/state/flashcards";
 import { useSrs } from "@/state/srsStore";
-import { getEntryById } from "@/lib/content";
-import { BOX_INTERVAL_DAYS, type Difficulty } from "@/lib/srs";
 
-export default function Flashcards() {
-  const cards = useSrs((s) => s.cards);
-  const reviewCard = useSrs((s) => s.reviewCard);
-  const removeCard = useSrs((s) => s.removeCard);
-  const total = useSrs((s) => s.total());
+type AreaKind = "vocab" | "idiom";
 
-  const dueQueue = useMemo(
+type ScopeOption = { value: string; label: string; scope: FlashcardScope };
+
+function buildScopeOptions(area: AreaKind): ScopeOption[] {
+  const out: ScopeOption[] = [
+    { value: "all", label: "전체", scope: { kind: "all" } },
+  ];
+  for (const vol of [1, 2, 3] as Volume[]) {
+    // Only include lessons of the requested kind for area
+    const lessons = lessonsByVolume(vol).filter((l) => l.kind === area);
+    if (lessons.length === 0) continue;
+    out.push({
+      value: `vol-${vol}`,
+      label: `${vol}권 전체`,
+      scope: { kind: "vol", vol },
+    });
+    for (const l of lessons) {
+      out.push({
+        value: `lesson-${l.groupId}`,
+        label: `${vol}권.${String(l.no).padStart(2, "0")}과. ${l.titleKo}`,
+        scope: { kind: "lesson", groupId: l.groupId },
+      });
+    }
+  }
+  return out;
+}
+
+function scopeKey(s: FlashcardScope): string {
+  if (s.kind === "all") return "all";
+  if (s.kind === "vol") return `vol-${s.vol}`;
+  return `lesson-${s.groupId}`;
+}
+
+export default function Flashcards(): JSX.Element {
+  const { area } = useParams<{ area?: string }>();
+  if (area !== "vocab" && area !== "idiom") {
+    return <Navigate to="/flashcards/vocab" replace />;
+  }
+  return <FlashcardSetup area={area} />;
+}
+
+function FlashcardSetup({ area }: { area: AreaKind }): JSX.Element {
+  const navigate = useNavigate();
+  const {
+    vocabScope,
+    idiomScope,
+    dueOnly,
+    direction,
+    setVocabScope,
+    setIdiomScope,
+    setDueOnly,
+    setDirection,
+  } = useFlashcards();
+
+  const scope = area === "vocab" ? vocabScope : idiomScope;
+  const setScope = area === "vocab" ? setVocabScope : setIdiomScope;
+
+  const scopeOptions = useMemo(() => buildScopeOptions(area), [area]);
+
+  // Full queue in scope for this area
+  const queue = useMemo(
     () =>
-      Object.values(cards)
-        .filter((c) => !c.masteredAt && c.dueAt <= Date.now())
-        .sort((a, b) => a.dueAt - b.dueAt),
-    [cards],
+      buildListenQueue({
+        scope,
+        area: { vocab: area === "vocab", idiom: area === "idiom" },
+      }),
+    [scope, area],
   );
 
-  const [cursor, setCursor] = useState(0);
-  const [flipped, setFlipped] = useState(false);
+  // Intersect with SRS due cards if dueOnly
+  const cardMap = useSrs((s) => s.cards);
+  const dueQueue = useMemo(() => {
+    if (!dueOnly) return queue;
+    const now = Date.now();
+    return queue.filter((e) => {
+      const c = cardMap[e.id];
+      return c && !c.masteredAt && c.dueAt <= now;
+    });
+  }, [queue, cardMap, dueOnly]);
 
-  if (total === 0) {
-    return (
-      <PageShell>
-        <TopBar title="플래시카드" />
-        <div className="card text-center mt-6">
-          <div className="mb-2 flex justify-center text-primary">
-            <GraduationCap size={36} aria-hidden />
-          </div>
-          <p className="text-sm text-muted">
-            아직 추가된 카드가 없습니다. 단어/성어 상세에서 "+ 복습에 추가"를 눌러주세요.
-          </p>
-          <div className="flex justify-center gap-2 mt-4">
-            <Link to="/situations" className="btn-primary text-sm">단어로 가기</Link>
-            <Link to="/idioms" className="btn-ghost text-sm">성어로 가기</Link>
-          </div>
-        </div>
-      </PageShell>
-    );
-  }
+  const total = queue.length;
+  const dueCount = dueQueue.length;
+  const playable = dueOnly ? dueCount > 0 : total > 0;
 
-  if (dueQueue.length === 0 || cursor >= dueQueue.length) {
-    const nextDue = Object.values(cards)
-      .filter((c) => !c.masteredAt)
-      .sort((a, b) => a.dueAt - b.dueAt)[0];
-    return (
-      <PageShell>
-        <TopBar title="플래시카드" />
-        <div className="card text-center mt-6">
-          <div className="mb-2 flex justify-center text-success">
-            <CheckCircle2 size={36} aria-hidden />
-          </div>
-          <div className="font-semibold">오늘 복습 완료!</div>
-          {nextDue ? (
-            <div className="text-xs text-muted mt-2">
-              다음 복습: {new Date(nextDue.dueAt).toLocaleString()}
-            </div>
-          ) : null}
-        </div>
-      </PageShell>
-    );
-  }
-
-  const card = dueQueue[cursor];
-  const entry = getEntryById(card.id);
-  if (!entry) {
-    // Orphan card — clean up and skip
-    removeCard(card.id);
-    return null;
-  }
-
-  const onAnswer = (diff: Difficulty) => {
-    reviewCard(card.id, diff);
-    setFlipped(false);
-    setCursor((c) => c + 1);
-  };
+  const title = area === "vocab" ? "단어 플래시카드" : "성어 플래시카드";
 
   return (
     <PageShell>
-      <TopBar title="플래시카드" subtitle={`Box ${card.box} · ${BOX_INTERVAL_DAYS[card.box]}일 간격`} />
-      <div className="text-xs text-muted px-1 mb-1">
-        오늘 복습: {cursor + 1} / {dueQueue.length}
+      <TopBar title={title} back />
+
+      <p className="text-xs text-muted mt-1 mb-3 px-1">
+        범위와 방향을 정한 뒤 시작하세요. 답을 확인하고 난이도를 선택하면 다음 카드로 넘어갑니다.
+      </p>
+
+      {/* area 전환 (단어 ↔ 성어) */}
+      <div className="grid grid-cols-2 gap-2 mb-3">
+        <Link
+          to="/flashcards/vocab"
+          className={
+            "card text-center text-sm py-2 " +
+            (area === "vocab"
+              ? "border-primary text-primary font-semibold"
+              : "border-divider text-muted")
+          }
+        >
+          단어
+        </Link>
+        <Link
+          to="/flashcards/idiom"
+          className={
+            "card text-center text-sm py-2 " +
+            (area === "idiom"
+              ? "border-primary text-primary font-semibold"
+              : "border-divider text-muted")
+          }
+        >
+          성어
+        </Link>
       </div>
 
-      <div className="card text-center min-h-[260px] flex flex-col justify-center items-center gap-3">
-        <div className="hanzi-text text-5xl">{entry.word}</div>
-        {!flipped ? (
-          <>
-            <SpeakerButton text={entry.word} />
-            <button
-              type="button"
-              className="btn-primary text-sm mt-2"
-              onClick={() => setFlipped(true)}
-            >
-              뜻 보기
-            </button>
-          </>
-        ) : (
-          <>
-            <div className="pinyin-text">{entry.pinyin}</div>
-            <div className="text-base">{entry.meaning}</div>
-            <div className="text-xs text-muted">[{entry.pos}]</div>
-            <SpeakerButton text={entry.word} />
-          </>
-        )}
+      {/* 범위 */}
+      <section className="card">
+        <label htmlFor="fc-scope" className="block text-xs text-muted mb-1">
+          범위
+        </label>
+        <select
+          id="fc-scope"
+          value={scopeKey(scope)}
+          onChange={(e) => {
+            const opt = scopeOptions.find((o) => o.value === e.target.value);
+            if (opt) setScope(opt.scope);
+          }}
+          className="w-full rounded-btn border border-divider bg-surface px-3 py-2 text-sm"
+        >
+          {scopeOptions.map((o) => (
+            <option key={o.value} value={o.value}>
+              {o.label}
+            </option>
+          ))}
+        </select>
+      </section>
+
+      {/* 방향 */}
+      <section className="card mt-3">
+        <span className="block text-xs text-muted mb-1">출제 방향</span>
+        <div className="grid grid-cols-2 gap-2">
+          <button
+            type="button"
+            onClick={() => setDirection("hanzi-first")}
+            aria-pressed={direction === "hanzi-first"}
+            className={
+              "card text-left p-3 " +
+              (direction === "hanzi-first"
+                ? "border-primary text-primary"
+                : "border-divider")
+            }
+          >
+            <div className="font-semibold text-sm">한자 → 뜻</div>
+            <div className="text-xs text-muted mt-0.5">한자를 보고 뜻을 떠올려요</div>
+          </button>
+          <button
+            type="button"
+            onClick={() => setDirection("meaning-first")}
+            aria-pressed={direction === "meaning-first"}
+            className={
+              "card text-left p-3 " +
+              (direction === "meaning-first"
+                ? "border-primary text-primary"
+                : "border-divider")
+            }
+          >
+            <div className="font-semibold text-sm">뜻 → 한자</div>
+            <div className="text-xs text-muted mt-0.5">뜻을 보고 한자를 떠올려요</div>
+          </button>
+        </div>
+      </section>
+
+      {/* 옵션 */}
+      <section className="card mt-3">
+        <label className="flex items-center justify-between gap-3">
+          <div>
+            <div className="font-medium text-sm">복습 카드만</div>
+            <div className="text-xs text-muted mt-0.5">
+              SRS에 추가된 카드 중 오늘 복습할 항목만 표시합니다.
+            </div>
+          </div>
+          <input
+            type="checkbox"
+            checked={dueOnly}
+            onChange={(e) => setDueOnly(e.target.checked)}
+            className="w-5 h-5 accent-primary"
+          />
+        </label>
+      </section>
+
+      {/* 통계 + 시작 */}
+      <div className="mt-4 flex items-center justify-between px-1">
+        <div className="text-sm">
+          {dueOnly ? (
+            <>
+              <span className="inline-flex items-center gap-1 text-primary">
+                <Layers size={14} aria-hidden />
+                <span className="font-semibold">{dueCount}</span>
+              </span>
+              <span className="text-muted text-xs"> / {total}개 (오늘 복습)</span>
+            </>
+          ) : (
+            <>
+              <span className="font-semibold">{total}</span>
+              <span className="text-muted text-xs">개 카드</span>
+            </>
+          )}
+        </div>
+        <button
+          type="button"
+          onClick={() => navigate(`/flashcards/${area}/play`)}
+          disabled={!playable}
+          className="btn-primary inline-flex items-center gap-1 disabled:opacity-40"
+        >
+          <Play size={16} aria-hidden />
+          <span>시작</span>
+        </button>
       </div>
 
-      {flipped ? (
-        <div className="grid grid-cols-3 gap-2 mt-4">
-          <button
-            type="button"
-            className="btn-ghost border border-divider inline-flex items-center justify-center gap-1"
-            onClick={() => onAnswer("hard")}
-          >
-            <Frown size={16} aria-hidden />
-            <span>어려움</span>
-          </button>
-          <button
-            type="button"
-            className="btn-ghost border border-divider inline-flex items-center justify-center gap-1"
-            onClick={() => onAnswer("ok")}
-          >
-            <Meh size={16} aria-hidden />
-            <span>보통</span>
-          </button>
-          <button
-            type="button"
-            className="btn-primary inline-flex items-center justify-center gap-1"
-            onClick={() => onAnswer("easy")}
-          >
-            <Smile size={16} aria-hidden />
-            <span>쉬움</span>
-          </button>
+      {!playable ? (
+        <div className="text-xs text-muted text-center mt-3">
+          {dueOnly
+            ? "이 범위에 오늘 복습할 카드가 없습니다. ‘복습 카드만’ 옵션을 꺼보세요."
+            : "이 범위에 카드가 없습니다."}
         </div>
-      ) : (
-        <div className="text-xs text-center text-muted mt-4">
-          카드를 뒤집어 정답 확인 후 난이도를 선택하세요.
-        </div>
-      )}
+      ) : null}
     </PageShell>
   );
 }

@@ -18,8 +18,10 @@ export function FavStar({ id, className }: { id: string; className?: string }) {
       <Star
         size={20}
         aria-hidden
-        fill={has ? "currentColor" : "none"}
-        className={has ? "text-accent" : "text-muted"}
+        fill={has ? "#F5C518" : "none"}
+        stroke={has ? "#B8860B" : "currentColor"}
+        strokeWidth={1.5}
+        className={has ? "" : "text-muted"}
       />
     </button>
   );
