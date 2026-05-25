@@ -6,3 +6,6 @@ dev-dist
 .vite
 src/data/*.json
 !src/data/.gitkeep
+# zh-tts-manifest.json은 build:tts(로컬·msedge-tts)가 생성하며 CI에서는 재생성하지 않음.
+# 추적 중인 public/tts/*.mp3와 짝을 이루어야 하므로 예외 추적.
+!src/data/zh-tts-manifest.json
