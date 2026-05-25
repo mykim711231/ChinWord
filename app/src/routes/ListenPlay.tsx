@@ -34,13 +34,8 @@ export default function ListenPlay(): JSX.Element {
   const [playing, setPlaying] = useState(true);
   const [finished, setFinished] = useState(false);
 
-  // Refs so the long-running loop sees latest state without re-spawning.
-  const indexRef = useRef(index);
-  indexRef.current = index;
-  const repRef = useRef(rep);
-  repRef.current = rep;
-  const playingRef = useRef(playing);
-  playingRef.current = playing;
+  // settings 라이브 변경 시 현재 카드 재시작을 피하기 위해 ref 로 캡처.
+  // (deps 에 넣으면 슬라이더 드래그 중 매 tick 마다 effect 재실행되어 카드가 끊김)
   const intervalRef = useRef(intervalSec);
   intervalRef.current = intervalSec;
   const repeatsRef = useRef(repeats);
@@ -48,12 +43,9 @@ export default function ListenPlay(): JSX.Element {
   const rateRef = useRef(ttsRate);
   rateRef.current = ttsRate;
 
+  // 현재 effect 가 들고 있는 AC. cleanup 으로 abort → in-flight speakAsync/wait
+  // 가 즉시 풀려 정지/이전/다음/일시정지 가 무조건 즉시 반영된다.
   const acRef = useRef<AbortController | null>(null);
-  // Resolve to trigger advance from controls
-  const advanceRef = useRef<(() => void) | null>(null);
-  // Prev/Next 가 target index 를 미리 적어두면 loop 가 그 값으로 setIndex 한다.
-  // null = 자연 진행(다음 카드), number = 강제 점프.
-  const pendingJumpRef = useRef<number | null>(null);
 
   const current = queue[index];
 
@@ -62,110 +54,79 @@ export default function ListenPlay(): JSX.Element {
     if (queue.length === 0) navigate("/listen", { replace: true });
   }, [queue.length, navigate]);
 
-  /** Sleep helper that resolves early if paused or advance fired. */
+  /** Abort-aware sleep — resolves on timeout 또는 ac.signal.abort. */
   const wait = useCallback(
-    (ms: number, ac: AbortController): Promise<"timeout" | "advanced"> =>
+    (ms: number, ac: AbortController): Promise<void> =>
       new Promise((resolve) => {
-        let resolved = false;
+        if (ac.signal.aborted) return resolve();
         const t = setTimeout(() => {
-          if (resolved) return;
-          resolved = true;
-          advanceRef.current = null;
-          resolve("timeout");
+          ac.signal.removeEventListener("abort", onAbort);
+          resolve();
         }, ms);
-        advanceRef.current = () => {
-          if (resolved) return;
-          resolved = true;
+        const onAbort = (): void => {
           clearTimeout(t);
-          advanceRef.current = null;
-          resolve("advanced");
+          resolve();
         };
-        ac.signal.addEventListener(
-          "abort",
-          () => {
-            if (resolved) return;
-            resolved = true;
-            clearTimeout(t);
-            advanceRef.current = null;
-            resolve("timeout");
-          },
-          { once: true },
-        );
+        ac.signal.addEventListener("abort", onAbort, { once: true });
       }),
     [],
   );
 
-  // Master playback loop — restarts whenever queue identity changes.
+  // Playback: "한 effect = 한 rep 의 한 카드 1회 재생".
+  // 일시정지/이전/다음/카드끝 → setState → cleanup(ac.abort, cancelSpeak)
+  // → in-flight speakAsync·wait 즉시 풀림 → 새 effect 가 새 카드를 재생.
+  // 이 단순화로 prev/next 무반응 + audio bleed-through 가 모두 해소된다.
   useEffect(() => {
     if (queue.length === 0) return;
-    acRef.current?.abort();
-    cancelSpeak();
+    if (!playing) return;
+    if (finished) return;
+    if (index >= queue.length) {
+      setFinished(true);
+      setPlaying(false);
+      return;
+    }
+
     const ac = new AbortController();
     acRef.current = ac;
-    let cancelled = false;
 
-    const run = async () => {
-      while (!cancelled) {
-        if (ac.signal.aborted) return;
-        // pause loop
-        while (!playingRef.current && !ac.signal.aborted) {
-          await new Promise((r) => setTimeout(r, 100));
-        }
-        if (ac.signal.aborted) return;
-        const i = indexRef.current;
-        if (i >= queue.length) {
-          setPlaying(false);
-          setFinished(true);
-          return;
-        }
-        const entry = queue[i];
-        // 한자를 보내야 사전녹음 매니페스트가 hit 되고 zh-CN-XiaoxiaoNeural
-        // (표준 보통화) mp3 가 재생된다. 병음(라틴 문자)을 보내면 매니페스트 miss
-        // → Web Speech 가 라틴 알파벳을 zh-CN 으로 읽으려 해서 발음이 엉뚱해진다.
-        const phrase = entry.word || entry.pinyin;
-        try {
-          await speakAsync(phrase, {
-            rate: rateRef.current,
-            signal: ac.signal,
-          });
-        } catch {
-          /* ignore */
-        }
-        if (ac.signal.aborted || !playingRef.current) continue;
-        const gapResult = await wait(intervalRef.current * 1000, ac);
-        if (ac.signal.aborted) return;
-        if (!playingRef.current && gapResult === "timeout") continue;
+    const run = async (): Promise<void> => {
+      const entry = queue[index];
+      // 한자를 보내야 사전녹음 매니페스트가 hit 되고 zh-CN-XiaoxiaoNeural
+      // (표준 보통화) mp3 가 재생된다. 병음(라틴 문자)을 보내면 매니페스트 miss
+      // → Web Speech 가 라틴 알파벳을 zh-CN 으로 읽으려 해서 발음이 엉뚱해진다.
+      const phrase = entry.word || entry.pinyin;
+      try {
+        await speakAsync(phrase, {
+          rate: rateRef.current,
+          signal: ac.signal,
+        });
+      } catch {
+        /* ignore */
+      }
+      if (ac.signal.aborted) return;
 
-        // Prev/Next 처리: handler 가 pendingJumpRef 를 설정하고 advanceRef 를 fire
-        // → wait 가 "advanced" 반환. 여기서 setIndex 를 한 번만 호출해 ±2 점프 방지.
-        if (pendingJumpRef.current !== null) {
-          const target = pendingJumpRef.current;
-          pendingJumpRef.current = null;
-          setRep(1);
-          setIndex(target);
-          continue;
-        }
+      // gap before next play
+      await wait(intervalRef.current * 1000, ac);
+      if (ac.signal.aborted) return;
 
-        // Per-card repeat: speak the SAME card again until we've hit the
-        // configured repeat count, then advance to the next card.
-        if (repRef.current < repeatsRef.current) {
-          setRep((n) => n + 1);
-        } else {
-          setRep(1);
-          setIndex((n) => n + 1);
-        }
+      // auto-advance: 같은 카드 반복인지, 다음 카드인지
+      if (rep < repeatsRef.current) {
+        setRep((r) => r + 1);
+      } else {
+        setRep(1);
+        setIndex((n) => n + 1);
       }
     };
 
     void run();
+
     return () => {
-      cancelled = true;
       ac.abort();
       cancelSpeak();
     };
-    // queue.length captures queue identity for our purposes
+    // ttsRate/intervalSec/repeats 는 의도적으로 deps 에서 제외 — ref 로 라이브 반영.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [queue, wait]);
+  }, [queue, index, rep, playing, finished, wait]);
 
   // Cleanup on unmount
   useEffect(() => {
@@ -175,49 +136,36 @@ export default function ListenPlay(): JSX.Element {
     };
   }, []);
 
+  // 모든 핸들러는 단순 setState 만 호출 — useEffect cleanup 이 in-flight
+  // speakAsync·wait 를 abort 시켜 즉시 풀어준다. 그리고 새 state 로 새 effect
+  // 인스턴스가 시작되어 새 카드를 재생.
   function onTogglePlay() {
     if (finished) {
-      // restart
+      // restart from the beginning
       setFinished(false);
       setRep(1);
       setIndex(0);
       setPlaying(true);
       return;
     }
-    // 명시적 next 계산 — functional setState + playingRef.current 동기화 race 회피.
-    // setPlaying 의 functional updater 가 큐에 들어간 직후엔 playingRef 가 아직
-    // 이전 값을 가리키므로, next 를 직접 들고 일관되게 사용한다.
-    const next = !playingRef.current;
-    playingRef.current = next;
-    setPlaying(next);
-    if (!next) {
-      // pausing → speech 즉시 중단
-      cancelSpeak();
-    }
+    setPlaying((p) => !p);
   }
 
-  // Prev/Next 는 setIndex 를 직접 호출하지 않고 advanceRef 만 fire 한다.
-  // 이전 구현은 (a) advanceRef → loop wait 가 "advanced" 반환 → loop 가 setIndex(n+1),
-  // (b) handler 가 별도로 setIndex(i-1 또는 i+1) — 두 setState 가 모두 큐에 들어가
-  // index 가 한 번에 ±2 만큼 점프하는 race 가 있었다.
-  // 새 구현: 다음 카드 인덱스를 pendingJumpRef 에 적어두고 advanceRef 만 fire —
-  // loop 가 그 값을 읽어 setIndex 를 한 번만 호출한다.
-  function jumpTo(targetIndex: number) {
-    pendingJumpRef.current = Math.max(0, Math.min(queue.length, targetIndex));
+  // Prev/Next: functional setIndex 로 빠른 연타 시 동일 값 합쳐지지 않고
+  // React queue 가 직전 값을 가져와 정확히 ±1 씩 누적. ±2 점프 race 도 없음
+  // (loop 는 자동 advance 가 없어졌으므로 setIndex 호출처가 단일화).
+  function onPrev() {
     setRep(1);
     setFinished(false);
-    playingRef.current = true;
     setPlaying(true);
-    cancelSpeak();
-    advanceRef.current?.();
-  }
-
-  function onPrev() {
-    jumpTo(indexRef.current - 1);
+    setIndex((i) => Math.max(0, i - 1));
   }
 
   function onNext() {
-    jumpTo(indexRef.current + 1);
+    setRep(1);
+    setFinished(false);
+    setPlaying(true);
+    setIndex((i) => Math.min(queue.length, i + 1));
   }
 
   function onExit() {
