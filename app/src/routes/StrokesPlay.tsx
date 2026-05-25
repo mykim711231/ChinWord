@@ -13,7 +13,6 @@ import {
 } from "lucide-react";
 import { PageShell } from "@/components/PageShell";
 import { buildListenQueue, lessonTitleFor } from "@/lib/content";
-import { splitPinyin } from "@/lib/pinyin";
 import { cancelSpeak, speakAsync } from "@/lib/tts";
 import { useListen } from "@/state/listen";
 import { useSettings } from "@/state/settings";
@@ -97,10 +96,6 @@ export default function StrokesPlay(): JSX.Element {
     window.addEventListener("resize", update);
     return () => window.removeEventListener("resize", update);
   }, []);
-  const syllables = useMemo<string[] | null>(() => {
-    if (!current) return null;
-    return splitPinyin(current.pinyin, hanziChars.length);
-  }, [current, hanziChars.length]);
 
   // Empty queue → bounce back
   useEffect(() => {
@@ -254,9 +249,12 @@ export default function StrokesPlay(): JSX.Element {
       for (let i = 0; i < writers.length; i++) {
         if (ac.signal.aborted) return;
         const w = writers[i];
-        const syl = syllables ? syllables[i] : null;
-        const audio = syl
-          ? speakAsync(syl, { rate: rateRef.current, signal: ac.signal }).catch(
+        // 한자(hanziChars[i])를 전송해야 매니페스트 hit → zh-CN-XiaoxiaoNeural mp3 재생.
+        // 병음 음절(syllables[i])을 보내면 라틴 알파벳을 zh 로 읽으려 해 발음이 엉뚱해진다.
+        // (학습 모드에서 "북경 표준어가 아니다"의 원인 — ListenPlay·SituationList 와 동일 패턴.)
+        const ch = hanziChars[i];
+        const audio = ch
+          ? speakAsync(ch, { rate: rateRef.current, signal: ac.signal }).catch(
               () => {},
             )
           : Promise.resolve();
@@ -338,7 +336,7 @@ export default function StrokesPlay(): JSX.Element {
       cancelSpeak();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [queue, animateOne, wait, syllables?.join("|")]);
+  }, [queue, animateOne, wait, hanziChars.join("")]);
 
   // Cleanup on unmount
   useEffect(() => {
