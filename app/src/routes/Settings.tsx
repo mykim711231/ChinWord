@@ -76,12 +76,24 @@ function SegmentedButtons<T extends string>({
 
 export default function Settings() {
   const s = useSettings();
+  // 모달 alert() 대신 비차단적 토스트. 캐시 정리 후 사용자가 흐름을 잃지 않도록
+  // 페이지 하단에 잠깐 떴다 사라지는 알림으로 결과만 전달. aria-live=polite 로
+  // 스크린리더에도 변경을 알린다.
+  const [toast, setToast] = useState<string | null>(null);
+  useEffect(() => {
+    if (!toast) return;
+    const t = window.setTimeout(() => setToast(null), 2200);
+    return () => window.clearTimeout(t);
+  }, [toast]);
 
   async function clearCacheStorage() {
-    if (!("caches" in window)) return;
+    if (!("caches" in window)) {
+      setToast("캐시 API 를 지원하지 않습니다");
+      return;
+    }
     const keys = await caches.keys();
     await Promise.all(keys.map((k) => caches.delete(k)));
-    alert("캐시 정리 완료");
+    setToast("캐시 정리 완료");
   }
 
   async function fullReset() {
@@ -187,6 +199,17 @@ export default function Settings() {
           <ChevronRight size={18} aria-hidden className="text-muted" />
         </Link>
       </div>
+
+      {/* Toast — 비차단적 결과 알림 (캐시 정리 등). 2.2s 후 자동 dismiss. */}
+      {toast ? (
+        <div
+          role="status"
+          aria-live="polite"
+          className="fixed left-1/2 -translate-x-1/2 bottom-20 z-50 px-4 py-2 rounded-full bg-fg text-bg text-sm shadow-lg"
+        >
+          {toast}
+        </div>
+      ) : null}
     </PageShell>
   );
 }

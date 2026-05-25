@@ -7,6 +7,8 @@ import {
   SkipForward,
   Headphones,
   X,
+  CheckCircle2,
+  RotateCcw,
 } from "lucide-react";
 import { PageShell } from "@/components/PageShell";
 import { buildListenQueue, lessonTitleFor } from "@/lib/content";
@@ -212,27 +214,85 @@ export default function ListenPlay(): JSX.Element {
           </button>
         </div>
 
-        <div className="card text-center py-6 min-h-[220px] flex flex-col justify-center">
-          <div className="text-xs text-muted mb-2">
-            {current ? lessonTitleFor(current) : ""} ·{" "}
-            <span className="tabular-nums">
-              {Math.min(index + 1, queue.length)}/{queue.length}
-            </span>
+        {finished ? (
+          // 완료 카드 — 작은 자막 한 줄로 묻혀버리는 대신 명시적 종료 화면.
+          // 사용자가 "끝났구나" 를 즉시 인지하고 다시/돌아가기 중 선택할 수 있게.
+          <div className="card text-center py-8 min-h-[220px] flex flex-col justify-center items-center gap-2">
+            <div className="text-success">
+              <CheckCircle2 size={40} aria-hidden />
+            </div>
+            <div className="font-semibold text-lg">완료!</div>
+            <div className="text-sm text-muted">
+              {queue.length}개 · 총 {queue.length * Math.max(1, repeats)}회 재생
+            </div>
+            <div className="flex justify-center gap-2 mt-3">
+              <button
+                type="button"
+                onClick={() => {
+                  unlock();
+                  setFinished(false);
+                  setRep(1);
+                  setIndex(0);
+                  setPlaying(true);
+                }}
+                className="btn-ghost inline-flex items-center gap-1 border border-divider"
+              >
+                <RotateCcw size={14} aria-hidden />
+                <span>다시</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => navigate("/listen")}
+                className="btn-primary"
+              >
+                설정으로
+              </button>
+            </div>
           </div>
+        ) : (
+          <div className="card text-center py-6 min-h-[220px] flex flex-col justify-center">
+            <div className="text-xs text-muted mb-2">
+              {current ? lessonTitleFor(current) : ""} ·{" "}
+              <span className="tabular-nums">
+                {Math.min(index + 1, queue.length)}/{queue.length}
+              </span>
+            </div>
 
-          {current ? (
-            <PinyinHanziStack
-              word={current.word}
-              pinyin={current.pinyin}
-              showHanzi={display.hanzi}
-              showPinyin={display.pinyin}
-            />
-          ) : null}
+            {/* progress bar — 위치 인지 + 끝까지 얼마 남았는지 시각화 */}
+            <div
+              className="h-1 mx-auto mb-3 w-full max-w-xs bg-divider/60 rounded-full overflow-hidden"
+              role="progressbar"
+              aria-valuemin={0}
+              aria-valuemax={queue.length}
+              aria-valuenow={Math.min(index + 1, queue.length)}
+              aria-label="재생 진행률"
+            >
+              <div
+                className="h-full bg-primary transition-all duration-300"
+                style={{
+                  width: `${
+                    queue.length === 0
+                      ? 0
+                      : (Math.min(index + 1, queue.length) / queue.length) * 100
+                  }%`,
+                }}
+              />
+            </div>
 
-          {display.korean && current ? (
-            <div className="mt-3 text-sm text-fg/80">{current.meaning}</div>
-          ) : null}
-        </div>
+            {current ? (
+              <PinyinHanziStack
+                word={current.word}
+                pinyin={current.pinyin}
+                showHanzi={display.hanzi}
+                showPinyin={display.pinyin}
+              />
+            ) : null}
+
+            {display.korean && current ? (
+              <div className="mt-3 text-sm text-fg/80">{current.meaning}</div>
+            ) : null}
+          </div>
+        )}
 
         {/* Controls */}
         <div className="mt-5 flex items-center justify-center gap-4">
@@ -312,11 +372,6 @@ export default function ListenPlay(): JSX.Element {
           </div>
         </div>
 
-        {finished ? (
-          <div className="mt-4 text-center text-sm text-primary">
-            완료 — 다시 재생하려면 ▶ 버튼을 누르세요.
-          </div>
-        ) : null}
       </PageShell>
     </div>
   );

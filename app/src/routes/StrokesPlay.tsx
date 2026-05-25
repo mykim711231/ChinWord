@@ -10,6 +10,9 @@ import {
   X,
   Minus,
   Plus,
+  Loader2,
+  CheckCircle2,
+  RotateCcw,
 } from "lucide-react";
 import { PageShell } from "@/components/PageShell";
 import { buildListenQueue, lessonTitleFor } from "@/lib/content";
@@ -42,6 +45,8 @@ export default function StrokesPlay(): JSX.Element {
   const [playing, setPlaying] = useState(true);
   const [finished, setFinished] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  /** writers 가 mount 되어 캔버스가 준비되었는지 — 첫 카드/카드 전환 직후 잠깐 false. */
+  const [ready, setReady] = useState(false);
 
   // settings 라이브 변경 시 현재 카드 재시작을 피하기 위해 ref 로 캡처.
   // (deps 에 넣으면 슬라이더/스피너 조작 중 매 tick 마다 effect 재실행되어 카드가 끊김)
@@ -150,6 +155,7 @@ export default function StrokesPlay(): JSX.Element {
     root.innerHTML = "";
     writersRef.current = [];
     setError(null);
+    setReady(false);
     // 카드 전환 시 진행 중인 charDataLoader fetch 가 resolve 되면 unmounted state
     // 에서 setError 가 호출될 수 있다. mounted flag 로 차단. (P1 S-03)
     let mounted = true;
@@ -201,8 +207,10 @@ export default function StrokesPlay(): JSX.Element {
           },
         }),
       );
+      setReady(true);
     } catch (e) {
       setError(String((e as Error).message || e));
+      setReady(false);
     }
 
     return () => {
@@ -395,41 +403,110 @@ export default function StrokesPlay(): JSX.Element {
           </button>
         </div>
 
-        <div className="card text-center py-4">
-          <div className="text-xs text-muted mb-2">
-            {current ? lessonTitleFor(current) : ""} ·{" "}
-            <span className="tabular-nums">
-              {Math.min(index + 1, queue.length)}/{queue.length}
-            </span>
+        {finished ? (
+          // 완료 카드 — 명시적 종료 상태. 작은 자막 한 줄로 묻혀버리지 않게.
+          <div className="card text-center py-8 min-h-[220px] flex flex-col justify-center items-center gap-2">
+            <div className="text-success">
+              <CheckCircle2 size={40} aria-hidden />
+            </div>
+            <div className="font-semibold text-lg">완료!</div>
+            <div className="text-sm text-muted">
+              {queue.length}개 · 총 {queue.length * Math.max(1, strokeRepeats)}회 재생
+            </div>
+            <div className="flex justify-center gap-2 mt-3">
+              <button
+                type="button"
+                onClick={() => {
+                  unlock();
+                  setFinished(false);
+                  setIndex(0);
+                  setRep(1);
+                  setPlaying(true);
+                }}
+                className="btn-ghost inline-flex items-center gap-1 border border-divider"
+              >
+                <RotateCcw size={14} aria-hidden />
+                <span>다시</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => navigate("/strokes")}
+                className="btn-primary"
+              >
+                설정으로
+              </button>
+            </div>
           </div>
+        ) : (
+          <div className="card text-center py-4">
+            <div className="text-xs text-muted mb-2">
+              {current ? lessonTitleFor(current) : ""} ·{" "}
+              <span className="tabular-nums">
+                {Math.min(index + 1, queue.length)}/{queue.length}
+              </span>
+            </div>
 
-          {display.hanzi ? (
-            <div ref={containerRef} className="w-full overflow-hidden">
+            {/* 진행률 — 카드 위치 + 끝까지 얼마 남았는지 시각화 */}
+            <div
+              className="h-1 mx-auto mb-3 w-full max-w-xs bg-divider/60 rounded-full overflow-hidden"
+              role="progressbar"
+              aria-valuemin={0}
+              aria-valuemax={queue.length}
+              aria-valuenow={Math.min(index + 1, queue.length)}
+              aria-label="필순 진행률"
+            >
               <div
-                ref={rowRef}
-                className="flex items-center justify-center gap-2 flex-nowrap"
-                style={{ minHeight: charSize }}
+                className="h-full bg-primary transition-all duration-300"
+                style={{
+                  width: `${
+                    queue.length === 0
+                      ? 0
+                      : (Math.min(index + 1, queue.length) / queue.length) * 100
+                  }%`,
+                }}
               />
             </div>
-          ) : (
-            <div className="text-muted text-sm py-6">
-              표시 토글에서 ‘한자’를 켜야 캔버스가 보입니다.
-            </div>
-          )}
 
-          {error ? (
-            <div className="text-xs text-muted mt-2">{error}</div>
-          ) : null}
+            {display.hanzi ? (
+              <div ref={containerRef} className="w-full overflow-hidden relative">
+                <div
+                  ref={rowRef}
+                  className="flex items-center justify-center gap-2 flex-nowrap"
+                  style={{ minHeight: charSize }}
+                />
+                {/* 첫 카드 / 카드 전환 직후 writers mount 전 잠깐 보이는 spinner.
+                    데이터 fetch 가 끝나기 전 카드가 비어 있는 듯한 인상을 막는다. */}
+                {!ready && !error ? (
+                  <div
+                    className="absolute inset-0 flex items-center justify-center pointer-events-none text-muted"
+                    role="status"
+                    aria-live="polite"
+                  >
+                    <Loader2 size={20} aria-hidden className="animate-spin" />
+                    <span className="sr-only">필순 준비 중</span>
+                  </div>
+                ) : null}
+              </div>
+            ) : (
+              <div className="text-muted text-sm py-6">
+                표시 토글에서 '한자'를 켜야 캔버스가 보입니다.
+              </div>
+            )}
 
-          {display.pinyin && current ? (
-            <div className="pinyin-text text-sm text-fg/80 mt-3">
-              {current.pinyin}
-            </div>
-          ) : null}
-          {display.korean && current ? (
-            <div className="mt-1 text-sm text-fg/80">{current.meaning}</div>
-          ) : null}
-        </div>
+            {error ? (
+              <div className="text-xs text-muted mt-2">{error}</div>
+            ) : null}
+
+            {display.pinyin && current ? (
+              <div className="pinyin-text text-sm text-fg/80 mt-3">
+                {current.pinyin}
+              </div>
+            ) : null}
+            {display.korean && current ? (
+              <div className="mt-1 text-sm text-fg/80">{current.meaning}</div>
+            ) : null}
+          </div>
+        )}
 
         {/* Controls */}
         <div className="mt-5 flex items-center justify-center gap-4">
@@ -492,11 +569,6 @@ export default function StrokesPlay(): JSX.Element {
           </div>
         </div>
 
-        {finished ? (
-          <div className="mt-4 text-center text-sm text-primary">
-            완료 — 다시 시작하려면 ▶ 버튼을 누르세요.
-          </div>
-        ) : null}
       </PageShell>
     </div>
   );

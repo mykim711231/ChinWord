@@ -1,4 +1,11 @@
-import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  useSyncExternalStore,
+} from "react";
 import { Navigate, useNavigate, useParams } from "react-router-dom";
 import {
   CheckCircle2,
@@ -11,10 +18,12 @@ import {
 } from "lucide-react";
 import { PageShell } from "@/components/PageShell";
 import { SpeakerButton } from "@/components/SpeakerButton";
+import { speakAsync, unlock } from "@/lib/tts";
+import { useSettings } from "@/state/settings";
 import { buildListenQueue, lessonTitleFor } from "@/lib/content";
 import { useFlashcards } from "@/state/flashcards";
 import { useSrs } from "@/state/srsStore";
-import { type Difficulty } from "@/lib/srs";
+import { nextIntervalDays, type Difficulty } from "@/lib/srs";
 
 /**
  * SRS store 가 IndexedDB 에서 hydration 되는 동안 cards 는 `{}` 이다.
@@ -58,6 +67,7 @@ function Player({ area }: { area: AreaKind }): JSX.Element {
   const addCard = useSrs((s) => s.addCard);
   const reviewCard = useSrs((s) => s.reviewCard);
   const cardMap = useSrs((s) => s.cards);
+  const ttsRate = useSettings((s) => s.ttsRate);
 
   // Build queue once at session start. We snapshot it so that grading
   // (which mutates SRS state) doesn't shorten the deck mid-session.
@@ -89,15 +99,112 @@ function Player({ area }: { area: AreaKind }): JSX.Element {
     gradingRef.current = false;
   }, [cursor]);
 
-  // empty-deck guard
+  /**
+   * 키보드 단축키 (Anki 스타일):
+   *  - Space: 답 미공개 → 공개, 공개 상태 → '보통(ok)' 채점
+   *  - 1 / 2 / 3: 답 공개 후 어려움/보통/쉬움
+   *  - R: 현재 카드의 한자(또는 pinyin) 다시 발화
+   *
+   * stateRef 패턴으로 핸들러 클로저가 stale 해지는 것을 막고,
+   * keydown 리스너를 매 렌더 재바인딩하지 않는다.
+   */
+  const stateRef = useRef({
+    revealed,
+    queue,
+    cursor,
+    cardMap,
+    ttsRate,
+  });
   useEffect(() => {
-    if (queue.length === 0) navigate(`/flashcards/${area}`, { replace: true });
-  }, [queue.length, navigate, area]);
+    stateRef.current = { revealed, queue, cursor, cardMap, ttsRate };
+  }, [revealed, queue, cursor, cardMap, ttsRate]);
 
+  const handleAnswer = useCallback(
+    (diff: Difficulty) => {
+      if (gradingRef.current) return;
+      const { queue: q, cursor: c, cardMap: cm } = stateRef.current;
+      if (c >= q.length) return;
+      const e = q[c];
+      gradingRef.current = true;
+      if (!cm[e.id]) addCard(e.id, area);
+      reviewCard(e.id, diff);
+      setStats((s) => ({ ...s, [diff]: s[diff] + 1 }));
+      setRevealed(false);
+      setCursor((x) => x + 1);
+    },
+    [addCard, reviewCard, area],
+  );
+
+  const handleRespeak = useCallback(() => {
+    const { queue: q, cursor: c, ttsRate: r } = stateRef.current;
+    if (c >= q.length) return;
+    const e = q[c];
+    unlock();
+    void speakAsync(e.word || e.pinyin || "", { rate: r }).catch(() => {});
+  }, []);
+
+  useEffect(() => {
+    function onKey(ev: KeyboardEvent) {
+      // 입력 필드에서는 단축키 무시 — 의도치 않은 채점 방지.
+      const t = ev.target as HTMLElement | null;
+      if (
+        t &&
+        (t.tagName === "INPUT" ||
+          t.tagName === "TEXTAREA" ||
+          t.isContentEditable)
+      )
+        return;
+      const { revealed: rv, queue: q, cursor: c } = stateRef.current;
+      if (q.length === 0 || c >= q.length) return;
+
+      if (ev.key === " " || ev.code === "Space") {
+        ev.preventDefault();
+        if (!rv) setRevealed(true);
+        else handleAnswer("ok");
+        return;
+      }
+      if (rv && (ev.key === "1" || ev.key === "2" || ev.key === "3")) {
+        ev.preventDefault();
+        const map: Record<string, Difficulty> = {
+          "1": "hard",
+          "2": "ok",
+          "3": "easy",
+        };
+        handleAnswer(map[ev.key]);
+        return;
+      }
+      if (ev.key === "r" || ev.key === "R") {
+        ev.preventDefault();
+        handleRespeak();
+      }
+    }
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [handleAnswer, handleRespeak]);
+
+  // empty-deck: 자동 튕김 대신 명시적 CTA 를 보여준다.
+  // dueOnly 모드일 때 "복습 카드가 없다" 는 정상 상태이므로 사용자가 상황을 인지하고
+  // dueOnly 를 끄거나 범위를 넓힐 기회를 줘야 한다. 즉시 redirect 는 의도 불명.
   if (queue.length === 0) {
     return (
       <PageShell>
-        <div className="text-center text-muted mt-12">재생할 카드가 없습니다.</div>
+        <div className="card text-center mt-6 py-8">
+          <div className="font-semibold">재생할 카드가 없습니다.</div>
+          <div className="text-sm text-muted mt-2">
+            {dueOnly
+              ? "오늘 복습할 카드가 없습니다. 모드를 바꾸거나 범위를 넓혀보세요."
+              : "선택한 범위에 카드가 없습니다."}
+          </div>
+          <div className="flex justify-center gap-2 mt-5">
+            <button
+              type="button"
+              onClick={() => navigate(`/flashcards/${area}`)}
+              className="btn-primary"
+            >
+              설정으로
+            </button>
+          </div>
+        </div>
       </PageShell>
     );
   }
@@ -144,17 +251,15 @@ function Player({ area }: { area: AreaKind }): JSX.Element {
   const lessonTitle = lessonTitleFor(entry);
 
   function answer(diff: Difficulty) {
-    if (gradingRef.current) return;
-    gradingRef.current = true;
-    // Ensure card exists in SRS, then grade.
-    if (!cardMap[entry.id]) {
-      addCard(entry.id, area);
-    }
-    reviewCard(entry.id, diff);
-    setStats((s) => ({ ...s, [diff]: s[diff] + 1 }));
-    setRevealed(false);
-    setCursor((c) => c + 1);
+    // 키보드 핸들러와 동일 진입점 — gradingRef 가드/stateRef 일관성 유지.
+    handleAnswer(diff);
   }
+
+  /** 현재 카드 기준 채점 시 다음 노출까지 며칠인지 — Anki 스타일 미리보기. */
+  const intervalLabel = (diff: Difficulty): string => {
+    const r = nextIntervalDays(cardMap[entry.id], diff);
+    return r === "mastered" ? "졸업" : `${r}일`;
+  };
 
   function skip() {
     if (gradingRef.current) return;
@@ -243,27 +348,45 @@ function Player({ area }: { area: AreaKind }): JSX.Element {
           <div className="mt-5 grid grid-cols-3 gap-2">
             <button
               type="button"
-              className="btn-ghost border border-divider inline-flex items-center justify-center gap-1 py-3"
+              className="btn-ghost border border-divider flex flex-col items-center justify-center gap-0.5 py-3"
               onClick={() => answer("hard")}
+              aria-label={`어려움 — 다음 노출 ${intervalLabel("hard")}`}
             >
-              <Frown size={16} aria-hidden />
-              <span>어려움</span>
+              <span className="inline-flex items-center gap-1">
+                <Frown size={16} aria-hidden />
+                <span>어려움</span>
+              </span>
+              <span className="text-[11px] text-muted tabular-nums">
+                {intervalLabel("hard")}
+              </span>
             </button>
             <button
               type="button"
-              className="btn-ghost border border-divider inline-flex items-center justify-center gap-1 py-3"
+              className="btn-ghost border border-divider flex flex-col items-center justify-center gap-0.5 py-3"
               onClick={() => answer("ok")}
+              aria-label={`보통 — 다음 노출 ${intervalLabel("ok")}`}
             >
-              <Meh size={16} aria-hidden />
-              <span>보통</span>
+              <span className="inline-flex items-center gap-1">
+                <Meh size={16} aria-hidden />
+                <span>보통</span>
+              </span>
+              <span className="text-[11px] text-muted tabular-nums">
+                {intervalLabel("ok")}
+              </span>
             </button>
             <button
               type="button"
-              className="btn-primary inline-flex items-center justify-center gap-1 py-3"
+              className="btn-primary flex flex-col items-center justify-center gap-0.5 py-3"
               onClick={() => answer("easy")}
+              aria-label={`쉬움 — 다음 노출 ${intervalLabel("easy")}`}
             >
-              <Smile size={16} aria-hidden />
-              <span>쉬움</span>
+              <span className="inline-flex items-center gap-1">
+                <Smile size={16} aria-hidden />
+                <span>쉬움</span>
+              </span>
+              <span className="text-[11px] opacity-80 tabular-nums">
+                {intervalLabel("easy")}
+              </span>
             </button>
           </div>
         )}
