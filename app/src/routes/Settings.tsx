@@ -49,20 +49,27 @@ function SegmentedButtons<T extends string>({
   onChange: (v: T) => void;
 }) {
   return (
-    <div className="inline-flex rounded-btn border border-divider overflow-hidden">
-      {options.map((o) => (
-        <button
-          type="button"
-          key={o.value}
-          onClick={() => onChange(o.value)}
-          className={
-            "px-3 py-1 text-sm " +
-            (o.value === value ? "bg-primary text-white" : "bg-surface text-fg")
-          }
-        >
-          {o.label}
-        </button>
-      ))}
+    <div
+      className="inline-flex rounded-btn border border-divider overflow-hidden"
+      role="group"
+    >
+      {options.map((o) => {
+        const selected = o.value === value;
+        return (
+          <button
+            type="button"
+            key={o.value}
+            onClick={() => onChange(o.value)}
+            aria-pressed={selected}
+            className={
+              "px-3 py-1 text-sm " +
+              (selected ? "bg-primary text-white" : "bg-surface text-fg")
+            }
+          >
+            {o.label}
+          </button>
+        );
+      })}
     </div>
   );
 }
@@ -238,7 +245,7 @@ function VoiceDiagnostic({ rate }: { rate: number }) {
         <button
           type="button"
           className="btn-ghost text-sm border border-divider"
-          onClick={() => speak("Nǐ hǎo", { rate })}
+          onClick={() => speak("你好", { rate })}
         >
           발음 테스트
         </button>

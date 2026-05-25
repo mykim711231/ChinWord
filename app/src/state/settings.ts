@@ -48,6 +48,10 @@ export const useSettings = create<State & Actions>()(
       name: "chinword/settings",
       storage: createIdbStorage(),
       version: 1,
+      // version 변경 시 migrate 가 없으면 Zustand persist 는 stored state 를 통째로
+      // 폐기하고 초기값으로 대체한다 → 사용자가 맞춰놓은 폰트/테마/표시모드/ttsRate
+      // 가 앱 업데이트마다 무음 초기화됨. srsStore·flashcards 와 동일한 항등 패턴.
+      migrate: (state, _version) => state as State & Actions,
     },
   ),
 );

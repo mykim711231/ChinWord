@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import HanziWriter from "hanzi-writer";
 import { Play, RotateCw, Square, Volume2, VolumeX } from "lucide-react";
-import { cancelSpeak, speakAsync } from "@/lib/tts";
+import { cancelSpeak, speakAsync, unlock } from "@/lib/tts";
 import { useSettings } from "@/state/settings";
 
 /**
@@ -265,6 +265,9 @@ export function WordStrokeCard({
   }
 
   function onPlay() {
+    // iOS Safari gesture lock — TTS 가 사용자 제스처 동기 호출 스택 안에서 시작
+    // 되어야 하므로 진입점에서 즉시 unlock().
+    unlock();
     if (playing) {
       cancelledRef.current = true;
       loopRef.current = false;
@@ -277,6 +280,7 @@ export function WordStrokeCard({
   }
 
   function onLoop() {
+    unlock();
     const next = !looping;
     setLooping(next);
     loopRef.current = next;

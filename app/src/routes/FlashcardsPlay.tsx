@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
 import { Navigate, useNavigate, useParams } from "react-router-dom";
 import {
   CheckCircle2,
@@ -16,12 +16,36 @@ import { useFlashcards } from "@/state/flashcards";
 import { useSrs } from "@/state/srsStore";
 import { type Difficulty } from "@/lib/srs";
 
+/**
+ * SRS store 가 IndexedDB 에서 hydration 되는 동안 cards 는 `{}` 이다.
+ * 이때 dueOnly 모드의 큐 빌드를 돌리면 cardMap[id] 가 전부 undefined 라
+ * 큐가 강제로 비고 empty-deck guard 가 즉시 발동해 사용자를 설정 화면으로
+ * 튕겨낸다. hasHydrated 가 true 가 될 때까지 마운트를 지연시켜 막는다.
+ * (SMCB 는 main.tsx 에서 사전 hydrate 후 render — 동일 보호 효과.)
+ */
+function useSrsHydrated(): boolean {
+  return useSyncExternalStore(
+    (cb) => useSrs.persist.onFinishHydration(cb),
+    () => useSrs.persist.hasHydrated(),
+    () => false,
+  );
+}
+
 type AreaKind = "vocab" | "idiom";
 
 export default function FlashcardsPlay(): JSX.Element {
   const { area } = useParams<{ area?: string }>();
+  const srsReady = useSrsHydrated();
   if (area !== "vocab" && area !== "idiom") {
     return <Navigate to="/flashcards/vocab" replace />;
+  }
+  // SRS hydration 대기 — dueOnly 모드 즉시 튕김 방지. 첫 페인트 후 ~수 ms.
+  if (!srsReady) {
+    return (
+      <PageShell>
+        <div className="text-center text-muted mt-12">불러오는 중…</div>
+      </PageShell>
+    );
   }
   return <Player area={area} />;
 }

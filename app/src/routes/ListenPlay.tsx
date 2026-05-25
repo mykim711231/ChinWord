@@ -11,7 +11,7 @@ import {
 import { PageShell } from "@/components/PageShell";
 import { buildListenQueue, lessonTitleFor } from "@/lib/content";
 import { splitPinyin } from "@/lib/pinyin";
-import { cancelSpeak, speakAsync } from "@/lib/tts";
+import { cancelSpeak, speakAsync, unlock } from "@/lib/tts";
 import { useListen } from "@/state/listen";
 import { useSettings } from "@/state/settings";
 
@@ -140,6 +140,10 @@ export default function ListenPlay(): JSX.Element {
   // speakAsync·wait 를 abort 시켜 즉시 풀어준다. 그리고 새 state 로 새 effect
   // 인스턴스가 시작되어 새 카드를 재생.
   function onTogglePlay() {
+    // iOS Safari gesture lock: 첫 speak 호출은 사용자 제스처 동기 스택에서
+    // 시작되어야 한다. setState → useEffect → speakAsync 는 비동기 경로라
+    // 진입점에서 unlock() 으로 무음 utterance 1회 발사해 정책 충족.
+    unlock();
     if (finished) {
       // restart from the beginning
       setFinished(false);
@@ -155,6 +159,7 @@ export default function ListenPlay(): JSX.Element {
   // React queue 가 직전 값을 가져와 정확히 ±1 씩 누적. ±2 점프 race 도 없음
   // (loop 는 자동 advance 가 없어졌으므로 setIndex 호출처가 단일화).
   function onPrev() {
+    unlock();
     setRep(1);
     setFinished(false);
     setPlaying(true);
@@ -162,6 +167,7 @@ export default function ListenPlay(): JSX.Element {
   }
 
   function onNext() {
+    unlock();
     setRep(1);
     setFinished(false);
     setPlaying(true);

@@ -33,6 +33,28 @@ const TTS_BASE_URL = `${import.meta.env.BASE_URL}tts/`;
 
 let cachedZhVoice: SpeechSynthesisVoice | null = null;
 let currentAudio: HTMLAudioElement | null = null;
+let unlocked = false;
+
+/**
+ * iOS Safari / PWA 의 audio gesture 정책 — 첫 SpeechSynthesisUtterance 는 사용자
+ * 제스처(click/touchend)와 동일 동기 호출 스택 안에서 시작되어야 한다. 이후엔
+ * setTimeout/async 호출도 허용. `unlock()` 은 무음 utterance 1회로 이 제약을
+ * 해제한다. play 버튼 onClick 같은 진입점에서 즉시(await 없이) 호출해야 효과.
+ * 매니페스트 hit 으로 mp3 만 재생되는 경로엔 영향이 없지만 miss → Web Speech
+ * 폴백 시 첫 카드 묵음을 방지한다.
+ */
+export function unlock(): void {
+  if (unlocked) return;
+  if (typeof window === "undefined" || !("speechSynthesis" in window)) return;
+  try {
+    const u = new SpeechSynthesisUtterance("");
+    u.volume = 0;
+    window.speechSynthesis.speak(u);
+    unlocked = true;
+  } catch {
+    /* ignore — 일부 브라우저는 빈 utterance 거부, 다음 실제 utterance 시 재시도 */
+  }
+}
 
 // Cancellation epoch — speak()/cancelSpeak() 시 매번 증가.
 // 비동기 분기(awaitVoices, audio.onerror 재시도 등)에서 자신이 시작된 epoch 와
@@ -289,7 +311,15 @@ export function cancelSpeak(): void {
 
 /**
  * Web Speech 로 합성 — 매니페스트 miss / mp3 재생 실패 시의 폴백 경로.
+ *
+ * Watchdog: iOS Safari (17.4 이하 + 26.x 회귀) 와 일부 Chromium 모바일에서
+ * `synth.speak()` 가 onstart/onend/onerror 어느 것도 발화하지 않고 silent fail
+ * 하는 경우가 있다. 4초 안에 onstart 가 안 들어오면 강제로 cancel + onEnd 를
+ * 호출해 호출자(ListenPlay/StrokesPlay 큐 등)의 await 가 영원히 hang 하는 것을
+ * 막는다. 정상 발화 시작 시 watchdog 은 자동 해제.
  */
+const SPEAK_WATCHDOG_MS = 4000;
+
 function speakSynth(
   text: string,
   opts: { rate?: number; lang?: string },
@@ -304,21 +334,43 @@ function speakSynth(
   const voice = ensureVoice();
   const u = new SpeechSynthesisUtterance(text);
   configureUtterance(u, voice, opts);
-  if (onEnd) {
-    u.onend = (): void => {
-      if (epoch !== speakEpoch) return;
-      onEnd();
-    };
-    u.onerror = (): void => {
-      if (epoch !== speakEpoch) return;
-      onEnd();
-    };
-  }
+
+  let finished = false;
+  let watchdog: number | null = null;
+  const clearWatchdog = (): void => {
+    if (watchdog != null) {
+      window.clearTimeout(watchdog);
+      watchdog = null;
+    }
+  };
+  const finish = (): void => {
+    if (finished) return;
+    finished = true;
+    clearWatchdog();
+    if (epoch !== speakEpoch) return;
+    onEnd?.();
+  };
+  u.onstart = (): void => {
+    // 정상 발화 시작 → watchdog 해제. onend/onerror 가 최종 finish 책임.
+    clearWatchdog();
+  };
+  u.onend = finish;
+  u.onerror = finish;
+  const armWatchdog = (): void => {
+    watchdog = window.setTimeout(() => {
+      // onstart 없이 4초 경과 — silent fail 로 간주, 강제 종료.
+      // safeCancelSynth() 호출 시 onerror 가 발화될 수 있으므로 finish 를
+      // 먼저 호출해 idempotent 하게 처리.
+      finish();
+      safeCancelSynth();
+    }, SPEAK_WATCHDOG_MS);
+  };
+
   // voices 가 아직 안 들어왔으면 한 번 더 기다린 뒤 재선택해 발화.
   if (!voice) {
     void awaitVoices().then(() => {
       if (epoch !== speakEpoch) {
-        onEnd?.();
+        finish();
         return;
       }
       const retry = pickMandarinVoice();
@@ -327,10 +379,12 @@ function speakSynth(
         u.voice = retry;
         u.lang = retry.lang;
       }
+      armWatchdog();
       window.speechSynthesis.speak(u);
     });
     return;
   }
+  armWatchdog();
   window.speechSynthesis.speak(u);
 }
 

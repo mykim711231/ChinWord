@@ -1,5 +1,5 @@
 import { Volume2 } from "lucide-react";
-import { speak } from "@/lib/tts";
+import { speak, unlock } from "@/lib/tts";
 import { useSettings } from "@/state/settings";
 
 /**
@@ -32,9 +32,13 @@ export function SpeakerButton({
   return (
     <button
       type="button"
-      onClick={() => speak(payload, { rate })}
+      onClick={() => {
+        unlock();
+        speak(payload, { rate });
+      }}
       onContextMenu={(e) => {
         e.preventDefault();
+        unlock();
         speak(payload, { rate: 0.5 });
       }}
       className={
