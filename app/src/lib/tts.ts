@@ -77,10 +77,12 @@ export function pickMandarinVoice(): SpeechSynthesisVoice | null {
   // Loose match — any zh-CN-like variant (zh-Hans, zh-SG, zh_CN, etc.)
   const cnLike = voices.find((v) => ZH_CN_LIKE_RE.test(v.lang));
   if (cnLike) return cnLike;
-  // Last resort: any zh/cmn voice (zh-TW, zh-HK, etc.) — wrong topolect for
-  // this textbook but still recognisable Mandarin pronunciation.
-  const anyZh = voices.find((v) => /^(zh|cmn)/i.test(v.lang));
-  return anyZh ?? null;
+  // zh-TW(대만 만다린)·zh-HK(광동어) 는 의도적으로 fallback 에서 제외한다.
+  // 대만 발음은 권설음·儿化음 차이가 크고 광동어는 전혀 다른 방언이라
+  // "북경 표준어" 학습 목적과 맞지 않는다. voice 가 없으면 null 반환 →
+  // configureUtterance() 가 `u.lang = "zh-CN"` 만 힌트로 두어 OS 가
+  // zh-CN voice 가 있을 경우 라우팅하도록 위임 (없으면 발음 포기).
+  return null;
 }
 
 /** Wait for voices to be available (Chrome async load). */

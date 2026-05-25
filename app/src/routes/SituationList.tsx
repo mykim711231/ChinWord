@@ -64,7 +64,9 @@ export default function SituationList() {
     abortRef.current = ac;
     setPlaying(true);
     await speakSequence(
-      group.entries.map((e) => e.pinyin || e.word),
+      // 한자(word) 를 보내야 매니페스트 hit → zh-CN 신경망 mp3 재생.
+      // 병음을 보내면 라틴 알파벳을 zh 로 읽으려 해 발음이 엉뚱해진다.
+      group.entries.map((e) => e.word || e.pinyin),
       { rate: ttsRate, gapMs: gap, signal: ac.signal },
     );
     setPlaying(false);

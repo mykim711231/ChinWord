@@ -119,7 +119,10 @@ export default function ListenPlay(): JSX.Element {
           return;
         }
         const entry = queue[i];
-        const phrase = entry.pinyin || entry.word;
+        // 한자를 보내야 사전녹음 매니페스트가 hit 되고 zh-CN-XiaoxiaoNeural
+        // (표준 보통화) mp3 가 재생된다. 병음(라틴 문자)을 보내면 매니페스트 miss
+        // → Web Speech 가 라틴 알파벳을 zh-CN 으로 읽으려 해서 발음이 엉뚱해진다.
+        const phrase = entry.word || entry.pinyin;
         try {
           await speakAsync(phrase, {
             rate: rateRef.current,
