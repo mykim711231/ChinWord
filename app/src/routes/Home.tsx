@@ -1,14 +1,40 @@
 import { Link } from "react-router-dom";
 import { useMemo } from "react";
-import { Sparkles, BookOpen, ScrollText, GraduationCap, ChevronRight } from "lucide-react";
+import {
+  Sparkles,
+  BookOpen,
+  ScrollText,
+  GraduationCap,
+  Languages,
+  ChevronRight,
+} from "lucide-react";
 import { SpeakerButton } from "@/components/SpeakerButton";
 import { useSrs } from "@/state/srsStore";
 import { contentMeta, randomVocab } from "@/lib/content";
+import { hskLevelSummaries, hskTotalAll } from "@/lib/hsk-meta";
+
+type HskTierCard = {
+  id: "basic" | "mid" | "adv";
+  short: string;
+  range: string;
+  total: number;
+};
 
 export default function Home() {
   const today = useMemo(() => randomVocab(), []);
   const due = useSrs((s) => s.dueCards()).length;
   const total = useSrs((s) => s.total());
+  const hskTotal = useMemo(() => hskTotalAll(), []);
+  const hskTiers = useMemo<HskTierCard[]>(() => {
+    const ls = hskLevelSummaries();
+    const sum = (lvs: number[]) =>
+      ls.filter((l) => lvs.includes(l.level)).reduce((s, l) => s + l.total, 0);
+    return [
+      { id: "basic", short: "기초", range: "1-4급", total: sum([1, 2, 3, 4]) },
+      { id: "mid",   short: "중급", range: "5급",   total: sum([5]) },
+      { id: "adv",   short: "고급", range: "6-9급", total: sum([6, 7]) },
+    ];
+  }, []);
 
   return (
     <>
@@ -83,6 +109,40 @@ export default function Home() {
               <div className="text-[11px] text-muted mt-1">{g.count}개</div>
             </Link>
           ))}
+        </div>
+      </section>
+
+      <section className="mt-6">
+        <div className="flex items-center justify-between mb-2 px-1">
+          <h2 className="font-semibold inline-flex items-center gap-1.5">
+            <Languages size={16} aria-hidden className="text-primary" />
+            <span>HSK 급수별</span>
+          </h2>
+          <Link
+            to="/hsk"
+            className="text-sm text-primary inline-flex items-center gap-0.5"
+          >
+            <span>모두 보기</span>
+            <ChevronRight size={14} aria-hidden />
+          </Link>
+        </div>
+        <div className="grid grid-cols-3 gap-2">
+          {hskTiers.map((t) => (
+            <Link
+              key={t.id}
+              to={`/hsk/${t.id}`}
+              className="card flex flex-col items-center text-center hover:shadow-lg transition py-4"
+            >
+              <div className="font-semibold text-sm">{t.short}</div>
+              <div className="text-[11px] text-muted mt-0.5">HSK {t.range}</div>
+              <div className="text-[10px] text-muted mt-1 tabular-nums">
+                {t.total.toLocaleString()}개
+              </div>
+            </Link>
+          ))}
+        </div>
+        <div className="mt-1 text-[11px] text-muted text-right px-1 tabular-nums">
+          전체 {hskTotal.toLocaleString()}개 (HSK 3.0)
         </div>
       </section>
 

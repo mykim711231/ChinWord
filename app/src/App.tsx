@@ -22,6 +22,8 @@ const StrokesPlay = lazy(() => import("@/routes/StrokesPlay"));
 const StrokeStudy = lazy(() => import("@/routes/StrokeStudy"));
 const Listen = lazy(() => import("@/routes/Listen"));
 const ListenPlay = lazy(() => import("@/routes/ListenPlay"));
+const Hsk = lazy(() => import("@/routes/Hsk"));
+const HskTier = lazy(() => import("@/routes/HskTier"));
 
 function LoadingFallback(): JSX.Element {
   return (
@@ -70,6 +72,9 @@ export default function App(): JSX.Element {
               {/* 이어듣기 (marathon listen) */}
               <Route path="/listen" element={<Listen />} />
               <Route path="/listen/play" element={<ListenPlay />} />
+              {/* HSK 급수별 어휘 (3.0) — 3-tier: basic(1-4) / mid(5) / adv(6-9) */}
+              <Route path="/hsk" element={<Hsk />} />
+              <Route path="/hsk/:tier" element={<HskTier />} />
               {/* misc */}
               <Route path="/flashcards" element={<Flashcards />} />
               <Route path="/flashcards/:area" element={<Flashcards />} />

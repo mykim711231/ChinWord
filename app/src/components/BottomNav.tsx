@@ -15,7 +15,7 @@ const items = [
     label: "단어",
     icon: BookOpen,
     end: false,
-    match: ["/words", "/word/", "/situations", "/vocab/", "/toc"],
+    match: ["/words", "/word/", "/situations", "/vocab/", "/toc", "/hsk"],
   },
   {
     to: "/idioms",

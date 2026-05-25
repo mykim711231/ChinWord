@@ -85,18 +85,33 @@ function parseGroupTitle(line: string): { ko: string; zh: string; pinyin: string
   return { ko: stripped, zh: "", pinyin: "" };
 }
 
-/** "### 1. 你好 / Nǐ hǎo / [인사말] / 안녕하세요" → 4-tuple */
+/**
+ * "### 1. 你好 / Nǐ hǎo / [인사말] / 안녕하세요" → 4-tuple
+ *
+ * 필드 구분자는 ` / ` (공백-슬래시-공백, 양쪽 공백 필수). 이렇게 명시적으로 매칭해야
+ * `/` 가 필드 내부에 등장하는 두 케이스가 안전하게 처리된다:
+ *   - POS 다품사 표기 `[명사/동사]` — `/` 양쪽에 공백 없음
+ *   - 의미 내 분수/대안 `마오(1/10위안)`, `배치/스케줄(하다)` — `/` 양쪽에 공백 없음
+ *
+ * 이전 구현(`m[2].split("/")`)은 모든 `/` 를 잘라 POS=`[명사`, meaning=`동사]` 처럼
+ * 잘못 파싱했으며 vocab-groups.json 의 31+ 엔트리가 손상되어 있었음.
+ */
 function parseEntryHeader(line: string): {
   num: number; word: string; pinyin: string; pos: string; meaning: string;
 } | null {
   const m = line.match(/^###\s*(\d+)\.\s*(.+)$/);
   if (!m) return null;
   const num = parseInt(m[1], 10);
-  const parts = m[2].split("/").map((s) => s.trim());
-  if (parts.length < 4) return null;
-  const [word, pinyin, posRaw, meaning] = parts;
-  const pos = posRaw.replace(/^\[|\]$/g, "").trim();
-  return { num, word, pinyin, pos, meaning };
+  // 1: word, 2: pinyin, 3: POS (브라켓 내부, `/` 허용), 4: meaning (남은 전체, `/` 허용)
+  const m2 = m[2].match(/^(.+?)\s+\/\s+(.+?)\s+\/\s+\[([^\]]*)\]\s+\/\s+(.+)$/);
+  if (!m2) return null;
+  return {
+    num,
+    word: m2[1].trim(),
+    pinyin: m2[2].trim(),
+    pos: m2[3].trim(),
+    meaning: m2[4].trim(),
+  };
 }
 
 /** Split a markdown file into entry blocks separated by "---" */

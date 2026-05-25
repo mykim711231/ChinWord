@@ -9,3 +9,8 @@ src/data/*.json
 # zh-tts-manifest.json은 build:tts(로컬·msedge-tts)가 생성하며 CI에서는 재생성하지 않음.
 # 추적 중인 public/tts/*.mp3와 짝을 이루어야 하므로 예외 추적.
 !src/data/zh-tts-manifest.json
+# HSK 3.0 어휘 — build:hsk 가 drkameleon(MIT) 소스에서 추출하고, build:hsk:translate 가
+# LLM 으로 한국어 번역. 번역은 API 비용/시간 들고 결정론적 재생성 불가 → 반드시 commit.
+# meta 는 진행률 표시용 작은 동반 파일.
+!src/data/hsk-words.json
+!src/data/hsk-meta.json

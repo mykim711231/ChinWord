@@ -4,3 +4,7 @@ dist/
 .env
 .claude/
 scan_*.txt
+
+# HSK 3.0 raw source — vendored from drkameleon/complete-hsk-vocabulary (MIT).
+# Not committed: 9.5MB, auto-fetched by `npm run build:hsk` if missing.
+app/scripts/data-cache/

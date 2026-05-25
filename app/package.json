@@ -6,6 +6,8 @@
   "description": "ChinWord — 중국어 어휘 학습 PWA",
   "scripts": {
     "build-content": "tsx scripts/build-content.ts",
+    "build:hsk": "tsx scripts/build-hsk.ts",
+    "build:hsk:translate": "tsx scripts/translate-hsk.ts",
     "build:tts": "tsx scripts/build-tts.ts",
     "dev": "npm run build-content && vite",
     "build": "npm run build-content && tsc --noEmit && vite build",
