@@ -45,6 +45,10 @@ export const useFlashcards = create<State & Actions>()(
       name: "chinword/flashcards",
       storage: createIdbStorage(),
       version: 1,
+      // version 변경 시 migrate 함수가 없으면 Zustand persist는 stored state를
+      // 폐기하고 초기값으로 대체한다. 항등 migrate를 명시해
+      // 향후 schema 변경 시 의도적 변환을 강제한다.
+      migrate: (state, _version) => state as State & Actions,
     },
   ),
 );

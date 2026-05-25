@@ -32,6 +32,15 @@ export const useSrs = create<State & Actions>()(
       dueCards: () => Object.values(get().cards).filter((c) => isDue(c)),
       total: () => Object.keys(get().cards).length,
     }),
-    { name: "chinword/srs", storage: createIdbStorage(), version: 1 },
+    {
+      name: "chinword/srs",
+      storage: createIdbStorage(),
+      version: 1,
+      // version 변경 시 migrate 함수가 없으면 Zustand persist는 stored state를
+      // 폐기하고 초기값으로 대체한다 → 전 사용자의 SRS 진도가 무음 소거됨.
+      // 항등 migrate를 두어 "버전 변경 = 의도적 판단" 임을 코드에 명시한다.
+      // 향후 schema 변경 시 이 함수에서 실제 변환을 수행해야 한다.
+      migrate: (state, _version) => state as State & Actions,
+    },
   ),
 );

@@ -51,6 +51,9 @@ export default function ListenPlay(): JSX.Element {
   const acRef = useRef<AbortController | null>(null);
   // Resolve to trigger advance from controls
   const advanceRef = useRef<(() => void) | null>(null);
+  // Prev/Next 가 target index 를 미리 적어두면 loop 가 그 값으로 setIndex 한다.
+  // null = 자연 진행(다음 카드), number = 강제 점프.
+  const pendingJumpRef = useRef<number | null>(null);
 
   const current = queue[index];
 
@@ -130,6 +133,16 @@ export default function ListenPlay(): JSX.Element {
         if (ac.signal.aborted) return;
         if (!playingRef.current && gapResult === "timeout") continue;
 
+        // Prev/Next 처리: handler 가 pendingJumpRef 를 설정하고 advanceRef 를 fire
+        // → wait 가 "advanced" 반환. 여기서 setIndex 를 한 번만 호출해 ±2 점프 방지.
+        if (pendingJumpRef.current !== null) {
+          const target = pendingJumpRef.current;
+          pendingJumpRef.current = null;
+          setRep(1);
+          setIndex(target);
+          continue;
+        }
+
         // Per-card repeat: speak the SAME card again until we've hit the
         // configured repeat count, then advance to the next card.
         if (repRef.current < repeatsRef.current) {
@@ -168,28 +181,40 @@ export default function ListenPlay(): JSX.Element {
       setPlaying(true);
       return;
     }
-    setPlaying((p) => !p);
-    if (playingRef.current) {
+    // 명시적 next 계산 — functional setState + playingRef.current 동기화 race 회피.
+    // setPlaying 의 functional updater 가 큐에 들어간 직후엔 playingRef 가 아직
+    // 이전 값을 가리키므로, next 를 직접 들고 일관되게 사용한다.
+    const next = !playingRef.current;
+    playingRef.current = next;
+    setPlaying(next);
+    if (!next) {
+      // pausing → speech 즉시 중단
       cancelSpeak();
     }
   }
 
-  function onPrev() {
+  // Prev/Next 는 setIndex 를 직접 호출하지 않고 advanceRef 만 fire 한다.
+  // 이전 구현은 (a) advanceRef → loop wait 가 "advanced" 반환 → loop 가 setIndex(n+1),
+  // (b) handler 가 별도로 setIndex(i-1 또는 i+1) — 두 setState 가 모두 큐에 들어가
+  // index 가 한 번에 ±2 만큼 점프하는 race 가 있었다.
+  // 새 구현: 다음 카드 인덱스를 pendingJumpRef 에 적어두고 advanceRef 만 fire —
+  // loop 가 그 값을 읽어 setIndex 를 한 번만 호출한다.
+  function jumpTo(targetIndex: number) {
+    pendingJumpRef.current = Math.max(0, Math.min(queue.length, targetIndex));
+    setRep(1);
+    setFinished(false);
+    playingRef.current = true;
+    setPlaying(true);
     cancelSpeak();
     advanceRef.current?.();
-    setRep(1);
-    setIndex((i) => Math.max(0, i - 1));
-    setFinished(false);
-    setPlaying(true);
+  }
+
+  function onPrev() {
+    jumpTo(indexRef.current - 1);
   }
 
   function onNext() {
-    cancelSpeak();
-    advanceRef.current?.();
-    setRep(1);
-    setIndex((i) => Math.min(queue.length, i + 1));
-    setFinished(false);
-    setPlaying(true);
+    jumpTo(indexRef.current + 1);
   }
 
   function onExit() {

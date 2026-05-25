@@ -47,7 +47,14 @@ export default defineConfig({
             options: {
               cacheName: "tts-mp3",
               // 매니페스트 ~1,300 항목 + 안전 마진.
-              expiration: { maxEntries: 2000, maxAgeSeconds: 60 * 60 * 24 * 365 },
+              // iOS Safari Cache Storage 한도(~50MB) 초과 시 Workbox 가 자동으로
+              // 오래된 항목부터 제거하도록 purgeOnQuotaError 활성화 — 미설정 시
+              // quota 초과 후 모든 캐시 쓰기가 silent fail 되어 오프라인 재생 무음 실패.
+              expiration: {
+                maxEntries: 2000,
+                maxAgeSeconds: 60 * 60 * 24 * 365,
+                purgeOnQuotaError: true,
+              },
               cacheableResponse: { statuses: [0, 200] },
             },
           },
@@ -56,7 +63,11 @@ export default defineConfig({
             handler: "CacheFirst",
             options: {
               cacheName: "hanzi-data",
-              expiration: { maxEntries: 200, maxAgeSeconds: 60 * 60 * 24 * 30 },
+              expiration: {
+                maxEntries: 200,
+                maxAgeSeconds: 60 * 60 * 24 * 30,
+                purgeOnQuotaError: true,
+              },
             },
           },
         ],

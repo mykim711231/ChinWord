@@ -397,6 +397,26 @@ export function speakAsync(
   });
 }
 
+/**
+ * Abort-aware sleep — resolves either after `ms` ms or immediately when the
+ * signal aborts. Without this, a `setTimeout` based gap would block the loop
+ * for up to `gapMs` after abort (≤1s by default), making 정지/이전/다음 sluggish.
+ */
+function abortableSleep(ms: number, signal?: AbortSignal): Promise<void> {
+  if (signal?.aborted) return Promise.resolve();
+  return new Promise<void>((resolve) => {
+    const t = setTimeout(() => {
+      signal?.removeEventListener("abort", onAbort);
+      resolve();
+    }, ms);
+    const onAbort = (): void => {
+      clearTimeout(t);
+      resolve();
+    };
+    signal?.addEventListener("abort", onAbort, { once: true });
+  });
+}
+
 /** Play a list of texts sequentially with a gap. */
 export async function speakSequence(
   texts: string[],
@@ -410,6 +430,7 @@ export async function speakSequence(
     if (opts.signal?.aborted) return;
     await speakAsync(text, { rate: opts.rate, signal: opts.signal });
     if (opts.signal?.aborted) return;
-    await new Promise((r) => setTimeout(r, gap));
+    await abortableSleep(gap, opts.signal);
+    if (opts.signal?.aborted) return;
   }
 }

@@ -61,6 +61,9 @@ export default function StrokesPlay(): JSX.Element {
   const writersRef = useRef<HanziWriter[]>([]);
   const acRef = useRef<AbortController | null>(null);
   const advanceRef = useRef<(() => void) | null>(null);
+  // Prev/Next 가 target index 를 미리 적어두면 loop 가 그 값으로 setIndex 한다.
+  // (P1 L-05 와 동일한 race 방지 패턴 — handler + loop 가 모두 setIndex 하면 ±2 점프)
+  const pendingJumpRef = useRef<number | null>(null);
   const [containerW, setContainerW] = useState(0);
 
   const current = queue[index];
@@ -173,6 +176,9 @@ export default function StrokesPlay(): JSX.Element {
     root.innerHTML = "";
     writersRef.current = [];
     setError(null);
+    // 카드 전환 시 진행 중인 charDataLoader fetch 가 resolve 되면 unmounted state
+    // 에서 setError 가 호출될 수 있다. mounted flag 로 차단. (P1 S-03)
+    let mounted = true;
 
     const slots = hanziChars.map((ch) => {
       const slot = document.createElement("div");
@@ -209,8 +215,12 @@ export default function StrokesPlay(): JSX.Element {
                 if (!r.ok) throw new Error(`HTTP ${r.status}`);
                 return r.json();
               })
-              .then(onComplete)
+              .then((data) => {
+                if (!mounted) return;
+                onComplete(data);
+              })
               .catch((e) => {
+                if (!mounted) return;
                 setError("필순 데이터를 불러오지 못했습니다");
                 onError?.(e);
               });
@@ -222,6 +232,7 @@ export default function StrokesPlay(): JSX.Element {
     }
 
     return () => {
+      mounted = false;
       writersRef.current = [];
     };
   }, [hanziChars.join(""), charSize]);
@@ -301,6 +312,16 @@ export default function StrokesPlay(): JSX.Element {
         if (ac.signal.aborted) return;
         if (!playingRef.current && breath === "timeout") continue;
 
+        // Prev/Next 처리: handler 가 pendingJumpRef 설정 + advanceRef fire →
+        // wait 가 "advanced" 반환. 여기서 setIndex 를 한 번만 호출해 ±2 점프 방지.
+        if (pendingJumpRef.current !== null) {
+          const target = pendingJumpRef.current;
+          pendingJumpRef.current = null;
+          setRep(1);
+          setIndex(target);
+          continue;
+        }
+
         if (repRef.current < strokeRepeatsRef.current) {
           setRep((r) => r + 1);
         } else {
@@ -327,6 +348,16 @@ export default function StrokesPlay(): JSX.Element {
     };
   }, []);
 
+  function hideAllWriters() {
+    for (const w of writersRef.current) {
+      try {
+        w.hideCharacter();
+      } catch {
+        /* ignore */
+      }
+    }
+  }
+
   function onTogglePlay() {
     if (finished) {
       setFinished(false);
@@ -335,50 +366,34 @@ export default function StrokesPlay(): JSX.Element {
       setPlaying(true);
       return;
     }
-    setPlaying((p) => !p);
-    if (playingRef.current) {
-      // we were playing — about to pause: stop any in-flight stroke/audio
+    // 명시적 next 계산 — L-01 동일 패턴
+    const next = !playingRef.current;
+    playingRef.current = next;
+    setPlaying(next);
+    if (!next) {
+      // pausing → speech + animation 즉시 중단
       cancelSpeak();
-      for (const w of writersRef.current) {
-        try {
-          w.hideCharacter();
-        } catch {
-          /* ignore */
-        }
-      }
+      hideAllWriters();
     }
+  }
+
+  function jumpTo(targetIndex: number) {
+    pendingJumpRef.current = Math.max(0, Math.min(queue.length, targetIndex));
+    setRep(1);
+    setFinished(false);
+    playingRef.current = true;
+    setPlaying(true);
+    cancelSpeak();
+    hideAllWriters();
+    advanceRef.current?.();
   }
 
   function onPrev() {
-    cancelSpeak();
-    for (const w of writersRef.current) {
-      try {
-        w.hideCharacter();
-      } catch {
-        /* ignore */
-      }
-    }
-    advanceRef.current?.();
-    setRep(1);
-    setIndex((i) => Math.max(0, i - 1));
-    setFinished(false);
-    setPlaying(true);
+    jumpTo(indexRef.current - 1);
   }
 
   function onNext() {
-    cancelSpeak();
-    for (const w of writersRef.current) {
-      try {
-        w.hideCharacter();
-      } catch {
-        /* ignore */
-      }
-    }
-    advanceRef.current?.();
-    setRep(1);
-    setIndex((i) => Math.min(queue.length, i + 1));
-    setFinished(false);
-    setPlaying(true);
+    jumpTo(indexRef.current + 1);
   }
 
   function onExit() {

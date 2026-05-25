@@ -240,10 +240,23 @@ function FlashcardSetup({ area }: { area: AreaKind }): JSX.Element {
       </div>
 
       {!playable ? (
-        <div className="text-xs text-muted text-center mt-3">
-          {dueOnly
-            ? "이 범위에 오늘 복습할 카드가 없습니다. ‘복습 카드만’ 옵션을 꺼보세요."
-            : "이 범위에 카드가 없습니다."}
+        <div className="mt-3 text-center">
+          <div className="text-xs text-muted">
+            {dueOnly
+              ? "이 범위에 오늘 복습할 카드가 없습니다."
+              : "이 범위에 카드가 없습니다."}
+          </div>
+          {/* dueOnly 모드에서 빈 큐는 dead-end 가 되기 쉽다 — 명시적 CTA 로
+              사용자가 한 번에 복귀할 수 있게 한다. (P1 S-02) */}
+          {dueOnly && total > 0 ? (
+            <button
+              type="button"
+              onClick={() => setDueOnly(false)}
+              className="btn-ghost mt-2 text-xs inline-flex items-center gap-1 border border-divider"
+            >
+              ‘복습 카드만’ 옵션 끄기 ({total}개 표시)
+            </button>
+          ) : null}
         </div>
       ) : null}
     </PageShell>

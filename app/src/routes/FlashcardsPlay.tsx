@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Navigate, useNavigate, useParams } from "react-router-dom";
 import {
   CheckCircle2,
@@ -56,6 +56,15 @@ function Player({ area }: { area: AreaKind }): JSX.Element {
   const [revealed, setRevealed] = useState(false);
   const [stats, setStats] = useState({ easy: 0, ok: 0, hard: 0 });
 
+  // 더블탭 방어 — disabled prop 만으로는 React 18 concurrent 환경에서
+  // re-render flush 전에 두 번째 탭이 들어올 수 있다. useRef 가드를 병행해
+  // 같은 카드에 대한 reviewCard() 가 중복 실행되어 SM-2 진행이 잘못되는 것을 차단.
+  // 다음 카드로 넘어갈 때(cursor 변경) 자동 해제.
+  const gradingRef = useRef(false);
+  useEffect(() => {
+    gradingRef.current = false;
+  }, [cursor]);
+
   // empty-deck guard
   useEffect(() => {
     if (queue.length === 0) navigate(`/flashcards/${area}`, { replace: true });
@@ -111,6 +120,8 @@ function Player({ area }: { area: AreaKind }): JSX.Element {
   const lessonTitle = lessonTitleFor(entry);
 
   function answer(diff: Difficulty) {
+    if (gradingRef.current) return;
+    gradingRef.current = true;
     // Ensure card exists in SRS, then grade.
     if (!cardMap[entry.id]) {
       addCard(entry.id, area);
@@ -122,6 +133,8 @@ function Player({ area }: { area: AreaKind }): JSX.Element {
   }
 
   function skip() {
+    if (gradingRef.current) return;
+    gradingRef.current = true;
     setRevealed(false);
     setCursor((c) => c + 1);
   }

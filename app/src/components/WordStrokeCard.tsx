@@ -95,6 +95,8 @@ export function WordStrokeCard({
     writersRef.current = [];
     cancelledRef.current = false;
     setError(null);
+    // 카드 전환/언마운트 후 fetch 가 resolve 되어도 setError 호출 차단. (P1 S-05)
+    let mounted = true;
 
     const slots = hanziChars.map((ch) => {
       const slot = document.createElement("div");
@@ -131,8 +133,12 @@ export function WordStrokeCard({
                 if (!r.ok) throw new Error(`HTTP ${r.status}`);
                 return r.json();
               })
-              .then(onComplete)
+              .then((data) => {
+                if (!mounted) return;
+                onComplete(data);
+              })
               .catch((e) => {
+                if (!mounted) return;
                 setError("필순 데이터를 불러오지 못했습니다");
                 onError?.(e);
               });
@@ -146,20 +152,69 @@ export function WordStrokeCard({
     }
 
     return () => {
+      mounted = false;
       cancelledRef.current = true;
       loopRef.current = false;
       audioCtrlRef.current?.abort();
       audioCtrlRef.current = null;
       cancelSpeak();
+      // 언마운트 시 진행 중인 stroke animation 도 중단 — animateOne 의 onComplete
+      // 콜백이 unmounted state 에서 호출되더라도 부수효과 없음(Promise 만 resolve).
+      for (const w of writersRef.current) {
+        try {
+          w.hideCharacter();
+        } catch {
+          /* ignore */
+        }
+      }
       writersRef.current = [];
     };
     // playSequence captured fresh each effect run via closure over refs
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [hanziChars.join(""), charSize]); // charSize change → re-mount canvases
 
-  function animateOne(w: HanziWriter): Promise<void> {
+  // abort signal 을 받아 진행 중 stroke animation 을 중단 가능하도록 한다.
+  // hanzi-writer 의 animateCharacter 는 cancel API 가 없으므로 hideCharacter() 로
+  // 즉시 stop — onComplete 콜백은 결국 호출되지만 이미 resolve 한 후라 무영향.
+  function animateOne(w: HanziWriter, signal: AbortSignal): Promise<void> {
     return new Promise((resolve) => {
-      w.animateCharacter({ onComplete: () => resolve() });
+      if (signal.aborted) return resolve();
+      let resolved = false;
+      const onAbort = () => {
+        if (resolved) return;
+        resolved = true;
+        try {
+          w.hideCharacter();
+        } catch {
+          /* ignore */
+        }
+        resolve();
+      };
+      signal.addEventListener("abort", onAbort, { once: true });
+      w.animateCharacter({
+        onComplete: () => {
+          if (resolved) return;
+          resolved = true;
+          signal.removeEventListener("abort", onAbort);
+          resolve();
+        },
+      });
+    });
+  }
+
+  // abort-aware sleep — breath gap 도중 정지/언마운트 시 즉시 깨어남
+  function abortableSleep(ms: number, signal: AbortSignal): Promise<void> {
+    if (signal.aborted) return Promise.resolve();
+    return new Promise<void>((resolve) => {
+      const t = setTimeout(() => {
+        signal.removeEventListener("abort", onAbort);
+        resolve();
+      }, ms);
+      const onAbort = () => {
+        clearTimeout(t);
+        resolve();
+      };
+      signal.addEventListener("abort", onAbort, { once: true });
     });
   }
 
@@ -173,7 +228,7 @@ export function WordStrokeCard({
     do {
       for (const w of writersRef.current) w.hideCharacter();
       for (let i = 0; i < writersRef.current.length; i++) {
-        if (cancelledRef.current) break;
+        if (cancelledRef.current || ac.signal.aborted) break;
         const w = writersRef.current[i];
         // 단음절 한자를 발화 — 매니페스트 hit 으로 신경망 음성 재생, miss 시
         // Web Speech 폴백. 사전녹음이 한자 1자 단위로 만들어져 있으므로
@@ -183,33 +238,29 @@ export function WordStrokeCard({
           audioOnRef.current && ch
             ? speakAsync(ch, { rate: rateRef.current, signal: ac.signal })
             : Promise.resolve();
-        const anim = animateOne(w);
+        const anim = animateOne(w, ac.signal);
         await Promise.all([audio, anim]);
-        // breath gap between characters
-        if (!cancelledRef.current && i < writersRef.current.length - 1) {
-          await new Promise((r) => setTimeout(r, 150));
+        if (cancelledRef.current || ac.signal.aborted) break;
+        // breath gap between characters — abort-aware
+        if (i < writersRef.current.length - 1) {
+          await abortableSleep(150, ac.signal);
         }
       }
+      if (cancelledRef.current || ac.signal.aborted) break;
       // Whole-word recap (multi-char 단어만) — 본문 단어 mp3 가 보통 매니페스트에
       // 있으므로 자연스러운 신경망 음성으로 한 번 더 재생.
-      if (
-        audioOnRef.current &&
-        !cancelledRef.current &&
-        writersRef.current.length > 1 &&
-        word
-      ) {
-        await new Promise((r) => setTimeout(r, 200));
-        if (!cancelledRef.current) {
-          await speakAsync(word, {
-            rate: rateRef.current,
-            signal: ac.signal,
-          });
-        }
+      if (audioOnRef.current && writersRef.current.length > 1 && word) {
+        await abortableSleep(200, ac.signal);
+        if (cancelledRef.current || ac.signal.aborted) break;
+        await speakAsync(word, {
+          rate: rateRef.current,
+          signal: ac.signal,
+        });
       }
-      if (loopRef.current && !cancelledRef.current) {
-        await new Promise((r) => setTimeout(r, 400));
+      if (loopRef.current && !cancelledRef.current && !ac.signal.aborted) {
+        await abortableSleep(400, ac.signal);
       }
-    } while (loopRef.current && !cancelledRef.current);
+    } while (loopRef.current && !cancelledRef.current && !ac.signal.aborted);
     setPlaying(false);
   }
 
