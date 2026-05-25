@@ -265,6 +265,17 @@ export default function StrokesPlay(): JSX.Element {
           await new Promise((r) => setTimeout(r, 120));
         }
       }
+      // Whole-word recap (multi-char 단어만) — WordStrokeCard 와 동일 패턴.
+      // 글자별 재생이 끝난 후 단어 전체를 한 번 더 발화. 보통 단어 mp3 가
+      // 매니페스트에 있어 신경망 음성으로 자연스럽게 이어 발음됨.
+      if (writers.length > 1 && current?.word) {
+        await new Promise((r) => setTimeout(r, 200));
+        if (ac.signal.aborted) return;
+        await speakAsync(current.word, {
+          rate: rateRef.current,
+          signal: ac.signal,
+        }).catch(() => {});
+      }
     };
 
     const run = async () => {
