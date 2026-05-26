@@ -11,7 +11,7 @@ def load_radical_data():
         with open(data_file, "r", encoding="utf-8") as f:
             data = json.load(f)
             radicals = data.get("radicals", {})
-            print(f"[OK] Loaded {len(radicals)} radicals")
+            print(f"[OK] Loaded {len(radicals)} radical mappings")
             return radicals
     except Exception as e:
         print(f"[ERROR] Loading radicals: {e}")
@@ -104,15 +104,17 @@ def main():
             hsk_level = word['hskLevel']
             hsk_grade = f"{hsk_level}급" if hsk_level == 6 else "7-9급"
             word_id = word['id']
+            word_radical = word.get('radical', '')
 
-            # Generate radical analysis
+            # Generate radical analysis using radical from hsk-words.json
             radical_lines = []
-            for char in word_str:
-                if char in radical_map:
-                    korean_name = radical_map[char]
-                    radical_lines.append(f"  - {char}: {korean_name}")
-                else:
-                    radical_lines.append(f"  - {char}: (부수 분석 진행 중)")
+            if word_radical and word_radical in radical_map:
+                korean_name = radical_map[word_radical]
+                radical_lines.append(f"  - {word_str}: {word_radical} ({korean_name})")
+            elif word_radical:
+                radical_lines.append(f"  - {word_str}: {word_radical} (부수 분석 진행 중)")
+            else:
+                radical_lines.append(f"  - {word_str}: (부수 정보 없음)")
 
             radical_text = "\n".join(radical_lines)
 
