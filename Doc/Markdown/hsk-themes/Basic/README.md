@@ -31,3 +31,4 @@ const lv=Number(process.argv[1]); // 1, 2, 3, or 4
 w.filter(x=>x.hskLevel===lv).forEach(x=>console.log(x.id, x.word, x.pinyin, '|', x.meaningEn?.slice(0,60)));
 " 3
 ```
+

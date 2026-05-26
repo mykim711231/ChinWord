@@ -114,3 +114,4 @@ w.filter(x=>x.domains?.includes(dom))
 - [ ] 4자성어.md (성어 포맷)
 - [ ] 도메인 메타데이터 부여 (`hsk-words.json` 의 `domains` 필드)
 - [ ] UI chip 필터 구현 (도메인 / HSK급 토글)
+
