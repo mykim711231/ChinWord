@@ -14,10 +14,10 @@ def load_hsk_data():
 def get_pos_korean(pos_list):
     """Convert POS tags to Korean grammatical categories."""
     pos_mapping = {
+        # 기본 품사
         "n": "명사",
         "v": "동사",
         "a": "형용사",
-        "ad": "형용사성부사",
         "d": "부사",
         "p": "전치사",
         "c": "접속사",
@@ -25,15 +25,45 @@ def get_pos_korean(pos_list):
         "u": "조사",
         "r": "대명사",
         "y": "감탄사",
+
+        # 명사 세분화
+        "nr": "인명",
+        "ns": "지명",
+        "nt": "기관명",
+        "nz": "기타명사",
+
+        # 수량사 관련
         "m": "수사",
+        "mq": "수량사",
         "q": "양사",
-        "t": "시간",
+        "qt": "시간양사",
+        "qv": "동량사",
+
+        # 형용사 관련
+        "ad": "형용사성부사",
+        "an": "명사성형용사",
+
+        # 시간 관련
+        "t": "시간명사",
+        "tg": "시간명사",
+
+        # 복합 품사
+        "vn": "동사/명사",
+
+        # 기타
         "f": "방위사",
         "x": "보조동사",
         "o": "의성어",
         "e": "의태어",
         "b": "수식언",
         "g": "기타",
+        "h": "전감사",
+        "k": "용언접미사",
+        "l": "명사접미사",
+        "s": "처소사",
+        "z": "문법단위",
+        "Mg": "외국어",
+        "Rg": "고유명사",
     }
     korean_pos = [pos_mapping.get(p, p) for p in pos_list if p]
     return "/".join(korean_pos) if korean_pos else "기타"
