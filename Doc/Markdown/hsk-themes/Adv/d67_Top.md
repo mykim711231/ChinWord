@@ -326,10 +326,10 @@
 
 ---
 
-### 6633. 碰钉子 / pèng dīng zi / [동사] / to meet with a rebuff
+### 6633. 碰钉子 / pèng dīng zi / [동사] / 만나다 a rebuff
 
 - 한자 풀이:
-  - 碰(한자) + 钉(한자) + 子(한자) → to meet with a rebuff
+  - 碰(한자) + 钉(한자) + 子(한자) → 만나다 a rebuff
 - HSK 등급: 7급
 
 <!-- id: hsk_7_5510 -->
@@ -426,10 +426,10 @@
 
 ---
 
-### 6643. 有两下子 / yǒu liǎng xià zi / [명사] / to have real skill
+### 6643. 有两下子 / yǒu liǎng xià zi / [명사] / 가지다 real skill
 
 - 한자 풀이:
-  - 有(가지다) + 两(한자) + 下(한자) + 子(한자) → to have real skill
+  - 有(가지다) + 两(한자) + 下(한자) + 子(한자) → 가지다 real skill
 - HSK 등급: 7급
 
 <!-- id: hsk_7_5520 -->
@@ -1005,5 +1005,8 @@
 <!-- id: hsk_7_5577 -->
 
 ---
+
+
+
 
 

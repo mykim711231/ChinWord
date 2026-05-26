@@ -46,10 +46,10 @@
 
 ---
 
-### 5805. 轮换 / lún huàn / [동사] / to rotate
+### 5805. 轮换 / lún huàn / [동사] / 회전하다
 
 - 한자 풀이:
-  - 轮(한자) + 换(한자) → to rotate
+  - 轮(한자) + 换(한자) → 썩다ate
 - HSK 등급: 7급
 
 <!-- id: hsk_7_4682 -->
@@ -106,10 +106,10 @@
 
 ---
 
-### 5811. 赞不绝口 / zàn bù jué kǒu / [동사] / to praise without cease
+### 5811. 赞不绝口 / zàn bù jué kǒu / [동사] / 칭찬하다 without cease
 
 - 한자 풀이:
-  - 赞(한자) + 不(한자) + 绝(한자) + 口(한자) → to praise without cease
+  - 赞(한자) + 不(한자) + 绝(한자) + 口(한자) → 칭찬하다 without cease
 - HSK 등급: 7급
 
 <!-- id: hsk_7_4688 -->
@@ -196,10 +196,10 @@
 
 ---
 
-### 5820. 归纳 / guī nà / [동사] / to sum up
+### 5820. 归纳 / guī nà / [동사] / 합산하다
 
 - 한자 풀이:
-  - 归(한자) + 纳(한자) → to sum up
+  - 归(한자) + 纳(한자) → 합산하다
 - HSK 등급: 7급
 
 <!-- id: hsk_7_4697 -->
@@ -216,10 +216,10 @@
 
 ---
 
-### 5822. 过硬 / guò yìng / [형용사] / to have perfect mastery of sth
+### 5822. 过硬 / guò yìng / [형용사] / 가지다 perfect mastery of sth
 
 - 한자 풀이:
-  - 过(한자) + 硬(한자) → to have perfect mastery of sth
+  - 过(한자) + 硬(한자) → 가지다 perfect mastery of sth
 - HSK 등급: 7급
 
 <!-- id: hsk_7_4699 -->
@@ -526,10 +526,10 @@
 
 ---
 
-### 5853. 筹措 / chóu cuò / [동사] / to raise
+### 5853. 筹措 / chóu cuò / [동사] / 올리다
 
 - 한자 풀이:
-  - 筹(한자) + 措(한자) → to raise
+  - 筹(한자) + 措(한자) → 올리다
 - HSK 등급: 7급
 
 <!-- id: hsk_7_4730 -->
@@ -976,10 +976,10 @@
 
 ---
 
-### 5898. 心安理得 / xīn ān lǐ dé / [동사] / to have a clear conscience
+### 5898. 心安理得 / xīn ān lǐ dé / [동사] / 가지다 a clear conscience
 
 - 한자 풀이:
-  - 心(한자) + 安(한자) + 理(한자) + 得(한자) → to have a clear conscience
+  - 心(한자) + 安(한자) + 理(한자) + 得(한자) → 가지다 a clear conscience
 - HSK 등급: 7급
 
 <!-- id: hsk_7_4775 -->
@@ -1005,5 +1005,8 @@
 <!-- id: hsk_7_4777 -->
 
 ---
+
+
+
 
 

@@ -346,20 +346,20 @@
 
 ---
 
-### 4035. 捣乱 / dǎo luàn / [동사] / to disturb
+### 4035. 捣乱 / dǎo luàn / [동사] / 방해하다
 
 - 한자 풀이:
-  - 捣(한자) + 乱(한자) → to disturb
+  - 捣(한자) + 乱(한자) → 방해하다
 - HSK 등급: 7급
 
 <!-- id: hsk_7_2912 -->
 
 ---
 
-### 4036. 改名 / gǎi míng / [동사] / to change one's name
+### 4036. 改名 / gǎi míng / [동사] / 바꾸다 one's name
 
 - 한자 풀이:
-  - 改(한자) + 名(한자) → to change one's name
+  - 改(한자) + 名(한자) → 바꾸다 one's name
 - HSK 등급: 7급
 
 <!-- id: hsk_7_2913 -->
@@ -866,10 +866,10 @@
 
 ---
 
-### 4087. 投身 / tóu shēn / [동사] / to throw oneself into sth
+### 4087. 投身 / tóu shēn / [동사] / 던지다 oneself into sth
 
 - 한자 풀이:
-  - 投(한자) + 身(한자) → to throw oneself into sth
+  - 投(한자) + 身(한자) → 던지다 oneself into sth
 - HSK 등급: 7급
 
 <!-- id: hsk_7_2964 -->
@@ -1005,5 +1005,8 @@
 <!-- id: hsk_7_2977 -->
 
 ---
+
+
+
 
 

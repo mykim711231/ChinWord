@@ -546,10 +546,10 @@
 
 ---
 
-### 4755. 接送 / jiē sòng / [동사] / to pick up and drop off
+### 4755. 接送 / jiē sòng / [동사] / 고르다 up and drop off
 
 - 한자 풀이:
-  - 接(한자) + 送(한자) → to pick up and drop off
+  - 接(한자) + 送(한자) → 고르다 up and drop off
 - HSK 등급: 7급
 
 <!-- id: hsk_7_3632 -->
@@ -576,7 +576,7 @@
 
 ---
 
-### 4758. 抢夺 / qiǎng duó / [동사] / to plunder
+### 4758. 抢夺 / qiǎng duó / [동사] / 약탈하다
 
 - 한자 풀이:
   - 抢(한자) + 夺(한자) → to plunder
@@ -586,10 +586,10 @@
 
 ---
 
-### 4759. 旨在 / zhǐ zài / [동사] / to have as its purpose
+### 4759. 旨在 / zhǐ zài / [동사] / 가지다 as its purpose
 
 - 한자 풀이:
-  - 旨(한자) + 在(한자) → to have as its purpose
+  - 旨(한자) + 在(한자) → 가지다 as its purpose
 - HSK 등급: 7급
 
 <!-- id: hsk_7_3636 -->
@@ -926,10 +926,10 @@
 
 ---
 
-### 4793. 担负 / dān fù / [동사] / to shoulder
+### 4793. 担负 / dān fù / [동사] / 짊어지다
 
 - 한자 풀이:
-  - 担(한자) + 负(한자) → to shoulder
+  - 担(한자) + 负(한자) → 짊어지다
 - HSK 등급: 7급
 
 <!-- id: hsk_7_3670 -->
@@ -1005,5 +1005,8 @@
 <!-- id: hsk_7_3677 -->
 
 ---
+
+
+
 
 

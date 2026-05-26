@@ -246,10 +246,10 @@
 
 ---
 
-### 4925. 领略 / lǐng lu:è / [동사] / to have a taste of
+### 4925. 领略 / lǐng lu:è / [동사] / 가지다 a taste of
 
 - 한자 풀이:
-  - 领(한자) + 略(한자) → to have a taste of
+  - 领(한자) + 略(한자) → 가지다 a taste of
 - HSK 등급: 7급
 
 <!-- id: hsk_7_3802 -->
@@ -656,10 +656,10 @@
 
 ---
 
-### 4966. 相提并论 / xiāng tí bìng lùn / [동사] / to discuss two disparate things tog
+### 4966. 相提并论 / xiāng tí bìng lùn / [동사] / 논의하다 two disparate things tog
 
 - 한자 풀이:
-  - 相(한자) + 提(한자) + 并(한자) + 论(한자) → to discuss two disparate things tog
+  - 相(한자) + 提(한자) + 并(한자) + 论(한자) → 논의하다 two disparate things tog
 - HSK 등급: 7급
 
 <!-- id: hsk_7_3843 -->
@@ -916,10 +916,10 @@
 
 ---
 
-### 4992. 见效 / jiàn xiào / [형용사] / to have the desired effect
+### 4992. 见效 / jiàn xiào / [형용사] / 가지다 the desired effect
 
 - 한자 풀이:
-  - 见(한자) + 效(한자) → to have the desired effect
+  - 见(한자) + 效(한자) → 가지다 the desired effect
 - HSK 등급: 7급
 
 <!-- id: hsk_7_3869 -->
@@ -1005,5 +1005,8 @@
 <!-- id: hsk_7_3877 -->
 
 ---
+
+
+
 
 

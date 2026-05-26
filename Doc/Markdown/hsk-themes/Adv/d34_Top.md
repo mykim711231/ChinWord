@@ -6,10 +6,10 @@
 
 ---
 
-### 3301. 驳回 / bó huí / [동사] / to reject
+### 3301. 驳回 / bó huí / [동사] / 거절하다
 
 - 한자 풀이:
-  - 驳(한자) + 回(한자) → to reject
+  - 驳(한자) + 回(한자) → 거절하다
 - HSK 등급: 7급
 
 <!-- id: hsk_7_2178 -->
@@ -246,10 +246,10 @@
 
 ---
 
-### 3325. 平息 / píng xī / [동사] / to settle
+### 3325. 平息 / píng xī / [동사] / 정착하다
 
 - 한자 풀이:
-  - 平(한자) + 息(한자) → to settle
+  - 平(한자) + 息(한자) → 정착하다
 - HSK 등급: 7급
 
 <!-- id: hsk_7_2202 -->
@@ -516,10 +516,10 @@
 
 ---
 
-### 3352. 脱颖而出 / tuō yǐng ér chū / [동사] / to reveal one's talent
+### 3352. 脱颖而出 / tuō yǐng ér chū / [동사] / 드러내다 one's talent
 
 - 한자 풀이:
-  - 脱(한자) + 颖(한자) + 而(한자) + 出(한자) → to reveal one's talent
+  - 脱(한자) + 颖(한자) + 而(한자) + 出(한자) → 드러내다 one's talent
 - HSK 등급: 7급
 
 <!-- id: hsk_7_2229 -->
@@ -536,20 +536,20 @@
 
 ---
 
-### 3354. 牵挂 / qiān guà / [동사] / to worry about
+### 3354. 牵挂 / qiān guà / [동사] / 걱정하다 about
 
 - 한자 풀이:
-  - 牵(한자) + 挂(한자) → to worry about
+  - 牵(한자) + 挂(한자) → 걱정하다 about
 - HSK 등급: 7급
 
 <!-- id: hsk_7_2231 -->
 
 ---
 
-### 3355. 不理 / bù lǐ / [동사] / to refuse to acknowledge
+### 3355. 不理 / bù lǐ / [동사] / 거부하다 to acknowledge
 
 - 한자 풀이:
-  - 不(한자) + 理(한자) → to refuse to acknowledge
+  - 不(한자) + 理(한자) → 거부하다 to acknowledge
 - HSK 등급: 7급
 
 <!-- id: hsk_7_2232 -->
@@ -886,10 +886,10 @@
 
 ---
 
-### 3389. 摆放 / bǎi fàng / [동사] / to set up
+### 3389. 摆放 / bǎi fàng / [동사] / 설립하다
 
 - 한자 풀이:
-  - 摆(한자) + 放(한자) → to set up
+  - 摆(한자) + 放(한자) → 설립하다
 - HSK 등급: 7급
 
 <!-- id: hsk_7_2266 -->
@@ -996,14 +996,17 @@
 
 ---
 
-### 3400. 看中 / kàn zhòng / [동사] / to have a preference for
+### 3400. 看中 / kàn zhòng / [동사] / 가지다 a preference for
 
 - 한자 풀이:
-  - 看(한자) + 中(한자) → to have a preference for
+  - 看(한자) + 中(한자) → 가지다 a preference for
 - HSK 등급: 7급
 
 <!-- id: hsk_7_2277 -->
 
 ---
+
+
+
 
 

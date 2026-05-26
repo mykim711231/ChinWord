@@ -116,10 +116,10 @@
 
 ---
 
-### 6312. 挂失 / guà shī / [동사] / to report the loss of something
+### 6312. 挂失 / guà shī / [동사] / 보고하다 the loss of something
 
 - 한자 풀이:
-  - 挂(한자) + 失(한자) → to report the loss of something
+  - 挂(한자) + 失(한자) → 보고하다 the loss of something
 - HSK 등급: 7급
 
 <!-- id: hsk_7_5189 -->
@@ -336,10 +336,10 @@
 
 ---
 
-### 6334. 举世瞩目 / jǔ shì zhǔ mù / [명사] / to receive worldwide attention
+### 6334. 举世瞩目 / jǔ shì zhǔ mù / [명사] / 받다 worldwide attention
 
 - 한자 풀이:
-  - 举(한자) + 世(한자) + 瞩(한자) + 目(한자) → to receive worldwide attention
+  - 举(한자) + 世(한자) + 瞩(한자) + 目(한자) → 받다 worldwide attention
 - HSK 등급: 7급
 
 <!-- id: hsk_7_5211 -->
@@ -386,10 +386,10 @@
 
 ---
 
-### 6339. 联欢 / lián huān / [동사] / to have a get-together
+### 6339. 联欢 / lián huān / [동사] / 가지다 a get-together
 
 - 한자 풀이:
-  - 联(한자) + 欢(한자) → to have a get-together
+  - 联(한자) + 欢(한자) → 가지다 a get-together
 - HSK 등급: 7급
 
 <!-- id: hsk_7_5216 -->
@@ -646,10 +646,10 @@
 
 ---
 
-### 6365. 耻笑 / chǐ xiào / [동사] / to sneer at sb
+### 6365. 耻笑 / chǐ xiào / [동사] / 비웃다 at sb
 
 - 한자 풀이:
-  - 耻(한자) + 笑(한자) → to sneer at sb
+  - 耻(한자) + 笑(한자) → 비웃다 at sb
 - HSK 등급: 7급
 
 <!-- id: hsk_7_5242 -->
@@ -836,20 +836,20 @@
 
 ---
 
-### 6384. 变幻莫测 / biàn huàn mò cè / [명사] / to change unpredictably
+### 6384. 变幻莫测 / biàn huàn mò cè / [명사] / 바꾸다 unpredictably
 
 - 한자 풀이:
-  - 变(한자) + 幻(한자) + 莫(한자) + 测(한자) → to change unpredictably
+  - 变(한자) + 幻(한자) + 莫(한자) + 测(한자) → 바꾸다 unpredictably
 - HSK 등급: 7급
 
 <!-- id: hsk_7_5261 -->
 
 ---
 
-### 6385. 求医 / qiú yī / [동사] / to seek medical treatment
+### 6385. 求医 / qiú yī / [동사] / 찾다 medical treatment
 
 - 한자 풀이:
-  - 求(한자) + 医(한자) → to seek medical treatment
+  - 求(한자) + 医(한자) → 찾다 medical treatment
 - HSK 등급: 7급
 
 <!-- id: hsk_7_5262 -->
@@ -1005,5 +1005,8 @@
 <!-- id: hsk_7_5277 -->
 
 ---
+
+
+
 
 

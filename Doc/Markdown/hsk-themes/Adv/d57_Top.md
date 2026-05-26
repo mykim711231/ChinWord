@@ -26,10 +26,10 @@
 
 ---
 
-### 5603. 比试 / bǐ shì / [동사] / to have a competition
+### 5603. 比试 / bǐ shì / [동사] / 가지다 a competition
 
 - 한자 풀이:
-  - 比(한자) + 试(한자) → to have a competition
+  - 比(한자) + 试(한자) → 가지다 a competition
 - HSK 등급: 7급
 
 <!-- id: hsk_7_4480 -->
@@ -106,10 +106,10 @@
 
 ---
 
-### 5611. 一事无成 / yī shì wú chéng / [동사] / to have achieved nothing
+### 5611. 一事无成 / yī shì wú chéng / [동사] / 가지다 achieved nothing
 
 - 한자 풀이:
-  - 一(한자) + 事(한자) + 无(한자) + 成(한자) → to have achieved nothing
+  - 一(한자) + 事(한자) + 无(한자) + 成(한자) → 가지다 achieved nothing
 - HSK 등급: 7급
 
 <!-- id: hsk_7_4488 -->
@@ -366,10 +366,10 @@
 
 ---
 
-### 5637. 省事 / shěng shì / [형용사] / to simplify matters
+### 5637. 省事 / shěng shì / [형용사] / 단순화하다 matters
 
 - 한자 풀이:
-  - 省(한자) + 事(한자) → to simplify matters
+  - 省(한자) + 事(한자) → 단순화하다 matters
 - HSK 등급: 7급
 
 <!-- id: hsk_7_4514 -->
@@ -436,10 +436,10 @@
 
 ---
 
-### 5644. 投奔 / tóu bèn / [동사] / to seek shelter
+### 5644. 投奔 / tóu bèn / [동사] / 찾다 shelter
 
 - 한자 풀이:
-  - 投(한자) + 奔(한자) → to seek shelter
+  - 投(한자) + 奔(한자) → 찾다 shelter
 - HSK 등급: 7급
 
 <!-- id: hsk_7_4521 -->
@@ -536,20 +536,20 @@
 
 ---
 
-### 5654. 泄气 / xiè qì / [동사] / to leak
+### 5654. 泄气 / xiè qì / [동사] / 새다
 
 - 한자 풀이:
-  - 泄(한자) + 气(한자) → to leak
+  - 泄(한자) + 气(한자) → 새다
 - HSK 등급: 7급
 
 <!-- id: hsk_7_4531 -->
 
 ---
 
-### 5655. 嘲弄 / cháo nòng / [동사] / to tease
+### 5655. 嘲弄 / cháo nòng / [동사] / 놀리다
 
 - 한자 풀이:
-  - 嘲(한자) + 弄(한자) → to tease
+  - 嘲(한자) + 弄(한자) → 놀리다
 - HSK 등급: 7급
 
 <!-- id: hsk_7_4532 -->
@@ -1005,5 +1005,8 @@
 <!-- id: hsk_7_4577 -->
 
 ---
+
+
+
 
 

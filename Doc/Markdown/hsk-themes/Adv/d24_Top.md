@@ -26,10 +26,10 @@
 
 ---
 
-### 2303. 泄露 / xiè lù / [동사] / to leak
+### 2303. 泄露 / xiè lù / [동사] / 새다
 
 - 한자 풀이:
-  - 泄(한자) + 露(한자) → to leak
+  - 泄(한자) + 露(한자) → 새다
 - HSK 등급: 7급
 
 <!-- id: hsk_7_1180 -->
@@ -456,7 +456,7 @@
 
 ---
 
-### 2346. 作弊 / zuò bì / [동사] / to practice fraud
+### 2346. 作弊 / zuò bì / [동사] / 사기를 치다
 
 - 한자 풀이:
   - 作(하다) + 弊(한자) → to practice fraud
@@ -536,10 +536,10 @@
 
 ---
 
-### 2354. 扛 / gāng / [동사] / to raise aloft with both hands
+### 2354. 扛 / gāng / [동사] / 올리다 aloft with both hands
 
 - 한자 풀이:
-  - 扛(한자) → to raise aloft with both hands
+  - 扛(한자) → 올리다 aloft with both hands
 - HSK 등급: 7급
 
 <!-- id: hsk_7_1231 -->
@@ -606,10 +606,10 @@
 
 ---
 
-### 2361. 停电 / tíng diàn / [동사] / to have a power failure
+### 2361. 停电 / tíng diàn / [동사] / 가지다 a power failure
 
 - 한자 풀이:
-  - 停(한자) + 电(한자) → to have a power failure
+  - 停(한자) + 电(한자) → 가지다 a power failure
 - HSK 등급: 7급
 
 <!-- id: hsk_7_1238 -->
@@ -716,10 +716,10 @@
 
 ---
 
-### 2372. 上映 / shàng yìng / [동사] / to screen
+### 2372. 上映 / shàng yìng / [동사] / 선별하다
 
 - 한자 풀이:
-  - 上(한자) + 映(한자) → to screen
+  - 上(한자) + 映(한자) → 선별하다
 - HSK 등급: 7급
 
 <!-- id: hsk_7_1249 -->
@@ -966,10 +966,10 @@
 
 ---
 
-### 2397. 解救 / jiě jiù / [동사] / to rescue
+### 2397. 解救 / jiě jiù / [동사] / 구조하다
 
 - 한자 풀이:
-  - 解(한자) + 救(한자) → to rescue
+  - 解(한자) + 救(한자) → 구조하다
 - HSK 등급: 7급
 
 <!-- id: hsk_7_1274 -->
@@ -1005,5 +1005,8 @@
 <!-- id: hsk_7_1277 -->
 
 ---
+
+
+
 
 

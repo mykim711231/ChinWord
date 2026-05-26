@@ -16,10 +16,10 @@
 
 ---
 
-### 6002. 晃荡 / huàng dang / [동사] / to rock
+### 6002. 晃荡 / huàng dang / [동사] / 흔들다
 
 - 한자 풀이:
-  - 晃(한자) + 荡(한자) → to rock
+  - 晃(한자) + 荡(한자) → 흔들다
 - HSK 등급: 7급
 
 <!-- id: hsk_7_4879 -->
@@ -376,10 +376,10 @@
 
 ---
 
-### 6038. 惩处 / chéng chǔ / [동사] / to punish
+### 6038. 惩处 / chéng chǔ / [동사] / 벌하다
 
 - 한자 풀이:
-  - 惩(한자) + 处(한자) → to punish
+  - 惩(한자) + 处(한자) → 벌하다
 - HSK 등급: 7급
 
 <!-- id: hsk_7_4915 -->
@@ -816,10 +816,10 @@
 
 ---
 
-### 6082. 罢免 / bà miǎn / [동사] / to remove sb from their post
+### 6082. 罢免 / bà miǎn / [동사] / 제거하다 sb from their post
 
 - 한자 풀이:
-  - 罢(한자) + 免(한자) → to remove sb from their post
+  - 罢(한자) + 免(한자) → 제거하다 sb from their post
 - HSK 등급: 7급
 
 <!-- id: hsk_7_4959 -->
@@ -846,10 +846,10 @@
 
 ---
 
-### 6085. 求学 / qiú xué / [동사] / to seek knowledge
+### 6085. 求学 / qiú xué / [동사] / 찾다 knowledge
 
 - 한자 풀이:
-  - 求(한자) + 学(한자) → to seek knowledge
+  - 求(한자) + 学(한자) → 찾다 knowledge
 - HSK 등급: 7급
 
 <!-- id: hsk_7_4962 -->
@@ -886,10 +886,10 @@
 
 ---
 
-### 6089. 衰减 / shuāi jiǎn / [명사] / to weaken
+### 6089. 衰减 / shuāi jiǎn / [명사] / 약해지다
 
 - 한자 풀이:
-  - 衰(한자) + 减(한자) → to weaken
+  - 衰(한자) + 减(한자) → 약해지다
 - HSK 등급: 7급
 
 <!-- id: hsk_7_4966 -->
@@ -926,10 +926,10 @@
 
 ---
 
-### 6093. 艰苦奋斗 / jiān kǔ fèn dòu / [동사] / to struggle arduously
+### 6093. 艰苦奋斗 / jiān kǔ fèn dòu / [동사] / 투쟁하다 arduously
 
 - 한자 풀이:
-  - 艰(한자) + 苦(한자) + 奋(한자) + 斗(한자) → to struggle arduously
+  - 艰(한자) + 苦(한자) + 奋(한자) + 斗(한자) → 투쟁하다 arduously
 - HSK 등급: 7급
 
 <!-- id: hsk_7_4970 -->
@@ -1005,5 +1005,8 @@
 <!-- id: hsk_7_4977 -->
 
 ---
+
+
+
 
 

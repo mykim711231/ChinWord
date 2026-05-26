@@ -116,10 +116,10 @@
 
 ---
 
-### 5112. 精简 / jīng jiǎn / [동사] / to simplify
+### 5112. 精简 / jīng jiǎn / [동사] / 단순화하다
 
 - 한자 풀이:
-  - 精(한자) + 简(한자) → to simplify
+  - 精(한자) + 简(한자) → 단순화하다
 - HSK 등급: 7급
 
 <!-- id: hsk_7_3989 -->
@@ -396,20 +396,20 @@
 
 ---
 
-### 5140. 波及 / bō jí / [동사] / to spread to
+### 5140. 波及 / bō jí / [동사] / 퍼지다 to
 
 - 한자 풀이:
-  - 波(한자) + 及(한자) → to spread to
+  - 波(한자) + 及(한자) → 퍼지다 to
 - HSK 등급: 7급
 
 <!-- id: hsk_7_4017 -->
 
 ---
 
-### 5141. 求证 / qiú zhèng / [동사] / to seek proof
+### 5141. 求证 / qiú zhèng / [동사] / 찾다 proof
 
 - 한자 풀이:
-  - 求(한자) + 证(한자) → to seek proof
+  - 求(한자) + 证(한자) → 찾다 proof
 - HSK 등급: 7급
 
 <!-- id: hsk_7_4018 -->
@@ -546,10 +546,10 @@
 
 ---
 
-### 5155. 鼓动 / gǔ dòng / [동사] / to urge
+### 5155. 鼓动 / gǔ dòng / [동사] / 촉구하다
 
 - 한자 풀이:
-  - 鼓(한자) + 动(한자) → to urge
+  - 鼓(한자) + 动(한자) → 촉구하다
 - HSK 등급: 7급
 
 <!-- id: hsk_7_4032 -->
@@ -656,20 +656,20 @@
 
 ---
 
-### 5166. 如愿以偿 / rú yuàn yǐ cháng / [동사] / to have one's wish fulfilled
+### 5166. 如愿以偿 / rú yuàn yǐ cháng / [동사] / 가지다 one's wish fulfilled
 
 - 한자 풀이:
-  - 如(같다) + 愿(한자) + 以(한자) + 偿(한자) → to have one's wish fulfilled
+  - 如(같다) + 愿(한자) + 以(한자) + 偿(한자) → 가지다 one's wish fulfilled
 - HSK 등급: 7급
 
 <!-- id: hsk_7_4043 -->
 
 ---
 
-### 5167. 就医 / jiù yī / [동사] / to receive medical treatment
+### 5167. 就医 / jiù yī / [동사] / 받다 medical treatment
 
 - 한자 풀이:
-  - 就(한자) + 医(한자) → to receive medical treatment
+  - 就(한자) + 医(한자) → 받다 medical treatment
 - HSK 등급: 7급
 
 <!-- id: hsk_7_4044 -->
@@ -876,10 +876,10 @@
 
 ---
 
-### 5188. 泄密 / xiè mì / [동사] / to leak secrets
+### 5188. 泄密 / xiè mì / [동사] / 새다 secrets
 
 - 한자 풀이:
-  - 泄(한자) + 密(한자) → to leak secrets
+  - 泄(한자) + 密(한자) → 새다 secrets
 - HSK 등급: 7급
 
 <!-- id: hsk_7_4065 -->
@@ -926,10 +926,10 @@
 
 ---
 
-### 5193. 上调 / shàng tiáo / [동사] / to raise
+### 5193. 上调 / shàng tiáo / [동사] / 올리다
 
 - 한자 풀이:
-  - 上(한자) + 调(한자) → to raise
+  - 上(한자) + 调(한자) → 올리다
 - HSK 등급: 7급
 
 <!-- id: hsk_7_4070 -->
@@ -1005,5 +1005,8 @@
 <!-- id: hsk_7_4077 -->
 
 ---
+
+
+
 
 

@@ -86,10 +86,10 @@
 
 ---
 
-### 2509. 夺冠 / duó guàn / [동사] / to seize the crown
+### 2509. 夺冠 / duó guàn / [동사] / 붙잡다 the crown
 
 - 한자 풀이:
-  - 夺(한자) + 冠(한자) → to seize the crown
+  - 夺(한자) + 冠(한자) → 붙잡다 the crown
 - HSK 등급: 7급
 
 <!-- id: hsk_7_1386 -->
@@ -136,10 +136,10 @@
 
 ---
 
-### 2514. 上报 / shàng bào / [동사] / to report to one's superiors
+### 2514. 上报 / shàng bào / [동사] / 보고하다 to one's superiors
 
 - 한자 풀이:
-  - 上(한자) + 报(한자) → to report to one's superiors
+  - 上(한자) + 报(한자) → 보고하다 to one's superiors
 - HSK 등급: 7급
 
 <!-- id: hsk_7_1391 -->
@@ -216,10 +216,10 @@
 
 ---
 
-### 2522. 敷 / fū / [동사] / to spread
+### 2522. 敷 / fū / [동사] / 퍼지다
 
 - 한자 풀이:
-  - 敷(한자) → to spread
+  - 敷(한자) → 퍼지다
 - HSK 등급: 7급
 
 <!-- id: hsk_7_1399 -->
@@ -466,20 +466,20 @@
 
 ---
 
-### 2547. 残留 / cán liú / [명사] / to remain
+### 2547. 残留 / cán liú / [명사] / 남다
 
 - 한자 풀이:
-  - 残(한자) + 留(한자) → to remain
+  - 残(한자) + 留(한자) → 남다
 - HSK 등급: 7급
 
 <!-- id: hsk_7_1424 -->
 
 ---
 
-### 2548. 震动 / zhèn dòng / [명사] / to shake
+### 2548. 震动 / zhèn dòng / [명사] / 흔들다
 
 - 한자 풀이:
-  - 震(한자) + 动(한자) → to shake
+  - 震(한자) + 动(한자) → 흔들다
 - HSK 등급: 7급
 
 <!-- id: hsk_7_1425 -->
@@ -796,10 +796,10 @@
 
 ---
 
-### 2580. 致敬 / zhì jìng / [동사] / to salute
+### 2580. 致敬 / zhì jìng / [동사] / 경례하다
 
 - 한자 풀이:
-  - 致(한자) + 敬(한자) → to salute
+  - 致(한자) + 敬(한자) → 경례하다
 - HSK 등급: 7급
 
 <!-- id: hsk_7_1457 -->
@@ -896,10 +896,10 @@
 
 ---
 
-### 2590. 反馈 / fǎn kuì / [동사] / to send back information
+### 2590. 反馈 / fǎn kuì / [동사] / 보내다 back information
 
 - 한자 풀이:
-  - 反(한자) + 馈(한자) → to send back information
+  - 反(한자) + 馈(한자) → 보내다 back information
 - HSK 등급: 7급
 
 <!-- id: hsk_7_1467 -->
@@ -1005,5 +1005,8 @@
 <!-- id: hsk_7_1477 -->
 
 ---
+
+
+
 
 

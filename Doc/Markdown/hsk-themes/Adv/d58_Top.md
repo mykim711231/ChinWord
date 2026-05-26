@@ -246,10 +246,10 @@
 
 ---
 
-### 5725. 哆嗦 / duō suo / [동사] / to tremble
+### 5725. 哆嗦 / duō suo / [동사] / 떨다
 
 - 한자 풀이:
-  - 哆(한자) + 嗦(한자) → to tremble
+  - 哆(한자) + 嗦(한자) → 떨다
 - HSK 등급: 7급
 
 <!-- id: hsk_7_4602 -->
@@ -386,10 +386,10 @@
 
 ---
 
-### 5739. 出道 / chū dào / [동사] / to start one's career
+### 5739. 出道 / chū dào / [동사] / 시작하다 one's career
 
 - 한자 풀이:
-  - 出(한자) + 道(한자) → to start one's career
+  - 出(한자) + 道(한자) → 시작하다 one's career
 - HSK 등급: 7급
 
 <!-- id: hsk_7_4616 -->
@@ -746,10 +746,10 @@
 
 ---
 
-### 5775. 绝缘 / jué yuán / [명사] / to have no contact with
+### 5775. 绝缘 / jué yuán / [명사] / 가지다 no contact with
 
 - 한자 풀이:
-  - 绝(한자) + 缘(한자) → to have no contact with
+  - 绝(한자) + 缘(한자) → 가지다 no contact with
 - HSK 등급: 7급
 
 <!-- id: hsk_7_4652 -->
@@ -866,10 +866,10 @@
 
 ---
 
-### 5787. 不了了之 / bù liǎo liǎo zhī / [동사] / to settle a matter by leaving it un
+### 5787. 不了了之 / bù liǎo liǎo zhī / [동사] / 정착하다 a matter by leaving it un
 
 - 한자 풀이:
-  - 不(한자) + 了(한자) + 了(한자) + 之(한자) → to settle a matter by leaving it un
+  - 不(한자) + 了(한자) + 了(한자) + 之(한자) → 정착하다 a matter by leaving it un
 - HSK 등급: 7급
 
 <!-- id: hsk_7_4664 -->
@@ -926,10 +926,10 @@
 
 ---
 
-### 5793. 赞许 / zàn xǔ / [동사] / to praise
+### 5793. 赞许 / zàn xǔ / [동사] / 칭찬하다
 
 - 한자 풀이:
-  - 赞(한자) + 许(한자) → to praise
+  - 赞(한자) + 许(한자) → 칭찬하다
 - HSK 등급: 7급
 
 <!-- id: hsk_7_4670 -->
@@ -1005,5 +1005,8 @@
 <!-- id: hsk_7_4677 -->
 
 ---
+
+
+
 
 

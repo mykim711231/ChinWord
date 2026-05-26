@@ -106,10 +106,10 @@
 
 ---
 
-### 4211. 自卑 / zì bēi / [형용사] / to have low self-esteem
+### 4211. 自卑 / zì bēi / [형용사] / 가지다 low self-esteem
 
 - 한자 풀이:
-  - 自(한자) + 卑(한자) → to have low self-esteem
+  - 自(한자) + 卑(한자) → 가지다 low self-esteem
 - HSK 등급: 7급
 
 <!-- id: hsk_7_3088 -->
@@ -166,10 +166,10 @@
 
 ---
 
-### 4217. 触犯 / chù fàn / [동사] / to violate
+### 4217. 触犯 / chù fàn / [동사] / 위반하다
 
 - 한자 풀이:
-  - 触(한자) + 犯(한자) → to violate
+  - 触(한자) + 犯(한자) → 위반하다
 - HSK 등급: 7급
 
 <!-- id: hsk_7_3094 -->
@@ -996,14 +996,17 @@
 
 ---
 
-### 4300. 谋生 / móu shēng / [동사] / to seek one's livelihood
+### 4300. 谋生 / móu shēng / [동사] / 찾다 one's livelihood
 
 - 한자 풀이:
-  - 谋(한자) + 生(한자) → to seek one's livelihood
+  - 谋(한자) + 生(한자) → 찾다 one's livelihood
 - HSK 등급: 7급
 
 <!-- id: hsk_7_3177 -->
 
 ---
+
+
+
 
 

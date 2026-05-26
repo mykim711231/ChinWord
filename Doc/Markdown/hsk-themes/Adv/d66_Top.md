@@ -116,10 +116,10 @@
 
 ---
 
-### 6512. 吵嘴 / chǎo zuǐ / [동사] / to quarrel
+### 6512. 吵嘴 / chǎo zuǐ / [동사] / 싸우다
 
 - 한자 풀이:
-  - 吵(한자) + 嘴(한자) → to quarrel
+  - 吵(한자) + 嘴(한자) → 싸우다
 - HSK 등급: 7급
 
 <!-- id: hsk_7_5389 -->
@@ -766,10 +766,10 @@
 
 ---
 
-### 6577. 举一反三 / jǔ yī fǎn sān / [동사] / to raise one and infer three
+### 6577. 举一反三 / jǔ yī fǎn sān / [동사] / 올리다 one and infer three
 
 - 한자 풀이:
-  - 举(한자) + 一(한자) + 反(한자) + 三(한자) → to raise one and infer three
+  - 举(한자) + 一(한자) + 反(한자) + 三(한자) → 올리다 one and infer three
 - HSK 등급: 7급
 
 <!-- id: hsk_7_5454 -->
@@ -1005,5 +1005,8 @@
 <!-- id: hsk_7_5477 -->
 
 ---
+
+
+
 
 

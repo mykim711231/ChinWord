@@ -96,10 +96,10 @@
 
 ---
 
-### 910. 照耀 / zhào yào / [동사] / to shine
+### 910. 照耀 / zhào yào / [동사] / 빛나다
 
 - 한자 풀이:
-  - 照(한자) + 耀(한자) → to shine
+  - 照(한자) + 耀(한자) → 빛나다
 - HSK 등급: 6급
 
 <!-- id: hsk_6_0910 -->
@@ -246,10 +246,10 @@
 
 ---
 
-### 925. 升值 / shēng zhí / [동사] / to rise in value
+### 925. 升值 / shēng zhí / [동사] / 일어나다 in value
 
 - 한자 풀이:
-  - 升(한자) + 值(한자) → to rise in value
+  - 升(한자) + 值(한자) → 일어나다 in value
 - HSK 등급: 6급
 
 <!-- id: hsk_6_0925 -->
@@ -456,10 +456,10 @@
 
 ---
 
-### 946. 只得 / zhǐ dé / [부사] / to have no alternative but to
+### 946. 只得 / zhǐ dé / [부사] / 가지다 no alternative but to
 
 - 한자 풀이:
-  - 只(한자) + 得(한자) → to have no alternative but to
+  - 只(한자) + 得(한자) → 가지다 no alternative but to
 - HSK 등급: 6급
 
 <!-- id: hsk_6_0946 -->
@@ -686,10 +686,10 @@
 
 ---
 
-### 969. 节能 / jié néng / [명사] / to save energy
+### 969. 节能 / jié néng / [명사] / 구하다 energy
 
 - 한자 풀이:
-  - 节(한자) + 能(한자) → to save energy
+  - 节(한자) + 能(한자) → 구하다 energy
 - HSK 등급: 6급
 
 <!-- id: hsk_6_0969 -->
@@ -896,10 +896,10 @@
 
 ---
 
-### 990. 求职 / qiú zhí / [명사] / to seek employment
+### 990. 求职 / qiú zhí / [명사] / 찾다 employment
 
 - 한자 풀이:
-  - 求(한자) + 职(한자) → to seek employment
+  - 求(한자) + 职(한자) → 찾다 employment
 - HSK 등급: 6급
 
 <!-- id: hsk_6_0990 -->
@@ -1005,5 +1005,8 @@
 <!-- id: hsk_6_1000 -->
 
 ---
+
+
+
 
 
