@@ -11,8 +11,8 @@
 ### 3701. 妖怪 / yāo guài / [명사] / monster; devil
 
 - 한자 풀이:
-  - 妖: 女(여자 여) + 夭(young, energetic; to die young)
-  - 怪: 忄(마음 심) + 圣(holy, sacred; sage, saint)
+  - 妖: 女(여자 여) + 夭(얻다 ~하다)
+  - 怪: 忄(마음 심) + 圣(빨강 성인)
 - HSK 등급: 7-9급
 
 <!-- id: hsk_7_2830 -->
@@ -22,8 +22,8 @@
 ### 3702. 影星 / yǐng xīng / [명사] / film star
 
 - 한자 풀이:
-  - 影: 景(scenery, view; conditions, circumstances) + 彡(hair; sunlight)
-  - 星: 日(해 일) + 生(life, lifetime; birth; growth)
+  - 影: 景(scenery, view conditions, ...) + 彡(머리카락 가볍다)
+  - 星: 日(해 일) + 生(삶 birth)
 - HSK 등급: 6급
 
 <!-- id: hsk_6_0872 -->
@@ -33,8 +33,8 @@
 ### 3703. 政党 / zhèng dǎng / [명사] / political party
 
 - 한자 풀이:
-  - 政: 正(straight, right, proper, correct, just, true) + 攵(칠 복)
-  - 党: 尚(still, yet; even; fairly, rather) + 兄(elder brother)
+  - 政: 正(줄) + 攵(칠 복)
+  - 党: 尚(여전히 심지어) + 兄(형제)
 - HSK 등급: 6급
 
 <!-- id: hsk_6_0873 -->
@@ -45,7 +45,7 @@
 
 - 한자 풀이:
   - 历: 厂(절벽 광) + 力(힘 력)
-  - 经: 纟(실 사) + ？(부수 분석 진행 중) + 工(labor, work; laborer, worker)
+  - 经: 纟(실 사) + 工(일하다 일하다)
 - HSK 등급: 7-9급
 
 <!-- id: hsk_7_2831 -->
@@ -55,7 +55,7 @@
 ### 3705. 译 / yì / [동사] / ~하다
 
 - 한자 풀이:
-  - 译: 讠(말씀 언) + ？(부수 분석 진행 중)
+  - 译: 讠(말씀 언)
 - HSK 등급: 7-9급
 
 <!-- id: hsk_7_2832 -->
@@ -65,7 +65,7 @@
 ### 3706. 商讨 / shāng tǎo / [동사] / ~하다
 
 - 한자 풀이:
-  - 商: 亠(지붕 두) + 丷(여덟 팔) + 冏(bright, brilliant; clear; hot)
+  - 商: 亠(지붕 두) + 丷(여덟 팔) + 冏(밝다 귀)
   - 讨: 讠(말씀 언) + 寸(치 촌)
 - HSK 등급: 7-9급
 
@@ -76,8 +76,8 @@
 ### 3707. 凶残 / xiōng cán / [형용사] / savage; cruel;
 
 - 한자 풀이:
-  - 凶: 凵(움푹한곳 광) + 乂(to govern; to control; to nurture)
-  - 残: 歹(corpse; death; evil, depraved, wicked) + 戋(세 세)
+  - 凶: 凵(움푹한곳 광) + 乂(~하다 ~하다)
+  - 残: 歹(corpse 먹다) + 戋(세 세)
 - HSK 등급: 7-9급
 
 <!-- id: hsk_7_2834 -->
@@ -89,7 +89,7 @@
 - 한자 풀이:
   - 口: 冂(둘러싸는틀 공) + 一(한 일)
   - 香: 禾(벼 화) + 日(해 일)
-  - 糖: 米(쌀 미) + 唐(the Tang dynasty; Chinese; empty, exaggerated; surname)
+  - 糖: 米(쌀 미) + 唐(the Tang dyn... Chinese)
 - HSK 등급: 7-9급
 
 <!-- id: hsk_7_2835 -->
@@ -99,7 +99,7 @@
 ### 3709. 绞 / jiǎo / [동사] / ~하다
 
 - 한자 풀이:
-  - 绞: 纟(실 사) + 交(to connect; to deliver, to exchange; to intersect; to mix)
+  - 绞: 纟(실 사) + 交(~하다 ~하다)
 - HSK 등급: 7-9급
 
 <!-- id: hsk_7_2836 -->
@@ -120,8 +120,8 @@
 ### 3711. 受贿 / shòu huì / [동사/동명사] / ~하다
 
 - 한자 풀이:
-  - 受: 爫(claws, nails, talons) + 冖(cover) + 又(또 우)
-  - 贿: 贝(조개 패) + 有(to have, to own, to possess; to exist)
+  - 受: 爫(법) + 冖(cover) + 又(또 우)
+  - 贿: 贝(조개 패) + 有(~하다 ~하다)
 - HSK 등급: 7-9급
 
 <!-- id: hsk_7_2838 -->
@@ -142,7 +142,7 @@
 ### 3713. 参军 / cān jūn / [동사] / ~하다
 
 - 한자 풀이:
-  - 参: 厶(private, secret) + 大(클 대) + 彡(hair; sunlight)
+  - 参: 厶(private, secret) + 大(클 대) + 彡(머리카락 가볍다)
   - 军: 冖(cover) + 车(수레 차)
 - HSK 등급: 7-9급
 
@@ -154,7 +154,7 @@
 
 - 한자 풀이:
   - 热: 执(칠 박) + 灬(불 화)
-  - 潮: 氵(물 수) + 朝(to face; direct, facing; dynasty; morning)
+  - 潮: 氵(물 수) + 朝(~하다 direct, facing)
 - HSK 등급: 7-9급
 
 <!-- id: hsk_7_2841 -->
@@ -164,7 +164,7 @@
 ### 3715. 阔 / kuò / [형용사] / 변형
 
 - 한자 풀이:
-  - 阔: 门(문 문) + 活(to exist, to live, to survive; living, working)
+  - 阔: 门(문 문) + 活(~하다 일하다)
 - HSK 등급: 6급
 
 <!-- id: hsk_6_0874 -->
@@ -174,8 +174,8 @@
 ### 3716. 科幻 / kē huàn / [수식언/명사] / science fiction;
 
 - 한자 풀이:
-  - 科: 禾(벼 화) + 斗(to struggle, to fight, to contend; measuring cup)
-  - 幻: 幺(one; tiny, small) + ？(부수 분석 진행 중)
+  - 科: 禾(벼 화) + 斗(~하다 컵)
+  - 幻: 幺(하나 작다)
 - HSK 등급: 7-9급
 
 <!-- id: hsk_7_2842 -->
@@ -196,7 +196,7 @@
 ### 3718. 掠夺 / lu:è duó / [동사/동명사] / ~하다
 
 - 한자 풀이:
-  - 掠: 扌(손 수) + 京(capital city)
+  - 掠: 扌(손 수) + 京(도시)
   - 夺: 大(클 대) + 寸(치 촌)
 - HSK 등급: 7-9급
 
@@ -207,8 +207,8 @@
 ### 3719. 剥削 / bō xuē / [동사/동명사] / ~하다
 
 - 한자 풀이:
-  - 剥: 录(to copy, to record, to write down) + 刂(칼 도)
-  - 削: 肖(to resemble, to look like; to be like) + 刂(칼 도)
+  - 剥: 录(~하다) + 刂(칼 도)
+  - 削: 肖(~하다 ~하다) + 刂(칼 도)
 - HSK 등급: 7-9급
 
 <!-- id: hsk_7_2845 -->
@@ -219,7 +219,7 @@
 
 - 한자 풀이:
   - 厂: (부수 분석 진행 중)
-  - 家: 宀(집 면) + 豕(pig, boar)
+  - 家: 宀(집 면) + 豕(돼지)
 - HSK 등급: 7-9급
 
 <!-- id: hsk_7_2846 -->
@@ -230,7 +230,7 @@
 
 - 한자 풀이:
   - 编: 纟(실 사) + 扁(납작할 편)
-  - 造: 辶(걸을 착) + 告(to tell, to inform, to announce; to accuse)
+  - 造: 辶(걸을 착) + 告(~하다 ~하다)
 - HSK 등급: 7-9급
 
 <!-- id: hsk_7_2847 -->
@@ -240,8 +240,8 @@
 ### 3722. 坦然 / tǎn rán / [형용사성부사/형용사] / calm; undisturbed
 
 - 한자 풀이:
-  - 坦: 土(흙 토) + 旦(dawn; morning; day)
-  - 然: 肰(dog meat) + 灬(불 화)
+  - 坦: 土(흙 토) + 旦(dawn 아침)
+  - 然: 肰(하다) + 灬(불 화)
 - HSK 등급: 7-9급
 
 <!-- id: hsk_7_2848 -->
@@ -252,7 +252,7 @@
 
 - 한자 풀이:
   - 间: 门(문 문) + 日(해 일)
-  - 断: ？(부수 분석 진행 중) + 米(쌀 미) + 斤(a catty (about 500 grams); an axe; keen, shrewd)
+  - 断: 米(쌀 미) + 斤(고양이 an axe)
 - HSK 등급: 7-9급
 
 <!-- id: hsk_7_2849 -->
@@ -262,8 +262,8 @@
 ### 3724. 跳水 / tiào shuǐ / [동명사/동사] / ~하다
 
 - 한자 풀이:
-  - 跳: 足(발 족) + 兆(omen; mega-, million)
-  - 水: 亅(버티는선 곤) + ？(부수 분석 진행 중)
+  - 跳: 足(발 족) + 兆(omen 사자)
+  - 水: 亅(버티는선 곤)
 - HSK 등급: 6급
 
 <!-- id: hsk_6_0875 -->
@@ -274,7 +274,7 @@
 
 - 한자 풀이:
   - 细: 纟(실 사) + 田(밭 전)
-  - 腻: ⺼(고기 육) + 贰(two (bankers' anti-fraud numeral))
+  - 腻: ⺼(고기 육) + 贰(둘)
 - HSK 등급: 7-9급
 
 <!-- id: hsk_7_2850 -->
@@ -284,8 +284,8 @@
 ### 3726. 跟不上 / gēn bu shàng / [동사] / ~하다
 
 - 한자 풀이:
-  - 跟: 足(발 족) + 艮(blunt; tough, chewy)
-  - 不: 一(한 일) + ？(부수 분석 진행 중)
+  - 跟: 足(발 족) + 艮(blunt ~하다)
+  - 不: 一(한 일)
   - 上: ⺊(부수 분석 진행 중) + 一(한 일)
 - HSK 등급: 7-9급
 
@@ -296,8 +296,8 @@
 ### 3727. 话筒 / huà tǒng / [명사] / microphone; (telephone)
 
 - 한자 풀이:
-  - 话: 讠(말씀 언) + 舌(tongue; bell clapper)
-  - 筒: ⺮(풀 초) + 同(same, similar; together with, alike)
+  - 话: 讠(말씀 언) + 舌(~하다 이다)
+  - 筒: ⺮(풀 초) + 同(same, similar ~하다)
 - HSK 등급: 7-9급
 
 <!-- id: hsk_7_2852 -->
@@ -307,7 +307,7 @@
 ### 3728. 控告 / kòng gào / [동사/동명사] / ~하다
 
 - 한자 풀이:
-  - 控: 扌(손 수) + 空(hollow, empty, deserted, bare)
+  - 控: 扌(손 수) + 空(낮다)
   - 告: 牛(소 우) + 口(입 구)
 - HSK 등급: 7-9급
 
@@ -329,7 +329,7 @@
 ### 3730. 钟头 / zhōng tóu / [명사] / hour
 
 - 한자 풀이:
-  - 钟: 钅(쇠 금) + 中(central; center, middle; amidst; to hit (target), to attain; China; Chinese)
+  - 钟: 钅(쇠 금) + 中(중앙 중심)
   - 头: ⺀(ice) + 大(클 대)
 - HSK 등급: 6급
 
@@ -340,8 +340,8 @@
 ### 3731. 晋升 / jìn shēng / [동사/동명사] / ~하다
 
 - 한자 풀이:
-  - 晋: 亚(Asia; second) + 日(해 일)
-  - 升: 十(열 십) + ？(부수 분석 진행 중)
+  - 晋: 亚(Asia 둘째) + 日(해 일)
+  - 升: 十(열 십)
 - HSK 등급: 7-9급
 
 <!-- id: hsk_7_2855 -->
@@ -351,7 +351,7 @@
 ### 3732. 蜡 / là / [명사] / candle; wax
 
 - 한자 풀이:
-  - 蜡: 虫(insect, worm; mollusk) + 昔(past, former; ancient)
+  - 蜡: 虫(곤충 mollusk) + 昔(past, former 고대)
 - HSK 등급: 7-9급
 
 <!-- id: hsk_7_2856 -->
@@ -361,8 +361,8 @@
 ### 3733. 典范 / diǎn fàn / [명사] / model; example;
 
 - 한자 풀이:
-  - 典: 曲(crooked, bent; wrong, false) + 八(eight; all around, all sides)
-  - 范: 艹(풀 초) + 氾(to flood, to inundate, to overflow)
+  - 典: 曲(이다 wrong, false) + 八(여덟 둥근)
+  - 范: 艹(풀 초) + 氾(~하다)
 - HSK 등급: 7-9급
 
 <!-- id: hsk_7_2857 -->
@@ -384,7 +384,7 @@
 
 - 한자 풀이:
   - 台: 厶(private, secret) + 口(입 구)
-  - 球: 王(옥 왕) + 求(to seek; to request, to demand; to beseech, to beg for)
+  - 球: 王(옥 왕) + 求(~하다 ~하다)
 - HSK 등급: 7-9급
 
 <!-- id: hsk_7_2859 -->
@@ -394,8 +394,8 @@
 ### 3736. 互助 / Hù zhù / [동명사/동사] / ~하다
 
 - 한자 풀이:
-  - 互: 二(two; twice) + ？(부수 분석 진행 중)
-  - 助: 且(moreover, also (post-subject); about to, will soon (pre-verb)) + 力(힘 력)
+  - 互: 二(둘 twice)
+  - 助: 且(moreover, al... ~하다) + 力(힘 력)
 - HSK 등급: 7-9급
 
 <!-- id: hsk_7_2860 -->
@@ -405,8 +405,8 @@
 ### 3737. 溶解 / róng jiě / [동사] / ~하다
 
 - 한자 풀이:
-  - 溶: 氵(물 수) + 容(appearance, looks; form, figure; to contain, to hold)
-  - 解: 角(angle, corner; horn, horn-shaped) + 刀(칼 도) + 牛(소 우)
+  - 溶: 氵(물 수) + 容(귀 form, figure)
+  - 解: 角(옥수수 모양) + 刀(칼 도) + 牛(소 우)
 - HSK 등급: 7-9급
 
 <!-- id: hsk_7_2861 -->
@@ -416,8 +416,8 @@
 ### 3738. 调研 / diào yán / [동명사/동사] / ~하다
 
 - 한자 풀이:
-  - 调: 讠(말씀 언) + 周(Zhou dynasty; circumference)
-  - 研: 石(돌 석) + 开(to open; to start, to initiate, to begin)
+  - 调: 讠(말씀 언) + 周(Zhou dynasty circumference)
+  - 研: 石(돌 석) + 开(~하다 ~하다)
 - HSK 등급: 6급
 
 <!-- id: hsk_6_0877 -->
@@ -428,7 +428,7 @@
 
 - 한자 풀이:
   - 划: 戈(창 가) + 刂(칼 도)
-  - 算: ⺮(풀 초) + 具(tool, implement; to draw up, to write)
+  - 算: ⺮(풀 초) + 具(~하다 ~하다)
 - HSK 등급: 7-9급
 
 <!-- id: hsk_7_2862 -->
@@ -438,8 +438,8 @@
 ### 3740. 栏目 / lán mù / [명사] / regular column
 
 - 한자 풀이:
-  - 栏: 木(나무 목) + 兰(orchid; elegant, graceful)
-  - 目: 口(입 구) + 二(two; twice)
+  - 栏: 木(나무 목) + 兰(orchid 우아하다)
+  - 目: 口(입 구) + 二(둘 twice)
 - HSK 등급: 6급
 
 <!-- id: hsk_6_0878 -->
@@ -449,7 +449,7 @@
 ### 3741. 矫正 / jiǎo zhèng / [동사] / ~하다
 
 - 한자 풀이:
-  - 矫: 矢(arrow, dart; to vow, to swear) + 乔(tall, lofty; proud, stately)
+  - 矫: 矢(화살 ~하다) + 乔(모두 proud, stately)
   - 正: 一(한 일) + 止(멈출 지)
 - HSK 등급: 7-9급
 
@@ -460,8 +460,8 @@
 ### 3742. 疏忽 / shū hu / [동명사/동사] / ~하다
 
 - 한자 풀이:
-  - 疏: 疋(roll, bolt of cloth; foot) + 㐬(pennant; wild, barren, uncultivated)
-  - 忽: 勿(must not, do not; without, never) + 心(마음 심)
+  - 疏: 疋(천 발) + 㐬(펜 야생의)
+  - 忽: 勿(하다 without, never) + 心(마음 심)
 - HSK 등급: 7-9급
 
 <!-- id: hsk_7_2864 -->
@@ -471,8 +471,8 @@
 ### 3743. 执着 / zhí zhuó / [형용사/명사성형용사/형용사성부사] / ~하다
 
 - 한자 풀이:
-  - 执: 扌(손 수) + 丸(ball, pebble, pellet, pill)
-  - 着: 羊(sheep, goat) + 目(눈 목)
+  - 执: 扌(손 수) + 丸(모두)
+  - 着: 羊(가다) + 目(눈 목)
 - HSK 등급: 7-9급
 
 <!-- id: hsk_7_2865 -->
@@ -483,7 +483,7 @@
 
 - 한자 풀이:
   - 半: 丷(여덟 팔) + 牛(소 우)
-  - 岛: 鸟(bird) + 山(산 산)
+  - 岛: 鸟(새) + 山(산 산)
 - HSK 등급: 7-9급
 
 <!-- id: hsk_7_2866 -->
@@ -493,8 +493,8 @@
 ### 3745. 脑筋 / nǎo jīn / [명사] / brains; mind;
 
 - 한자 풀이:
-  - 脑: ⺼(고기 육) + 亠(지붕 두) + 凶(culprit; murder; bad, sad)
-  - 筋: ⺮(풀 초) + 肋(ribs; chest)
+  - 脑: ⺼(고기 육) + 亠(지붕 두) + 凶(culprit murder)
+  - 筋: ⺮(풀 초) + 肋(ribs chest)
 - HSK 등급: 7-9급
 
 <!-- id: hsk_7_2867 -->
@@ -505,7 +505,7 @@
 
 - 한자 풀이:
   - 衰: 衣(옷 의) + 口(입 구) + 一(한 일)
-  - 退: 辶(걸을 착) + 艮(blunt; tough, chewy)
+  - 退: 辶(걸을 착) + 艮(blunt ~하다)
 - HSK 등급: 7-9급
 
 <!-- id: hsk_7_2868 -->
@@ -515,8 +515,8 @@
 ### 3747. 结识 / jié shí / [동사] / ~하다
 
 - 한자 풀이:
-  - 结: 纟(실 사) + 吉(lucky, propitious, good)
-  - 识: 讠(말씀 언) + 只(only, merely, just)
+  - 结: 纟(실 사) + 吉(가다)
+  - 识: 讠(말씀 언) + 只(only, merely...)
 - HSK 등급: 7-9급
 
 <!-- id: hsk_7_2869 -->
@@ -527,7 +527,7 @@
 
 - 한자 풀이:
   - 田: 冂(둘러싸는틀 공) + 土(흙 토)
-  - 径: 彳(걸을 칭) + 又(또 우) + 工(labor, work; laborer, worker)
+  - 径: 彳(걸을 칭) + 又(또 우) + 工(일하다 일하다)
 - HSK 등급: 6급
 
 <!-- id: hsk_6_0879 -->
@@ -537,8 +537,8 @@
 ### 3749. 缺失 / quē shī / [명사] / ~하다
 
 - 한자 풀이:
-  - 缺: 缶(earthen crock or jar; pottery) + 夬(decisive, certain; parted; fork)
-  - 失: 丿(삐침 삐) + 夫(man, husband; worker; those)
+  - 缺: 缶(귀 냄비) + 夬(이다 부분)
+  - 失: 丿(삐침 삐) + 夫(남자 일하다)
 - HSK 등급: 7-9급
 
 <!-- id: hsk_7_2870 -->
@@ -548,8 +548,8 @@
 ### 3750. 号称 / hào chēng / [동사] / ~하다
 
 - 한자 풀이:
-  - 号: 口(입 구) + 丂(obstruction of breath (qi); variant of 考)
-  - 称: 禾(벼 화) + 尔(you; that, those; final particle)
+  - 号: 口(입 구) + 丂(먹다 variant of 考)
+  - 称: 禾(벼 화) + 尔(you that, those)
 - HSK 등급: 7-9급
 
 <!-- id: hsk_7_2871 -->
@@ -560,9 +560,9 @@
 
 - 한자 풀이:
   - 讨: 讠(말씀 언) + 寸(치 촌)
-  - 价: 亻(사람 인) + 介(agent, go-between, intermediary; to introduce; shell, armor)
-  - 还: 辶(걸을 착) + 不(no, not, un-; negative prefix)
-  - 价: 亻(사람 인) + 介(agent, go-between, intermediary; to introduce; shell, armor)
+  - 价: 亻(사람 인) + 介(이다 ~하다)
+  - 还: 辶(걸을 착) + 不(no, not, un- negative prefix)
+  - 价: 亻(사람 인) + 介(이다 ~하다)
 - HSK 등급: 7-9급
 
 <!-- id: hsk_7_2872 -->
@@ -572,8 +572,8 @@
 ### 3752. 流淌 / liú tǎng / [동사/동명사] / ~하다
 
 - 한자 풀이:
-  - 流: 氵(물 수) + 㐬(pennant; wild, barren, uncultivated)
-  - 淌: 氵(물 수) + 尚(still, yet; even; fairly, rather)
+  - 流: 氵(물 수) + 㐬(펜 야생의)
+  - 淌: 氵(물 수) + 尚(여전히 심지어)
 - HSK 등급: 7-9급
 
 <!-- id: hsk_7_2873 -->
@@ -583,8 +583,8 @@
 ### 3753. 雕刻 / diāo kè / [명사/동사/동명사] / ~하다
 
 - 한자 풀이:
-  - 雕: 周(Zhou dynasty; circumference) + 隹(short-tailed bird; sparrow)
-  - 刻: 亥(12th terrestrial branch; used in transliterations) + 刂(칼 도)
+  - 雕: 周(Zhou dynasty circumference) + 隹(짧다 화살)
+  - 刻: 亥(12th terrest... 사용하다) + 刂(칼 도)
 - HSK 등급: 7-9급
 
 <!-- id: hsk_7_2874 -->
@@ -594,8 +594,8 @@
 ### 3754. 奏效 / zòu xiào / [동사] / ~하다
 
 - 한자 풀이:
-  - 奏: ？(부수 분석 진행 중) + 天(sky, heaven; god, celestial)
-  - 效: 交(to connect; to deliver, to exchange; to intersect; to mix) + 攵(칠 복)
+  - 奏: 天(하늘 가다)
+  - 效: 交(~하다 ~하다) + 攵(칠 복)
 - HSK 등급: 7-9급
 
 <!-- id: hsk_7_2875 -->
@@ -617,7 +617,7 @@
 
 - 한자 풀이:
   - 干: 一(한 일) + 十(열 십)
-  - 部: 咅(to spit out) + 阝(언덕 부)
+  - 部: 咅(~하다) + 阝(언덕 부)
 - HSK 등급: 7-9급
 
 <!-- id: hsk_7_2877 -->
@@ -627,7 +627,7 @@
 ### 3757. 脱身 / tuō shēn / [동사] / ~하다
 
 - 한자 풀이:
-  - 脱: ⺼(고기 육) + 兑(cash, check; to exchange)
+  - 脱: ⺼(고기 육) + 兑(cash, check ~하다)
   - 身: (부수 분석 진행 중)
 - HSK 등급: 7-9급
 
@@ -638,8 +638,8 @@
 ### 3758. 构建 / gòu jiàn / [동사/동명사] / ~하다
 
 - 한자 풀이:
-  - 构: 木(나무 목) + 勾(to hook, to join, to connect; to entice)
-  - 建: 廴(to walk, to go; a place) + 聿(writing brush, pencil; thereupon)
+  - 构: 木(나무 목) + 勾(~하다 ~하다)
+  - 建: 廴(~하다 a place) + 聿(주석 thereupon)
 - HSK 등급: 6급
 
 <!-- id: hsk_6_0880 -->
@@ -649,8 +649,8 @@
 ### 3759. 趣味 / qù wèi / [명사] / fun; interest;
 
 - 한자 풀이:
-  - 趣: 走(달을 주) + 取(to take, to receive, to obtain; to select)
-  - 味: 口(입 구) + 未(not yet; 8th terrestrial branch)
+  - 趣: 走(달을 주) + 取(~하다 ~하다)
+  - 味: 口(입 구) + 未(아직 8th terrestr...)
 - HSK 등급: 7-9급
 
 <!-- id: hsk_7_2879 -->
@@ -660,8 +660,8 @@
 ### 3760. 归宿 / guī sù / [명사] / ~하다
 
 - 한자 풀이:
-  - 归: ？(부수 분석 진행 중) + 彐(돼지코 계)
-  - 宿: 宀(집 면) + 佰(hundred)
+  - 归: 彐(돼지코 계)
+  - 宿: 宀(집 면) + 佰(빨강)
 - HSK 등급: 7-9급
 
 <!-- id: hsk_7_2880 -->
@@ -671,8 +671,8 @@
 ### 3761. 凳子 / dèng zi / [명사] / ~하다
 
 - 한자 풀이:
-  - 凳: 登(to rise, to mount, to board, to climb) + 几(책상 궤)
-  - 子: 了(clear; to finish; particle of completed action) + 一(한 일)
+  - 凳: 登(~하다) + 几(책상 궤)
+  - 子: 了(귀 ~하다) + 一(한 일)
 - HSK 등급: 7-9급
 
 <!-- id: hsk_7_2881 -->
@@ -682,8 +682,8 @@
 ### 3762. 枯燥 / kū zào / [형용사/형용사성부사] / dry and
 
 - 한자 풀이:
-  - 枯: 木(나무 목) + 古(old, classic, ancient)
-  - 燥: 火(불 화) + 喿(the sound of birds chirping)
+  - 枯: 木(나무 목) + 古(늙다)
+  - 燥: 火(불 화) + 喿(새)
 - HSK 등급: 7-9급
 
 <!-- id: hsk_7_2882 -->
@@ -693,8 +693,8 @@
 ### 3763. 马力 / mǎ lì / [명사/양사/인명] / horsepower
 
 - 한자 풀이:
-  - 马: ？(부수 분석 진행 중) + 一(한 일)
-  - 力: 丿(삐침 삐) + ？(부수 분석 진행 중)
+  - 马: 一(한 일)
+  - 力: 丿(삐침 삐)
 - HSK 등급: 7-9급
 
 <!-- id: hsk_7_2883 -->
@@ -705,7 +705,7 @@
 
 - 한자 풀이:
   - 争: ⺈(부수 분석 진행 중) + 彐(돼지코 계) + 亅(버티는선 곤)
-  - 端: 立(설 립) + 耑(specialized; concentrated)
+  - 端: 立(설 립) + 耑(specialized concentrated)
 - HSK 등급: 7-9급
 
 <!-- id: hsk_7_2884 -->
@@ -715,8 +715,8 @@
 ### 3765. 解说 / jiě shuō / [동사/동명사] / ~하다
 
 - 한자 풀이:
-  - 解: 角(angle, corner; horn, horn-shaped) + 刀(칼 도) + 牛(소 우)
-  - 说: 讠(말씀 언) + 兑(cash, check; to exchange)
+  - 解: 角(옥수수 모양) + 刀(칼 도) + 牛(소 우)
+  - 说: 讠(말씀 언) + 兑(cash, check ~하다)
 - HSK 등급: 6급
 
 <!-- id: hsk_6_0881 -->
@@ -727,7 +727,7 @@
 
 - 한자 풀이:
   - 人: (부수 분석 진행 중)
-  - 道: 辶(걸을 착) + 首(chief, head, leader)
+  - 道: 辶(걸을 착) + 首(납)
 - HSK 등급: 7-9급
 
 <!-- id: hsk_7_2885 -->
@@ -738,7 +738,7 @@
 
 - 한자 풀이:
   - 明: 日(해 일) + 月(달 월)
-  - 朗: 良(good, virtuous, respectable) + 月(달 월)
+  - 朗: 良(가다) + 月(달 월)
 - HSK 등급: 7-9급
 
 <!-- id: hsk_7_2886 -->
@@ -748,8 +748,8 @@
 ### 3768. 不屑 / bù xiè / [동사] / ~하다
 
 - 한자 풀이:
-  - 不: 一(한 일) + ？(부수 분석 진행 중)
-  - 屑: 尸(시체 시) + 肖(to resemble, to look like; to be like)
+  - 不: 一(한 일)
+  - 屑: 尸(시체 시) + 肖(~하다 ~하다)
 - HSK 등급: 7-9급
 
 <!-- id: hsk_7_2887 -->
@@ -759,8 +759,8 @@
 ### 3769. 叛逆 / pàn nì / [명사/동명사] / ~하다
 
 - 한자 풀이:
-  - 叛: 半(half; semi-, incomplete) + 反(reverse, opposite; contrary, anti-)
-  - 逆: 辶(걸을 착) + 屰(disobedient)
+  - 叛: 半(half semi-, incom...) + 反(앉다 contrary, anti-)
+  - 逆: 辶(걸을 착) + 屰(이다)
 - HSK 등급: 7-9급
 
 <!-- id: hsk_7_2888 -->
@@ -770,8 +770,8 @@
 ### 3770. 辨别 / biàn bié / [동사/동명사] / ~하다
 
 - 한자 풀이:
-  - 辨: 辛(bitter; toilsome, laborious; 8th heavenly stem) + 刂(칼 도) + 辛(bitter; toilsome, laborious; 8th heavenly stem)
-  - 别: 另(another; separate, other) + 刂(칼 도)
+  - 辨: 辛(쓰다 ~하다) + 刂(칼 도) + 辛(쓰다 ~하다)
+  - 别: 另(another separate, other) + 刂(칼 도)
 - HSK 등급: 7-9급
 
 <!-- id: hsk_7_2889 -->
@@ -782,7 +782,7 @@
 
 - 한자 풀이:
   - 一: (부수 분석 진행 중)
-  - 眼: 目(눈 목) + 艮(blunt; tough, chewy)
+  - 眼: 目(눈 목) + 艮(blunt ~하다)
 - HSK 등급: 7-9급
 
 <!-- id: hsk_7_2890 -->
@@ -792,8 +792,8 @@
 ### 3772. 方言 / Fāng yán / [명사] / the first
 
 - 한자 풀이:
-  - 方: 亠(지붕 두) + ？(부수 분석 진행 중)
-  - 言: 亠(지붕 두) + 二(two; twice) + 口(입 구)
+  - 方: 亠(지붕 두)
+  - 言: 亠(지붕 두) + 二(둘 twice) + 口(입 구)
 - HSK 등급: 7-9급
 
 <!-- id: hsk_7_2891 -->
@@ -803,7 +803,7 @@
 ### 3773. 铭记 / míng jì / [동사] / ~하다
 
 - 한자 풀이:
-  - 铭: 钅(쇠 금) + 名(name; position, rank, title)
+  - 铭: 钅(쇠 금) + 名(name 앉다)
   - 记: 讠(말씀 언) + 己(나 기)
 - HSK 등급: 7-9급
 
@@ -815,7 +815,7 @@
 
 - 한자 풀이:
   - 应: 广(넓을 광) + ⺍(부수 분석 진행 중) + 一(한 일)
-  - 聘: 耳(귀 이) + 甹(chivalrous knight)
+  - 聘: 耳(귀 이) + 甹(밤)
 - HSK 등급: 7-9급
 
 <!-- id: hsk_7_2893 -->
@@ -826,7 +826,7 @@
 
 - 한자 풀이:
   - 责: 龶(부수 분석 진행 중) + 贝(조개 패)
-  - 备: 夂(to go) + 田(밭 전)
+  - 备: 夂(~하다) + 田(밭 전)
 - HSK 등급: 7-9급
 
 <!-- id: hsk_7_2894 -->
@@ -836,8 +836,8 @@
 ### 3776. 奢望 / shē wàng / [동사/동명사] / ~하다
 
 - 한자 풀이:
-  - 奢: 大(클 대) + 者(that which; they who; those who)
-  - 望: 亡(death, destruction; to lose; to perish) + 月(달 월) + 王(옥 왕)
+  - 奢: 大(클 대) + 者(that which they who)
+  - 望: 亡(먹다 ~하다) + 月(달 월) + 王(옥 왕)
 - HSK 등급: 7-9급
 
 <!-- id: hsk_7_2895 -->
@@ -847,8 +847,8 @@
 ### 3777. 严谨 / yán jǐn / [형용사/형용사성부사] / rigorous; strict;
 
 - 한자 풀이:
-  - 严: 亚(Asia; second) + 厂(절벽 광)
-  - 谨: 讠(말씀 언) + 堇(yellow loam; clay; season; few)
+  - 严: 亚(Asia 둘째) + 厂(절벽 광)
+  - 谨: 讠(말씀 언) + 堇(낮다 clay)
 - HSK 등급: 7-9급
 
 <!-- id: hsk_7_2896 -->
@@ -858,7 +858,7 @@
 ### 3778. 丰盛 / fēng shèng / [형용사] / rich; sumptuous
 
 - 한자 풀이:
-  - 丰: 三(three) + 丨(세로 곤)
+  - 丰: 三(셋) + 丨(세로 곤)
   - 盛: 成(날 날) + 皿(그릇 명)
 - HSK 등급: 7-9급
 
@@ -870,7 +870,7 @@
 
 - 한자 풀이:
   - 申: 日(해 일) + 丨(세로 곤)
-  - 办: 力(힘 력) + 八(eight; all around, all sides)
+  - 办: 力(힘 력) + 八(여덟 둥근)
 - HSK 등급: 7-9급
 
 <!-- id: hsk_7_2898 -->
@@ -881,7 +881,7 @@
 
 - 한자 풀이:
   - 庄: 广(넓을 광) + 土(흙 토)
-  - 园: 囗(둘러싼틀 위) + 元(first; dollar; origin; head)
+  - 园: 囗(둘러싼틀 위) + 元(첫 하다)
 - HSK 등급: 7-9급
 
 <!-- id: hsk_7_2899 -->
@@ -891,7 +891,7 @@
 ### 3781. 茅台 / Máo tái / [기타] / ~하다
 
 - 한자 풀이:
-  - 茅: 艹(풀 초) + 矛(spear, lance)
+  - 茅: 艹(풀 초) + 矛(귀)
   - 台: 厶(private, secret) + 口(입 구)
 - HSK 등급: 7-9급
 
@@ -902,8 +902,8 @@
 ### 3782. 冲刺 / chōng cì / [동사/동명사] / ~하다
 
 - 한자 풀이:
-  - 冲: 冫(얼음 빙) + 中(central; center, middle; amidst; to hit (target), to attain; China; Chinese)
-  - 刺: 朿(thorn, sting, prickle; to stab; to assassinate) + 刂(칼 도)
+  - 冲: 冫(얼음 빙) + 中(중앙 중심)
+  - 刺: 朿(주석 ~하다) + 刂(칼 도)
 - HSK 등급: 7-9급
 
 <!-- id: hsk_7_2901 -->
@@ -913,8 +913,8 @@
 ### 3783. 刻苦 / kè kǔ / [형용사/형용사성부사] / hardworking; assiduous
 
 - 한자 풀이:
-  - 刻: 亥(12th terrestrial branch; used in transliterations) + 刂(칼 도)
-  - 苦: 艹(풀 초) + 古(old, classic, ancient)
+  - 刻: 亥(12th terrest... 사용하다) + 刂(칼 도)
+  - 苦: 艹(풀 초) + 古(늙다)
 - HSK 등급: 7-9급
 
 <!-- id: hsk_7_2902 -->
@@ -924,8 +924,8 @@
 ### 3784. 后勤 / hòu qín / [명사] / logistics
 
 - 한자 풀이:
-  - 后: ？(부수 분석 진행 중) + 口(입 구)
-  - 勤: 堇(yellow loam; clay; season; few) + 力(힘 력)
+  - 后: 口(입 구)
+  - 勤: 堇(낮다 clay) + 力(힘 력)
 - HSK 등급: 7-9급
 
 <!-- id: hsk_7_2903 -->
@@ -935,7 +935,7 @@
 ### 3785. 往日 / wǎng rì / [시간명사] / former days;
 
 - 한자 풀이:
-  - 往: 彳(걸을 칭) + ？(부수 분석 진행 중) + 王(옥 왕)
+  - 往: 彳(걸을 칭) + 王(옥 왕)
   - 日: 口(입 구) + 一(한 일)
 - HSK 등급: 7-9급
 
@@ -946,8 +946,8 @@
 ### 3786. 老化 / lǎo huà / [동사/동명사] / ~하다
 
 - 한자 풀이:
-  - 老: 耂(old, aged; experienced) + 匕(spoon, ladle; knife, dirk)
-  - 化: 亻(사람 인) + 匕(spoon, ladle; knife, dirk)
+  - 老: 耂(늙다 experienced) + 匕(숟가락 칼)
+  - 化: 亻(사람 인) + 匕(숟가락 칼)
 - HSK 등급: 7-9급
 
 <!-- id: hsk_7_2905 -->
@@ -957,8 +957,8 @@
 ### 3787. 议程 / yì chéng / [명사] / agenda; agenda
 
 - 한자 풀이:
-  - 议: 讠(말씀 언) + 义(right conduct, propriety; justice)
-  - 程: 禾(벼 화) + 呈(to petition, to submit; to appear, to show)
+  - 议: 讠(말씀 언) + 义(right conduc... justice)
+  - 程: 禾(벼 화) + 呈(~하다 ~하다)
 - HSK 등급: 7-9급
 
 <!-- id: hsk_7_2906 -->
@@ -968,7 +968,7 @@
 ### 3788. 晒太阳 / shài tài yáng / [동사] / ~하다
 
 - 한자 풀이:
-  - 晒: 日(해 일) + 西(west, western, westward)
+  - 晒: 日(해 일) + 西(전쟁)
   - 太: 大(클 대) + 丶(점 주)
   - 阳: 阝(언덕 부) + 日(해 일)
 - HSK 등급: 7-9급
@@ -980,8 +980,8 @@
 ### 3789. 敬佩 / jìng pèi / [동사/동명사] / ~하다
 
 - 한자 풀이:
-  - 敬: 苟(careless, frivolous, illicit; but, if only) + 攵(칠 복)
-  - 佩: 亻(사람 인) + 凡(any, every, all; common, ordinary) + 巾(수건 금)
+  - 敬: 苟(자동차 but, if only) + 攵(칠 복)
+  - 佩: 亻(사람 인) + 凡(모두 흔하다) + 巾(수건 금)
 - HSK 등급: 7-9급
 
 <!-- id: hsk_7_2908 -->
@@ -992,7 +992,7 @@
 
 - 한자 풀이:
   - 宽: 宀(집 면) + 苋(amaranth)
-  - 恕: 如(as, as if, like, such as, supposing) + 心(마음 심)
+  - 恕: 如(as, as if, l...) + 心(마음 심)
 - HSK 등급: 7-9급
 
 <!-- id: hsk_7_2909 -->
@@ -1003,7 +1003,7 @@
 
 - 한자 풀이:
   - 热: 执(칠 박) + 灬(불 화)
-  - 衷: 衣(옷 의) + 中(central; center, middle; amidst; to hit (target), to attain; China; Chinese)
+  - 衷: 衣(옷 의) + 中(중앙 중심)
 - HSK 등급: 7-9급
 
 <!-- id: hsk_7_2910 -->
@@ -1013,8 +1013,8 @@
 ### 3792. 知己 / zhī jǐ / [명사] / ~하다
 
 - 한자 풀이:
-  - 知: 矢(arrow, dart; to vow, to swear) + 口(입 구)
-  - 己: ？(부수 분석 진행 중) + 乚(secret, hidden, mysterious; small, minute; to conceal)
+  - 知: 矢(화살 ~하다) + 口(입 구)
+  - 己: 乚(secret, hidd... 작다)
 - HSK 등급: 7-9급
 
 <!-- id: hsk_7_2911 -->
@@ -1024,8 +1024,8 @@
 ### 3793. 捣乱 / dǎo luàn / [동사] / ~하다
 
 - 한자 풀이:
-  - 捣: 扌(손 수) + 岛(island)
-  - 乱: 舌(tongue; bell clapper) + 乚(secret, hidden, mysterious; small, minute; to conceal)
+  - 捣: 扌(손 수) + 岛(이다)
+  - 乱: 舌(~하다 이다) + 乚(secret, hidd... 작다)
 - HSK 등급: 7-9급
 
 <!-- id: hsk_7_2912 -->
@@ -1046,10 +1046,10 @@
 ### 3795. 公共场所 / gōng gòng chǎng suǒ / [명사] / public place
 
 - 한자 풀이:
-  - 公: 八(eight; all around, all sides) + 厶(private, secret)
-  - 共: 廾(양손 공) + 一(한 일) + 八(eight; all around, all sides)
-  - 场: 土(흙 토) + 勿(must not, do not; without, never)
-  - 所: 户(door; family) + 斤(a catty (about 500 grams); an axe; keen, shrewd)
+  - 公: 八(여덟 둥근) + 厶(private, secret)
+  - 共: 廾(양손 공) + 一(한 일) + 八(여덟 둥근)
+  - 场: 土(흙 토) + 勿(하다 without, never)
+  - 所: 户(하다 가족) + 斤(고양이 an axe)
 - HSK 등급: 7-9급
 
 <!-- id: hsk_7_2914 -->
@@ -1059,8 +1059,8 @@
 ### 3796. 堪称 / kān chēng / [동사] / ~하다
 
 - 한자 풀이:
-  - 堪: 土(흙 토) + 甚(considerably; very, extremely; a great extent)
-  - 称: 禾(벼 화) + 尔(you; that, those; final particle)
+  - 堪: 土(흙 토) + 甚(옆 very, extremely)
+  - 称: 禾(벼 화) + 尔(you that, those)
 - HSK 등급: 7-9급
 
 <!-- id: hsk_7_2915 -->
@@ -1081,8 +1081,8 @@
 ### 3798. 着实 / zhuó shí / [부사] / truly; indeed;
 
 - 한자 풀이:
-  - 着: 羊(sheep, goat) + 目(눈 목)
-  - 实: 宀(집 면) + 头(head; chief, boss; first, top)
+  - 着: 羊(가다) + 目(눈 목)
+  - 实: 宀(집 면) + 头(머리 chief, boss)
 - HSK 등급: 7-9급
 
 <!-- id: hsk_7_2917 -->
@@ -1092,7 +1092,7 @@
 ### 3799. 淹 / yān / [동사] / ~하다
 
 - 한자 풀이:
-  - 淹: 氵(물 수) + 奄(to remain, to tarry; feeble)
+  - 淹: 氵(물 수) + 奄(~하다 feeble)
 - HSK 등급: 7-9급
 
 <!-- id: hsk_7_2918 -->
@@ -1102,8 +1102,8 @@
 ### 3800. 优异 / yōu yì / [형용사] / exceptional; outstandingly
 
 - 한자 풀이:
-  - 优: 亻(사람 인) + 尤(especially, particularly)
-  - 异: 巳(the hours from 9 to 11; 6th terrestrial branch) + 廾(양손 공)
+  - 优: 亻(사람 인) + 尤(모두)
+  - 异: 巳(~하다 6th terrestr...) + 廾(양손 공)
 - HSK 등급: 7-9급
 
 <!-- id: hsk_7_2919 -->
