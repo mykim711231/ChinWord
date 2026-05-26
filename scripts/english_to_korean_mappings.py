@@ -3,7 +3,29 @@
 """English to Korean translation mappings for Han character definitions."""
 
 # Common English words in Han character definitions mapped to Korean
+# NOTE: Longer phrases should be checked FIRST to avoid partial matches
 ENGLISH_TO_KOREAN = {
+    # Longer phrases first (match before single words!)
+    "for the first time": "처음으로",
+    "a round bin for storing grain": "곡식저장고",
+    "a legendary ancient emperor": "고대황제",
+    "a legendary ancient": "고대",
+    "at last, finally": "결국",
+    "run out": "다떨어지다",
+    "to issue, to dispatch": "파견하다",
+    "to dispatch, to send": "보내다",
+    "side beside, close": "옆",
+    "still, yet; even": "여전히",
+    "beautiful elegant": "아름답다",
+    "strong powerful": "강하다",
+    "first time": "처음",
+    "a legendary": "전설적인",
+    "a musical": "음악",
+    "a line": "줄",
+    "a round": "둥근",
+    "at last": "결국",
+    "run": "달리다",
+
     # Common verbs
     "to": "~하다",
     "is": "이다",
@@ -32,7 +54,6 @@ ENGLISH_TO_KOREAN = {
     "dispatch": "파견하다",
     "help": "돕다",
     "talk": "말하다",
-    "run": "달리다",
     "sit": "앉다",
     "stand": "서다",
     "lie": "누우다",
@@ -53,8 +74,10 @@ ENGLISH_TO_KOREAN = {
     "turn": "돌리다",
     "follow": "따르다",
     "lead": "이끌다",
+    "beg": "빌다",
+    "run": "달리다",
 
-    # Adjectives/Descriptors
+    # Common adjectives
     "big": "크다",
     "small": "작다",
     "good": "좋다",
@@ -119,6 +142,10 @@ ENGLISH_TO_KOREAN = {
     "refined": "정제된",
     "raw": "날것의",
     "ripe": "익은",
+    "blunt": "무딘",
+    "sharp": "날카로운",
+
+    # Colors
     "green": "초록",
     "blue": "파랑",
     "red": "빨강",
@@ -181,8 +208,8 @@ ENGLISH_TO_KOREAN = {
     "skin": "피부",
     "hair": "머리카락",
     "meat": "고기",
-    "bone": "뼈",
-    "blood": "피",
+    "chest": "가슴",
+    "ribs": "늑골",
     "house": "집",
     "room": "방",
     "door": "문",
@@ -236,7 +263,6 @@ ENGLISH_TO_KOREAN = {
     "boat": "배",
     "ship": "선박",
     "car": "자동차",
-    "horse": "말",
     "wheel": "바퀴",
     "road": "길",
     "path": "길",
@@ -274,6 +300,7 @@ ENGLISH_TO_KOREAN = {
     "night": "밤",
     "morning": "아침",
     "evening": "저녁",
+    "dawn": "새벽",
     "year": "해",
     "month": "달",
     "week": "주",
@@ -347,13 +374,9 @@ ENGLISH_TO_KOREAN = {
     "drink": "음료",
     "wine": "포도주",
     "beer": "맥주",
-    "water": "물",
     "milk": "우유",
     "bread": "빵",
-    "meat": "고기",
-    "fish": "생선",
     "vegetable": "채소",
-    "fruit": "과일",
     "honey": "꿀",
     "salt": "소금",
     "sugar": "설탕",
@@ -379,25 +402,20 @@ ENGLISH_TO_KOREAN = {
     "hundred": "백",
     "thousand": "천",
     "ten thousand": "만",
-    "hundred thousand": "십만",
     "million": "백만",
 
     # Additional words for Han character components
     "sprout": "싹",
-    "bin": "저장고",
     "storing": "저장",
-    "grain": "곡식",
+    "bin": "저장고",
     "round": "둥근",
     "fabric": "천",
     "wealth": "재물",
     "property": "재산",
     "legend": "전설",
     "sage": "성인",
-    "emperor": "황제",
-    "ancient": "고대",
     "note": "음표",
     "musical": "음악",
-    "village": "마을",
     "hamlet": "작은마을",
     "camp": "야영",
     "station": "역",
@@ -407,7 +425,6 @@ ENGLISH_TO_KOREAN = {
     "store": "상점",
     "space": "공간",
     "living": "생활",
-    "armor": "갑옷",
     "shell": "껍질",
     "fingernail": "손톱",
     "heavenly": "천상",
@@ -432,49 +449,57 @@ ENGLISH_TO_KOREAN = {
     "sheet": "시트",
     "center": "중심",
     "central": "중앙",
-    "beg": "빌다",
     "side": "옆",
     "beside": "곁",
     "nearby": "근처",
     "close": "가깝다",
-    "run": "달리다",
-    "run out": "다떨어지다",
     "servant": "종",
     "finally": "마침내",
-    "at last": "결국",
+    "grades": "등급",
+    "grade": "등급",
+    "rank": "등급",
 }
 
 def translate_definition(english_text):
-    """Translate English definition to Korean."""
-    if not english_text:
-        return ""
+    """Translate English definition to Korean with better phrase matching."""
+    if not english_text or english_text == "？":
+        return "(부수 분석 진행 중)"
 
-    text = english_text.strip()
-
-    # Remove trailing punctuation
-    text = text.rstrip('.,;:')
+    text = english_text.strip().rstrip('.,;:')
+    text_lower = text.lower()
 
     # Try exact match first
-    if text.lower() in ENGLISH_TO_KOREAN:
-        return ENGLISH_TO_KOREAN[text.lower()]
+    if text_lower in ENGLISH_TO_KOREAN:
+        return ENGLISH_TO_KOREAN[text_lower]
 
-    # Try first word or phrase
-    for eng, kor in ENGLISH_TO_KOREAN.items():
-        if text.lower().startswith(eng.lower() + " ") or text.lower().startswith(eng.lower() + ","):
-            return kor
+    # Try to find best phrase match (longest first for accuracy)
+    best_match = None
+    best_match_len = 0
+    for eng, kor in sorted(ENGLISH_TO_KOREAN.items(), key=lambda x: len(x[0]), reverse=True):
+        if eng in text_lower and len(eng) > best_match_len:
+            best_match = kor
+            best_match_len = len(eng)
 
-    # If no match, return first part (keep as is for now)
-    # Could be enhanced with more sophisticated translation
-    return text[:10] if len(text) > 10 else text
+    if best_match:
+        return best_match
+
+    # Try first word
+    first_word = text_lower.split()[0] if text_lower.split() else ""
+    if first_word in ENGLISH_TO_KOREAN:
+        return ENGLISH_TO_KOREAN[first_word]
+
+    # Fallback: return text as-is (keep English for unknown words)
+    return text if len(text) <= 20 else text[:17] + "..."
 
 if __name__ == "__main__":
     # Test
     test_words = [
-        "to issue",
-        "sprout",
-        "a round bin for storing grain",
-        "silk, fabric; wealth, property",
-        "still, yet",
+        "a line",
+        "grades",
+        "blunt",
+        "ribs chest",
+        "for the first time",
+        "still, yet; even; fairly, rather",
     ]
 
     for word in test_words:

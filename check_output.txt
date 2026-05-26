@@ -1,0 +1,6 @@
+Checking test characters:
+Traceback (most recent call last):
+  File "D:\_Git\ChinWord\scripts\check_radicals.py", line 18, in <module>
+    print(f"  {char}: NOT FOUND")
+    ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'cp949' codec can't encode character '\u4e0e' in position 2: illegal multibyte sequence

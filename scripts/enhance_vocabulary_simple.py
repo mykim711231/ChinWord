@@ -5,9 +5,31 @@ import json
 import re
 from pathlib import Path
 
-# 부수 정보 매핑 (일부)
-RADICAL_MAP = {
-    # 구조: 부수 한자: (한글명, 부수명)
+# Load radical information from JSON
+def load_radical_data():
+    """Load radical Korean names mapping."""
+    # Try multiple paths
+    paths = [
+        Path("data/radicals_korean.json"),
+        Path("scripts/../data/radicals_korean.json"),
+    ]
+
+    for data_file in paths:
+        if data_file.exists():
+            try:
+                with open(data_file, "r", encoding="utf-8") as f:
+                    data = json.load(f)
+                    print(f"Loaded {len(data.get('radicals', {}))} radicals from {data_file}")
+                    return data.get("radicals", {})
+            except Exception as e:
+                print(f"Error loading {data_file}: {e}")
+
+    print("Warning: radicals_korean.json not found, using fallback mapping")
+    return {}
+
+# 부수 정보 매핑
+RADICAL_MAP = load_radical_data() or {
+    # 구조: 부수 한자: 한글명
     "亅": ("세로금", "亅"),
     "戈": ("창 과", "戈"),
     "日": ("해 일", "日"),
@@ -263,7 +285,7 @@ def get_radical_analysis(word):
     lines = []
     for char in word:
         if char in RADICAL_MAP:
-            korean_name, radical = RADICAL_MAP[char]
+            korean_name = RADICAL_MAP[char]
             lines.append(f"  - {char}: {korean_name}")
         else:
             # Fallback: try to extract from character decomposition
