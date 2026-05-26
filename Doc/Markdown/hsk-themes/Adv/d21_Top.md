@@ -1,385 +1,354 @@
 # Top 2001–2100 (HSK 6-9급 빈도)
 
 > 범위: 빈도 순위 2001위 ~ 2100위
+
 > 수준: HSK 6-9급
+
 > 단어 수: 100개
 
 ---
 
-### 2001. 残疾人 / cán jí rén / [명사] / disabled person
+### 1. 残疾人 / cán jí rén / [명사] / 
 
 - 한자 풀이:
-  - 残: (부수:残)
-  - 疾: (부수:疾)
-  - 人: 사람인
+  - 残疾人: (부수:歹)
 - HSK 등급: 6급
 
 <!-- id: hsk_6_0685 -->
 
 ---
 
-### 2002. 掀起 / xiān qǐ / [동사] / to lift; to raise (a lid etc); (of a storm) to surge; to stir up (waves etc); (fig.) to trigger; set off (a wave of popularity, a controversy etc)
+### 2. 掀起 / xiān qǐ / [동사] / 
 
 - 한자 풀이:
-  - 掀: (부수:掀)
-  - 起: (부수:起)
+  - 掀起: (부수:扌)
 - HSK 등급: 7-9급
 
 <!-- id: hsk_7_1317 -->
 
 ---
 
-### 2003. 界限 / jiè xiàn / [명사] / boundary
+### 3. 界限 / jiè xiàn / [명사] / 
 
 - 한자 풀이:
-  - 界: (부수:界)
-  - 限: (부수:限)
+  - 界限: (부수:田)
 - HSK 등급: 7-9급
 
 <!-- id: hsk_7_1318 -->
 
 ---
 
-### 2004. 前所未有 / qián suǒ wèi yǒu / [동사] / unprecedented
+### 4. 前所未有 / qián suǒ wèi yǒu / [동사] / 
 
 - 한자 풀이:
-  - 前: (부수:前)
-  - 所: (부수:所)
-  - 未: (부수:未)
-  - 有: (부수:有)
+  - 前所未有: (부수:刂)
 - HSK 등급: 7-9급
 
 <!-- id: hsk_7_1319 -->
 
 ---
 
-### 2005. 品位 / pǐn wèi / [명사] / rank; grade; quality; (aesthetic) taste
+### 5. 品位 / pǐn wèi / [명사] / 
 
 - 한자 풀이:
-  - 品: (부수:品)
-  - 位: (부수:位)
+  - 品位: (부수:口)
 - HSK 등급: 7-9급
 
 <!-- id: hsk_7_1320 -->
 
 ---
 
-### 2006. 少见 / shǎo jiàn / [형용사] / rare; seldom seen; (formal) it's a rare pleasure to see you
+### 6. 少见 / shǎo jiàn / [형용사] / 
 
 - 한자 풀이:
-  - 少: (부수:少)
-  - 见: (부수:见)
+  - 少见: (부수:小)
 - HSK 등급: 7-9급
 
 <!-- id: hsk_7_1321 -->
 
 ---
 
-### 2007. 入学 / rù xué / [동사/동사/명사] / to enter a school or college; to go to school for the first time as a child
+### 7. 入学 / rù xué / [동사/vn] / 
 
 - 한자 풀이:
-  - 入: (부수:入)
-  - 学: (부수:学)
+  - 入学: (부수:入)
 - HSK 등급: 6급
 
 <!-- id: hsk_6_0686 -->
 
 ---
 
-### 2008. 旋律 / xuán lǜ / [명사] / melody
+### 8. 旋律 / xuán lǜ / [명사] / 
 
 - 한자 풀이:
-  - 旋: (부수:旋)
-  - 律: (부수:律)
+  - 旋律: (부수:方)
 - HSK 등급: 7-9급
 
 <!-- id: hsk_7_1322 -->
 
 ---
 
-### 2009. 收取 / shōu qǔ / [동사/동사/명사] / to receive; to collect
+### 9. 收取 / shōu qǔ / [동사/vn] / 
 
 - 한자 풀이:
-  - 收: (부수:收)
-  - 取: (부수:取)
+  - 收取: (부수:攵)
 - HSK 등급: 6급
 
 <!-- id: hsk_6_0687 -->
 
 ---
 
-### 2010. 固执 / gù zhí / [형용사/형용사/명사] / obstinate; stubborn; to fixate on; to cling to
+### 10. 固执 / gù zhí / [형용사/an/동사] / 
 
 - 한자 풀이:
-  - 固: (부수:固)
-  - 执: (부수:执)
+  - 固执: (부수:囗)
 - HSK 등급: 7-9급
 
 <!-- id: hsk_7_1323 -->
 
 ---
 
-### 2011. 强化 / qiáng huà / [동사/동사/명사] / to strengthen; to intensify
+### 11. 强化 / qiáng huà / [동사/vn] / 
 
 - 한자 풀이:
-  - 强: (부수:强)
-  - 化: (부수:化)
+  - 强化: (부수:弓)
 - HSK 등급: 6급
 
 <!-- id: hsk_6_0688 -->
 
 ---
 
-### 2012. 借助 / jiè zhù / [동사] / to draw support from; with the help of
+### 12. 借助 / jiè zhù / [동사] / 
 
 - 한자 풀이:
-  - 借: (부수:借)
-  - 助: (부수:助)
+  - 借助: 사람 인
 - HSK 등급: 7-9급
 
 <!-- id: hsk_7_1324 -->
 
 ---
 
-### 2013. 刻意 / kè yì / [부사] / intentionally; deliberately; purposely; painstakingly; meticulously
+### 13. 刻意 / kè yì / [부사] / 
 
 - 한자 풀이:
-  - 刻: (부수:刻)
-  - 意: (부수:意)
+  - 刻意: (부수:刂)
 - HSK 등급: 7-9급
 
 <!-- id: hsk_7_1325 -->
 
 ---
 
-### 2014. 淘 / táo / [동사] / to wash; to clean out; to cleanse; to eliminate; to dredge
+### 14. 淘 / táo / [동사] / 
 
 - 한자 풀이:
-  - 淘: (부수:淘)
+  - 淘: (부수:氵)
 - HSK 등급: 7-9급
 
 <!-- id: hsk_7_1326 -->
 
 ---
 
-### 2015. 源头 / yuán tóu / [명사] / source; fountainhead
+### 15. 源头 / yuán tóu / [명사] / 
 
 - 한자 풀이:
-  - 源: (부수:源)
-  - 头: (부수:头)
+  - 源头: (부수:氵)
 - HSK 등급: 7-9급
 
 <!-- id: hsk_7_1327 -->
 
 ---
 
-### 2016. 一度 / yī dù / [부사] / for a time; at one time; one time; once
+### 16. 一度 / yī dù / [부사] / 
 
 - 한자 풀이:
-  - 一: 한일
-  - 度: (부수:度)
+  - 一度: 한 일
 - HSK 등급: 7-9급
 
 <!-- id: hsk_7_1328 -->
 
 ---
 
-### 2017. 察觉 / chá jué / [동사/동사/명사] / to sense; to perceive; to become aware of; to detect
+### 17. 察觉 / chá jué / [동사/vn] / 
 
 - 한자 풀이:
-  - 察: (부수:察)
-  - 觉: (부수:觉)
+  - 察觉: (부수:宀)
 - HSK 등급: 7-9급
 
 <!-- id: hsk_7_1329 -->
 
 ---
 
-### 2018. 夺取 / duó qǔ / [동사] / to seize; to capture; to wrest control of
+### 18. 夺取 / duó qǔ / [동사] / 
 
 - 한자 풀이:
-  - 夺: (부수:夺)
-  - 取: (부수:取)
+  - 夺取: (부수:大)
 - HSK 등급: 6급
 
 <!-- id: hsk_6_0689 -->
 
 ---
 
-### 2019. 宁可 / nìng kě / [부사/접속사] / preferably; one would prefer to...(or not to...); would rather; (would) be better to; (to pick) the lesser of two evils
+### 19. 宁可 / nìng kě / [부사/접속사] / 
 
 - 한자 풀이:
-  - 宁: (부수:宁)
-  - 可: (부수:可)
+  - 宁可: (부수:宀)
 - HSK 등급: 7-9급
 
 <!-- id: hsk_7_1330 -->
 
 ---
 
-### 2020. 侧面 / cè miàn / [f] / lateral side; side; aspect; profile
+### 20. 侧面 / cè miàn / [방위사] / 
 
 - 한자 풀이:
-  - 侧: (부수:侧)
-  - 面: (부수:面)
+  - 侧面: 사람 인
 - HSK 등급: 7-9급
 
 <!-- id: hsk_7_1331 -->
 
 ---
 
-### 2021. 萝卜 / luó bo / [명사] / radish (Raphanus sativus), esp. white radish 白萝卜
+### 21. 萝卜 / luó bo / [명사] / 
 
 - 한자 풀이:
-  - 萝: (부수:萝)
-  - 卜: (부수:卜)
+  - 萝卜: (부수:艹)
 - HSK 등급: 7-9급
 
 <!-- id: hsk_7_1332 -->
 
 ---
 
-### 2022. 内阁 / nèi gé / [명사] / (government) cabinet
+### 22. 内阁 / nèi gé / [명사] / 
 
 - 한자 풀이:
-  - 内: (부수:内)
-  - 阁: (부수:阁)
+  - 内阁: (부수:入)
 - HSK 등급: 7-9급
 
 <!-- id: hsk_7_1333 -->
 
 ---
 
-### 2023. 局部 / jú bù / [명사] / part; local
+### 23. 局部 / jú bù / [명사] / 
 
 - 한자 풀이:
-  - 局: (부수:局)
-  - 部: (부수:部)
+  - 局部: (부수:尸)
 - HSK 등급: 7-9급
 
 <!-- id: hsk_7_1334 -->
 
 ---
 
-### 2024. 黑客 / hēi kè / [명사] / hacker (computing) (loanword)
+### 24. 黑客 / hēi kè / [명사] / 
 
 - 한자 풀이:
-  - 黑: (부수:黑)
-  - 客: (부수:客)
+  - 黑客: (부수:黑)
 - HSK 등급: 7-9급
 
 <!-- id: hsk_7_1335 -->
 
 ---
 
-### 2025. 渗透 / shèn tòu / [동사/동사/명사] / (lit. and fig.) to permeate; to seep into; (of a product, idea etc) to penetrate (in a population); (of hostile forces) to infiltrate; (chemistry) osmosis
+### 25. 渗透 / shèn tòu / [동사/vn] / 
 
 - 한자 풀이:
-  - 渗: (부수:渗)
-  - 透: (부수:透)
+  - 渗透: (부수:氵)
 - HSK 등급: 7-9급
 
 <!-- id: hsk_7_1336 -->
 
 ---
 
-### 2026. 迎 / yíng / [동사] / to welcome; to meet; to forge ahead (esp. in the face of difficulties); to meet face to face
+### 26. 迎 / yíng / [동사] / 
 
 - 한자 풀이:
-  - 迎: (부수:迎)
+  - 迎: (부수:辶)
 - HSK 등급: 7-9급
 
 <!-- id: hsk_7_1337 -->
 
 ---
 
-### 2027. 付费 / fù fèi / [동사/동사/명사] / to pay; to cover the costs
+### 27. 付费 / fù fèi / [동사/vn] / 
 
 - 한자 풀이:
-  - 付: (부수:付)
-  - 费: (부수:费)
+  - 付费: 사람 인
 - HSK 등급: 7-9급
 
 <!-- id: hsk_7_1338 -->
 
 ---
 
-### 2028. 塌 / tā / [동사] / to collapse; to droop; to settle down
+### 28. 塌 / tā / [동사] / 
 
 - 한자 풀이:
-  - 塌: (부수:塌)
+  - 塌: 흙 토
 - HSK 등급: 7-9급
 
 <!-- id: hsk_7_1339 -->
 
 ---
 
-### 2029. 俗 / sú / [형용사/부사/형용사] / custom; convention; popular; common; coarse; vulgar; secular
+### 29. 俗 / sú / [형용사/형용사성부사/기타] / 
 
 - 한자 풀이:
-  - 俗: (부수:俗)
+  - 俗: 사람 인
 - HSK 등급: 7-9급
 
 <!-- id: hsk_7_1340 -->
 
 ---
 
-### 2030. 裁决 / cái jué / [동사/명사/동사] / ruling; adjudication
+### 30. 裁决 / cái jué / [vn/동사] / 
 
 - 한자 풀이:
-  - 裁: (부수:裁)
-  - 决: (부수:决)
+  - 裁决: (부수:衣)
 - HSK 등급: 7-9급
 
 <!-- id: hsk_7_1341 -->
 
 ---
 
-### 2031. 运送 / yùn sòng / [동사/동사/명사] / to transport; to carry
+### 31. 运送 / yùn sòng / [동사/vn] / 
 
 - 한자 풀이:
-  - 运: (부수:运)
-  - 送: (부수:送)
+  - 运送: (부수:辶)
 - HSK 등급: 7-9급
 
 <!-- id: hsk_7_1342 -->
 
 ---
 
-### 2032. 使者 / shǐ zhě / [명사] / emissary; envoy
+### 32. 使者 / shǐ zhě / [명사] / 
 
 - 한자 풀이:
-  - 使: (부수:使)
-  - 者: (부수:者)
+  - 使者: 사람 인
 - HSK 등급: 7-9급
 
 <!-- id: hsk_7_1343 -->
 
 ---
 
-### 2033. 特地 / tè dì / [부사] / specially; for a special purpose
+### 33. 特地 / tè dì / [부사] / 
 
 - 한자 풀이:
-  - 特: (부수:特)
-  - 地: (부수:地)
+  - 特地: (부수:牛)
 - HSK 등급: 6급
 
 <!-- id: hsk_6_0690 -->
 
 ---
 
-### 2034. 打仗 / dǎ zhàng / [동사] / to fight a battle; to go to war
+### 34. 打仗 / dǎ zhàng / [동사] / 
 
 - 한자 풀이:
-  - 打: (부수:打)
-  - 仗: (부수:仗)
+  - 打仗: (부수:扌)
 - HSK 등급: 7-9급
 
 <!-- id: hsk_7_1344 -->
 
 ---
 
-### 2035. 龟 / guī / [명사/명사] / tortoise; turtle
+### 35. 龟 / guī / [명사/기타] / 
 
 - 한자 풀이:
   - 龟: (부수:龟)
@@ -389,709 +358,650 @@
 
 ---
 
-### 2036. 决议 / jué yì / [명사] / a resolution; to pass a resolution
+### 36. 决议 / jué yì / [명사] / 
 
 - 한자 풀이:
-  - 决: (부수:决)
-  - 议: (부수:议)
+  - 决议: (부수:冫)
 - HSK 등급: 7-9급
 
 <!-- id: hsk_7_1346 -->
 
 ---
 
-### 2037. 期盼 / qī pàn / [동사/동사/명사] / to expect; to await
+### 37. 期盼 / qī pàn / [동사/vn] / 
 
 - 한자 풀이:
-  - 期: (부수:期)
-  - 盼: (부수:盼)
+  - 期盼: 달 월
 - HSK 등급: 7-9급
 
 <!-- id: hsk_7_1347 -->
 
 ---
 
-### 2038. 把手 / bǎ shǒu / [명사] / to shake hands
+### 38. 把手 / bǎ shǒu / [명사] / 
 
 - 한자 풀이:
-  - 把: (부수:把)
-  - 手: 손수
+  - 把手: (부수:扌)
 - HSK 등급: 7-9급
 
 <!-- id: hsk_7_1348 -->
 
 ---
 
-### 2039. 余 / Yú / [m/명사] / surname Yu
+### 39. 余 / Yú / [수사/기타/Rg/동사] / 
 
 - 한자 풀이:
-  - 余: (부수:余)
+  - 余: (부수:人)
 - HSK 등급: 7-9급
 
 <!-- id: hsk_7_1349 -->
 
 ---
 
-### 2040. 过错 / guò cuò / [명사] / mistake; fault; responsibility (for a fault)
+### 40. 过错 / guò cuò / [명사] / 
 
 - 한자 풀이:
-  - 过: (부수:过)
-  - 错: (부수:错)
+  - 过错: (부수:辶)
 - HSK 등급: 7-9급
 
 <!-- id: hsk_7_1350 -->
 
 ---
 
-### 2041. 强壮 / qiáng zhuàng / [형용사/동사] / strong; sturdy; robust
+### 41. 强壮 / qiáng zhuàng / [형용사/동사] / 
 
 - 한자 풀이:
-  - 强: (부수:强)
-  - 壮: (부수:壮)
+  - 强壮: (부수:弓)
 - HSK 등급: 6급
 
 <!-- id: hsk_6_0691 -->
 
 ---
 
-### 2042. 软弱 / ruǎn ruò / [형용사] / weak; feeble; flabby
+### 42. 软弱 / ruǎn ruò / [형용사] / 
 
 - 한자 풀이:
-  - 软: (부수:软)
-  - 弱: (부수:弱)
+  - 软弱: (부수:车)
 - HSK 등급: 7-9급
 
 <!-- id: hsk_7_1351 -->
 
 ---
 
-### 2043. 出入 / chū rù / [동사/명사] / to go out and come in; entrance and exit; expenditure and income; discrepancy; inconsistent
+### 43. 出入 / chū rù / [동사/명사/vn] / 
 
 - 한자 풀이:
-  - 出: (부수:出)
-  - 入: (부수:入)
+  - 出入: (부수:凵)
 - HSK 등급: 6급
 
 <!-- id: hsk_6_0692 -->
 
 ---
 
-### 2044. 和解 / hé jiě / [동사/동사/명사] / to settle (a dispute out of court); to reconcile; settlement; conciliation; to become reconciled
+### 44. 和解 / hé jiě / [동사/vn] / 
 
 - 한자 풀이:
-  - 和: (부수:和)
-  - 解: (부수:解)
+  - 和解: (부수:口)
 - HSK 등급: 7-9급
 
 <!-- id: hsk_7_1352 -->
 
 ---
 
-### 2045. 区分 / qū fēn / [동사/동사/명사] / to differentiate; to draw a distinction; to divide into categories
+### 45. 区分 / qū fēn / [동사/vn] / 
 
 - 한자 풀이:
-  - 区: (부수:区)
-  - 分: (부수:分)
+  - 区分: (부수:匸)
 - HSK 등급: 6급
 
 <!-- id: hsk_6_0693 -->
 
 ---
 
-### 2046. 抑郁 / yì yù / [형용사] / depressed; despondent; gloomy
+### 46. 抑郁 / yì yù / [형용사] / 
 
 - 한자 풀이:
-  - 抑: (부수:抑)
-  - 郁: (부수:郁)
+  - 抑郁: (부수:扌)
 - HSK 등급: 7-9급
 
 <!-- id: hsk_7_1353 -->
 
 ---
 
-### 2047. 报社 / bào shè / [명사] / newspaper (i.e. a company)
+### 47. 报社 / bào shè / [명사] / 
 
 - 한자 풀이:
-  - 报: (부수:报)
-  - 社: (부수:社)
+  - 报社: (부수:扌)
 - HSK 등급: 7-9급
 
 <!-- id: hsk_7_1354 -->
 
 ---
 
-### 2048. 解散 / jiě sàn / [동사/동사/명사] / to dissolve; to disband
+### 48. 解散 / jiě sàn / [동사/vn] / 
 
 - 한자 풀이:
-  - 解: (부수:解)
-  - 散: (부수:散)
+  - 解散: (부수:角)
 - HSK 등급: 7-9급
 
 <!-- id: hsk_7_1355 -->
 
 ---
 
-### 2049. 筹备 / chóu bèi / [동사/동사/명사] / preparations; to get ready for sth
+### 49. 筹备 / chóu bèi / [동사/vn] / 
 
 - 한자 풀이:
-  - 筹: (부수:筹)
-  - 备: (부수:备)
+  - 筹备: (부수:⺮)
 - HSK 등급: 7-9급
 
 <!-- id: hsk_7_1356 -->
 
 ---
 
-### 2050. 装扮 / zhuāng bàn / [동사/동사/명사] / to decorate; to adorn; to dress up; to disguise oneself
+### 50. 装扮 / zhuāng bàn / [동사/vn] / 
 
 - 한자 풀이:
-  - 装: (부수:装)
-  - 扮: (부수:扮)
+  - 装扮: (부수:衣)
 - HSK 등급: 7-9급
 
 <!-- id: hsk_7_1357 -->
 
 ---
 
-### 2051. 良 / liáng / [명사/부사] / good; very; very much
+### 51. 良 / liáng / [기타/부사] / 
 
 - 한자 풀이:
-  - 良: (부수:良)
+  - 良: (부수:艮)
 - HSK 등급: 7-9급
 
 <!-- id: hsk_7_1358 -->
 
 ---
 
-### 2052. 结尾 / jié wěi / [명사/동사] / ending; coda; to wind up
+### 52. 结尾 / jié wěi / [명사/동사] / 
 
 - 한자 풀이:
-  - 结: (부수:结)
-  - 尾: (부수:尾)
+  - 结尾: (부수:纟)
 - HSK 등급: 7-9급
 
 <!-- id: hsk_7_1359 -->
 
 ---
 
-### 2053. 严密 / yán mì / [형용사/부사/형용사] / strict; tight (organization, surveillance etc)
+### 53. 严密 / yán mì / [형용사/형용사성부사] / 
 
 - 한자 풀이:
-  - 严: (부수:严)
-  - 密: (부수:密)
+  - 严密: 한 일
 - HSK 등급: 7-9급
 
 <!-- id: hsk_7_1360 -->
 
 ---
 
-### 2054. 排斥 / pái chì / [동사/동사/명사] / to reject; to exclude; to eliminate; to remove; to repel
+### 54. 排斥 / pái chì / [동사/vn] / 
 
 - 한자 풀이:
-  - 排: (부수:排)
-  - 斥: (부수:斥)
+  - 排斥: (부수:扌)
 - HSK 등급: 7-9급
 
 <!-- id: hsk_7_1361 -->
 
 ---
 
-### 2055. 长相 / zhǎng xiàng / [명사] / appearance; looks; profile; countenance
+### 55. 长相 / zhǎng xiàng / [명사] / 
 
 - 한자 풀이:
-  - 长: (부수:长)
-  - 相: (부수:相)
+  - 长相: (부수:长)
 - HSK 등급: 7-9급
 
 <!-- id: hsk_7_1362 -->
 
 ---
 
-### 2056. 报仇 / bào chóu / [동사/동사/명사] / to take revenge; to avenge
+### 56. 报仇 / bào chóu / [동사/vn] / 
 
 - 한자 풀이:
-  - 报: (부수:报)
-  - 仇: (부수:仇)
+  - 报仇: (부수:扌)
 - HSK 등급: 7-9급
 
 <!-- id: hsk_7_1363 -->
 
 ---
 
-### 2057. 收缩 / shōu suō / [동사/동사/명사] / to pull back; to shrink; to contract; (physiology) systole
+### 57. 收缩 / shōu suō / [동사/vn] / 
 
 - 한자 풀이:
-  - 收: (부수:收)
-  - 缩: (부수:缩)
+  - 收缩: (부수:攵)
 - HSK 등급: 7-9급
 
 <!-- id: hsk_7_1364 -->
 
 ---
 
-### 2058. 帖子 / tiě zi / [명사] / card; invitation; message; (forum) post
+### 58. 帖子 / tiě zi / [기타] / 
 
 - 한자 풀이:
-  - 帖: (부수:帖)
-  - 子: (부수:子)
+  - 帖子: (부수:巾)
 - HSK 등급: 7-9급
 
 <!-- id: hsk_7_1365 -->
 
 ---
 
-### 2059. 钓鱼 / diào yú / [동사/동사/명사] / to fish (with line and hook); to dupe
+### 59. 钓鱼 / diào yú / [동사/vn] / 
 
 - 한자 풀이:
-  - 钓: (부수:钓)
-  - 鱼: (부수:鱼)
+  - 钓鱼: (부수:钅)
 - HSK 등급: 7-9급
 
 <!-- id: hsk_7_1366 -->
 
 ---
 
-### 2060. 嚼 / jiáo / [동사] / to chew; also pr. [jué]
+### 60. 嚼 / jiáo / [동사] / 
 
 - 한자 풀이:
-  - 嚼: (부수:嚼)
+  - 嚼: (부수:口)
 - HSK 등급: 7-9급
 
 <!-- id: hsk_7_1367 -->
 
 ---
 
-### 2061. 牌照 / pái zhào / [명사] / (business) license; vehicle license; car registration; license plate
+### 61. 牌照 / pái zhào / [명사] / 
 
 - 한자 풀이:
-  - 牌: (부수:牌)
-  - 照: (부수:照)
+  - 牌照: (부수:片)
 - HSK 등급: 7-9급
 
 <!-- id: hsk_7_1368 -->
 
 ---
 
-### 2062. 搜寻 / sōu xún / [동사/동사/명사] / to search; to look for
+### 62. 搜寻 / sōu xún / [동사/vn] / 
 
 - 한자 풀이:
-  - 搜: (부수:搜)
-  - 寻: (부수:寻)
+  - 搜寻: (부수:扌)
 - HSK 등급: 7-9급
 
 <!-- id: hsk_7_1369 -->
 
 ---
 
-### 2063. 抚养 / fǔ yǎng / [동사/동사/명사] / to foster; to bring up; to raise
+### 63. 抚养 / fǔ yǎng / [동사/vn] / 
 
 - 한자 풀이:
-  - 抚: (부수:抚)
-  - 养: (부수:养)
+  - 抚养: (부수:扌)
 - HSK 등급: 7-9급
 
 <!-- id: hsk_7_1370 -->
 
 ---
 
-### 2064. 打交道 / dǎ jiāo dào / [동사] / to come into contact with; to have dealings
+### 64. 打交道 / dǎ jiāo dào / [동사] / 
 
 - 한자 풀이:
-  - 打: (부수:打)
-  - 交: (부수:交)
-  - 道: (부수:道)
+  - 打交道: (부수:扌)
 - HSK 등급: 7-9급
 
 <!-- id: hsk_7_1371 -->
 
 ---
 
-### 2065. 万能 / wàn néng / [동사/부사] / omnipotent; all-purpose; universal
+### 65. 万能 / wàn néng / [수식언] / 
 
 - 한자 풀이:
-  - 万: (부수:万)
-  - 能: (부수:能)
+  - 万能: 한 일
 - HSK 등급: 7-9급
 
 <!-- id: hsk_7_1372 -->
 
 ---
 
-### 2066. 富人 / fù rén / [명사] / rich person; the rich
+### 66. 富人 / fù rén / [명사] / 
 
 - 한자 풀이:
-  - 富: (부수:富)
-  - 人: 사람인
+  - 富人: (부수:宀)
 - HSK 등급: 6급
 
 <!-- id: hsk_6_0694 -->
 
 ---
 
-### 2067. 兼职 / jiān zhí / [동사/동사/명사] / to hold concurrent posts; concurrent job; moonlighting
+### 67. 兼职 / jiān zhí / [동사/vn] / 
 
 - 한자 풀이:
-  - 兼: (부수:兼)
-  - 职: (부수:职)
+  - 兼职: (부수:丷)
 - HSK 등급: 7-9급
 
 <!-- id: hsk_7_1373 -->
 
 ---
 
-### 2068. 宠 / chǒng / [동사/동사/명사] / to love; to pamper; to spoil; to favor
+### 68. 宠 / chǒng / [동사/vn] / 
 
 - 한자 풀이:
-  - 宠: (부수:宠)
+  - 宠: (부수:宀)
 - HSK 등급: 7-9급
 
 <!-- id: hsk_7_1374 -->
 
 ---
 
-### 2069. 较量 / jiào liàng / [동사/명사/동사] / to pit oneself against sb; to compete with sb; contest; battle; to haggle; to quibble
+### 69. 较量 / jiào liàng / [vn/동사] / 
 
 - 한자 풀이:
-  - 较: (부수:较)
-  - 量: (부수:量)
+  - 较量: (부수:车)
 - HSK 등급: 7-9급
 
 <!-- id: hsk_7_1375 -->
 
 ---
 
-### 2070. 谣言 / yáo yán / [명사] / rumor
+### 70. 谣言 / yáo yán / [명사] / 
 
 - 한자 풀이:
-  - 谣: (부수:谣)
-  - 言: 말언
+  - 谣言: (부수:讠)
 - HSK 등급: 7-9급
 
 <!-- id: hsk_7_1376 -->
 
 ---
 
-### 2071. 重返 / chóng fǎn / [동사] / to return to
+### 71. 重返 / chóng fǎn / [동사] / 
 
 - 한자 풀이:
-  - 重: (부수:重)
-  - 返: (부수:返)
+  - 重返: (부수:里)
 - HSK 등급: 7-9급
 
 <!-- id: hsk_7_1377 -->
 
 ---
 
-### 2072. 非得 / fēi děi / [부사] / (followed by a verb phrase, then – optionally – 不可, or 不行 etc) must
+### 72. 非得 / fēi děi / [부사] / 
 
 - 한자 풀이:
-  - 非: (부수:非)
-  - 得: (부수:得)
+  - 非得: (부수:非)
 - HSK 등급: 7-9급
 
 <!-- id: hsk_7_1378 -->
 
 ---
 
-### 2073. 过节 / guò jié / [동사/동사/명사] / to celebrate a festival; after the celebrations (i.e. once the festival is over)
+### 73. 过节 / guò jié / [동사/vn] / 
 
 - 한자 풀이:
-  - 过: (부수:过)
-  - 节: (부수:节)
+  - 过节: (부수:辶)
 - HSK 등급: 7-9급
 
 <!-- id: hsk_7_1379 -->
 
 ---
 
-### 2074. 捕 / bǔ / [동사] / to catch; to seize; to capture
+### 74. 捕 / bǔ / [동사] / 
 
 - 한자 풀이:
-  - 捕: (부수:捕)
+  - 捕: (부수:扌)
 - HSK 등급: 6급
 
 <!-- id: hsk_6_0695 -->
 
 ---
 
-### 2075. 好感 / hǎo gǎn / [명사] / good opinion; favorable impression
+### 75. 好感 / hǎo gǎn / [명사] / 
 
 - 한자 풀이:
-  - 好: (부수:好)
-  - 感: (부수:感)
+  - 好感: (부수:女)
 - HSK 등급: 7-9급
 
 <!-- id: hsk_7_1380 -->
 
 ---
 
-### 2076. 搜集 / sōu jí / [동사/동사/명사] / to gather; to collect
+### 76. 搜集 / sōu jí / [동사/vn] / 
 
 - 한자 풀이:
-  - 搜: (부수:搜)
-  - 集: (부수:集)
+  - 搜集: (부수:扌)
 - HSK 등급: 7-9급
 
 <!-- id: hsk_7_1381 -->
 
 ---
 
-### 2077. 探测 / tàn cè / [동사/동사/명사] / to probe; to survey
+### 77. 探测 / tàn cè / [동사/vn] / 
 
 - 한자 풀이:
-  - 探: (부수:探)
-  - 测: (부수:测)
+  - 探测: (부수:扌)
 - HSK 등급: 7-9급
 
 <!-- id: hsk_7_1382 -->
 
 ---
 
-### 2078. 位子 / wèi zi / [명사] / place; seat
+### 78. 位子 / wèi zi / [명사] / 
 
 - 한자 풀이:
-  - 位: (부수:位)
-  - 子: (부수:子)
+  - 位子: 사람 인
 - HSK 등급: 7-9급
 
 <!-- id: hsk_7_1383 -->
 
 ---
 
-### 2079. 演戏 / yǎn xì / [동사] / to put on a play; to perform; fig. to pretend; to feign
+### 79. 演戏 / yǎn xì / [동사] / 
 
 - 한자 풀이:
-  - 演: (부수:演)
-  - 戏: (부수:戏)
+  - 演戏: (부수:氵)
 - HSK 등급: 7-9급
 
 <!-- id: hsk_7_1384 -->
 
 ---
 
-### 2080. 零件 / líng jiàn / [명사] / part; component
+### 80. 零件 / líng jiàn / [명사] / 
 
 - 한자 풀이:
-  - 零: (부수:零)
-  - 件: (부수:件)
+  - 零件: (부수:雨)
 - HSK 등급: 7-9급
 
 <!-- id: hsk_7_1385 -->
 
 ---
 
-### 2081. 夺冠 / duó guàn / [동사/동사/명사] / to seize the crown; fig. to win a championship; to win gold medal
+### 81. 夺冠 / duó guàn / [동사/vn] / 
 
 - 한자 풀이:
-  - 夺: (부수:夺)
-  - 冠: (부수:冠)
+  - 夺冠: (부수:大)
 - HSK 등급: 7-9급
 
 <!-- id: hsk_7_1386 -->
 
 ---
 
-### 2082. 自尊 / zì zūn / [동사/동사/명사] / self-respect; self-esteem; ego; pride
+### 82. 自尊 / zì zūn / [동사/vn] / 
 
 - 한자 풀이:
-  - 自: (부수:自)
-  - 尊: (부수:尊)
+  - 自尊: (부수:自)
 - HSK 등급: 7-9급
 
 <!-- id: hsk_7_1387 -->
 
 ---
 
-### 2083. 瘫痪 / tān huàn / [동사/동사/명사] / paralysis; be paralyzed (body, transportation, etc)
+### 83. 瘫痪 / tān huàn / [동사/vn] / 
 
 - 한자 풀이:
-  - 瘫: (부수:瘫)
-  - 痪: (부수:痪)
+  - 瘫痪: (부수:疒)
 - HSK 등급: 7-9급
 
 <!-- id: hsk_7_1388 -->
 
 ---
 
-### 2084. 光辉 / guāng huī / [형용사/명사] / radiance; glory; brilliant; magnificent
+### 84. 光辉 / guāng huī / [형용사/명사] / 
 
 - 한자 풀이:
-  - 光: (부수:光)
-  - 辉: (부수:辉)
+  - 光辉: (부수:儿)
 - HSK 등급: 6급
 
 <!-- id: hsk_6_0696 -->
 
 ---
 
-### 2085. 雇佣 / gù yōng / [동사/동사/명사] / to employ; to hire
+### 85. 雇佣 / gù yōng / [동사/vn] / 
 
 - 한자 풀이:
-  - 雇: (부수:雇)
-  - 佣: (부수:佣)
+  - 雇佣: (부수:隹)
 - HSK 등급: 7-9급
 
 <!-- id: hsk_7_1389 -->
 
 ---
 
-### 2086. 逮 / dǎi / [동사] / (coll.) to catch; to seize
+### 86. 逮 / dǎi / [동사] / 
 
 - 한자 풀이:
-  - 逮: (부수:逮)
+  - 逮: (부수:辶)
 - HSK 등급: 7-9급
 
 <!-- id: hsk_7_1390 -->
 
 ---
 
-### 2087. 上报 / shàng bào / [동사] / to report to one's superiors; to appear in the news; to reply to a letter
+### 87. 上报 / shàng bào / [동사] / 
 
 - 한자 풀이:
-  - 上: (부수:上)
-  - 报: (부수:报)
+  - 上报: 한 일
 - HSK 등급: 7-9급
 
 <!-- id: hsk_7_1391 -->
 
 ---
 
-### 2088. 船员 / chuán yuán / [명사] / sailor; crew member
+### 88. 船员 / chuán yuán / [명사] / 
 
 - 한자 풀이:
-  - 船: 배선
-  - 员: (부수:员)
+  - 船员: (부수:舟)
 - HSK 등급: 6급
 
 <!-- id: hsk_6_0697 -->
 
 ---
 
-### 2089. 低下 / dī xià / [형용사/형용사/명사] / low status; lowly; to lower (one's head)
+### 89. 低下 / dī xià / [형용사/an] / 
 
 - 한자 풀이:
-  - 低: (부수:低)
-  - 下: (부수:下)
+  - 低下: 사람 인
 - HSK 등급: 7-9급
 
 <!-- id: hsk_7_1392 -->
 
 ---
 
-### 2090. 大臣 / dà chén / [명사] / chancellor (of a monarchy); cabinet minister
+### 90. 大臣 / dà chén / [명사] / 
 
 - 한자 풀이:
-  - 大: (부수:大)
-  - 臣: 종신
+  - 大臣: (부수:大)
 - HSK 등급: 7-9급
 
 <!-- id: hsk_7_1393 -->
 
 ---
 
-### 2091. 迫使 / pò shǐ / [동사] / to force; to compel
+### 91. 迫使 / pò shǐ / [동사] / 
 
 - 한자 풀이:
-  - 迫: (부수:迫)
-  - 使: (부수:使)
+  - 迫使: (부수:辶)
 - HSK 등급: 7-9급
 
 <!-- id: hsk_7_1394 -->
 
 ---
 
-### 2092. 阴性 / yīn xìng / [명사] / negative; feminine
+### 92. 阴性 / yīn xìng / [명사] / 
 
 - 한자 풀이:
-  - 阴: (부수:阴)
-  - 性: (부수:性)
+  - 阴性: (부수:阝)
 - HSK 등급: 7-9급
 
 <!-- id: hsk_7_1395 -->
 
 ---
 
-### 2093. 钙 / gài / [명사] / calcium (chemistry)
+### 93. 钙 / gài / [명사] / 
 
 - 한자 풀이:
-  - 钙: (부수:钙)
+  - 钙: (부수:钅)
 - HSK 등급: 7-9급
 
 <!-- id: hsk_7_1396 -->
 
 ---
 
-### 2094. 黑夜 / hēi yè / [명사] / night
+### 94. 黑夜 / hēi yè / [명사] / 
 
 - 한자 풀이:
-  - 黑: (부수:黑)
-  - 夜: (부수:夜)
+  - 黑夜: (부수:黑)
 - HSK 등급: 6급
 
 <!-- id: hsk_6_0698 -->
 
 ---
 
-### 2095. 高尔夫球 / gāo ěr fū qiú / [명사] / golf; golf ball
+### 95. 高尔夫球 / gāo ěr fū qiú / [명사] / 
 
 - 한자 풀이:
-  - 高: (부수:高)
-  - 尔: (부수:尔)
-  - 夫: (부수:夫)
-  - 球: (부수:球)
+  - 高尔夫球: (부수:高)
 - HSK 등급: 7-9급
 
 <!-- id: hsk_7_1397 -->
 
 ---
 
-### 2096. 招待 / zhāo dài / [동사/동사/명사] / to hold a reception; to offer hospitality; to entertain (guests); to serve (customers)
+### 96. 招待 / zhāo dài / [동사/vn] / 
 
 - 한자 풀이:
-  - 招: (부수:招)
-  - 待: (부수:待)
+  - 招待: (부수:扌)
 - HSK 등급: 7-9급
 
 <!-- id: hsk_7_1398 -->
 
 ---
 
-### 2097. 敷 / fū / [동사] / to spread; to lay out; to apply (powder, ointment etc); sufficient (to cover); enough
+### 97. 敷 / fū / [동사] / 
 
 - 한자 풀이:
-  - 敷: (부수:敷)
+  - 敷: (부수:攵)
 - HSK 등급: 7-9급
 
 <!-- id: hsk_7_1399 -->
 
 ---
 
-### 2098. 欣慰 / xīn wèi / [형용사/형용사/명사] / to be gratified
+### 98. 欣慰 / xīn wèi / [형용사/an] / 
 
 - 한자 풀이:
-  - 欣: (부수:欣)
-  - 慰: (부수:慰)
+  - 欣慰: (부수:欠)
 - HSK 등급: 7-9급
 
 <!-- id: hsk_7_1400 -->
 
 ---
 
-### 2099. 过渡 / guò dù / [동사/동사/명사] / to cross over (by ferry); transition; interim; caretaker (administration)
+### 99. 过渡 / guò dù / [동사/vn] / 
 
 - 한자 풀이:
-  - 过: (부수:过)
-  - 渡: (부수:渡)
+  - 过渡: (부수:辶)
 - HSK 등급: 6급
 
 <!-- id: hsk_6_0699 -->
 
 ---
 
-### 2100. 俊 / jùn / [nr] / old variant of 俊
+### 100. 俊 / jùn / [nr] / 
 
 - 한자 풀이:
-  - 俊: (부수:俊)
+  - 俊: 사람 인
 - HSK 등급: 7-9급
 
 <!-- id: hsk_7_1401 -->
