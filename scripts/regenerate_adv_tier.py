@@ -48,7 +48,7 @@ def get_pos_korean(pos_list):
         "tg": "시간명사",
 
         # 복합 품사
-        "vn": "동사/명사",
+        "vn": "동명사",
 
         # 기타
         "f": "방위사",
@@ -66,6 +66,8 @@ def get_pos_korean(pos_list):
         "Rg": "고유명사",
     }
     korean_pos = [pos_mapping.get(p, p) for p in pos_list if p]
+    # Remove duplicates while maintaining order
+    korean_pos = list(dict.fromkeys(korean_pos))
     return "/".join(korean_pos) if korean_pos else "기타"
 
 def get_radical_korean(radical_char):
