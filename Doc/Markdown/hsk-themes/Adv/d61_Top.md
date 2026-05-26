@@ -29,7 +29,7 @@
 ### 6003. 与日俱增 / yǔ rì jù zēng / [동사] / to increase steadily
 
 - 한자 풀이:
-  - 与(한자) + 日(날) + 俱(한자) + 增(한자) → to increase steadily
+  - 与(함께) + 日(한자) + 俱(한자) + 增(한자) → to increase steadily
 - HSK 등급: 7급
 
 <!-- id: hsk_7_4880 -->
@@ -69,7 +69,7 @@
 ### 6007. 哭笑不得 / kū xiào bù dé / [명사] / 알다
 
 - 한자 풀이:
-  - 哭(한자) + 笑(한자) + 不(아니다) + 得(한자) → 알다
+  - 哭(한자) + 笑(한자) + 不(한자) + 得(한자) → 알다
 - HSK 등급: 7급
 
 <!-- id: hsk_7_4884 -->
@@ -79,7 +79,7 @@
 ### 6008. 心病 / xīn bìng / [명사] / anxiety
 
 - 한자 풀이:
-  - 心(마음) + 病(한자) → anxiety
+  - 心(한자) + 病(한자) → anxiety
 - HSK 등급: 7급
 
 <!-- id: hsk_7_4885 -->
@@ -89,7 +89,7 @@
 ### 6009. 钳子 / qián zi / [명사] / pliers
 
 - 한자 풀이:
-  - 钳(한자) + 子(아들) → pliers
+  - 钳(한자) + 子(한자) → pliers
 - HSK 등급: 7급
 
 <!-- id: hsk_7_4886 -->
@@ -99,7 +99,7 @@
 ### 6010. 心慌 / xīn huāng / [형용사] / to be flustered
 
 - 한자 풀이:
-  - 心(마음) + 慌(한자) → to be flustered
+  - 心(한자) + 慌(한자) → to be flustered
 - HSK 등급: 7급
 
 <!-- id: hsk_7_4887 -->
@@ -156,10 +156,10 @@
 
 ---
 
-### 6016. 菜市场 / cài shì chǎng / [명사] / 시장
+### 6016. 菜市场 / cài shì chǎng / [명사] / 음식
 
 - 한자 풀이:
-  - 菜(한자) + 市(한자) + 场(한자) → 시장
+  - 菜(한자) + 市(한자) + 场(한자) → 음식
 - HSK 등급: 7급
 
 <!-- id: hsk_7_4893 -->
@@ -199,17 +199,17 @@
 ### 6020. 雷同 / léi tóng / [동사] / mirroring others
 
 - 한자 풀이:
-  - 雷(한자) + 同(한자) → mirroring others
+  - 雷(한자) + 同(같다) → mirroring others
 - HSK 등급: 7급
 
 <!-- id: hsk_7_4897 -->
 
 ---
 
-### 6021. 出风头 / chū fēng tou / [동사] / 밀다
+### 6021. 出风头 / chū fēng tou / [동사] / to push oneself forward
 
 - 한자 풀이:
-  - 出(한자) + 风(한자) + 头(한자) → 밀다
+  - 出(한자) + 风(한자) + 头(한자) → to push oneself forward
 - HSK 등급: 7급
 
 <!-- id: hsk_7_4898 -->
@@ -219,7 +219,7 @@
 ### 6022. 输家 / shū jiā / [명사] / loser
 
 - 한자 풀이:
-  - 输(한자) + 家(집) → loser
+  - 输(한자) + 家(한자) → loser
 - HSK 등급: 7급
 
 <!-- id: hsk_7_4899 -->
@@ -229,7 +229,7 @@
 ### 6023. 中庸 / Zhōng yōng / [명사] / the Doctrine of the Mean, one of th
 
 - 한자 풀이:
-  - 中(중간) + 庸(한자) → the Doctrine of the Mean, one of th
+  - 中(한자) + 庸(한자) → the Doctrine of the Mean, one of th
 - HSK 등급: 7급
 
 <!-- id: hsk_7_4900 -->
@@ -246,10 +246,10 @@
 
 ---
 
-### 6025. 小康 / Xiǎo kāng / [명사] / 사회
+### 6025. 小康 / Xiǎo kāng / [명사] / Xiaokang, a Confucian near-ideal st
 
 - 한자 풀이:
-  - 小(한자) + 康(한자) → 사회
+  - 小(한자) + 康(한자) → Xiaokang, a Confucian near-ideal st
 - HSK 등급: 7급
 
 <!-- id: hsk_7_4902 -->
@@ -269,7 +269,7 @@
 ### 6027. 异口同声 / yì kǒu tóng shēng / [명사] / different mouths, same voice
 
 - 한자 풀이:
-  - 异(한자) + 口(입) + 同(한자) + 声(한자) → different mouths, same voice
+  - 异(한자) + 口(한자) + 同(같다) + 声(한자) → different mouths, same voice
 - HSK 등급: 7급
 
 <!-- id: hsk_7_4904 -->
@@ -309,7 +309,7 @@
 ### 6031. 密不可分 / mì bù kě fēn / [동사] / inextricably linked
 
 - 한자 풀이:
-  - 密(한자) + 不(아니다) + 可(한자) + 分(한자) → inextricably linked
+  - 密(한자) + 不(한자) + 可(한자) + 分(한자) → inextricably linked
 - HSK 등급: 7급
 
 <!-- id: hsk_7_4908 -->
@@ -329,7 +329,7 @@
 ### 6033. 火辣辣 / huǒ là là / [명사] / painful heat
 
 - 한자 풀이:
-  - 火(불) + 辣(한자) + 辣(한자) → painful heat
+  - 火(한자) + 辣(한자) + 辣(한자) → painful heat
 - HSK 등급: 7급
 
 <!-- id: hsk_7_4910 -->
@@ -349,7 +349,7 @@
 ### 6035. 口吃 / kǒu chī / [동사] / to stammer
 
 - 한자 풀이:
-  - 口(입) + 吃(한자) → to stammer
+  - 口(한자) + 吃(한자) → to stammer
 - HSK 등급: 7급
 
 <!-- id: hsk_7_4912 -->
@@ -359,7 +359,7 @@
 ### 6036. 目不转睛 / mù bù zhuǎn jīng / [명사] / 가져가다
 
 - 한자 풀이:
-  - 目(한자) + 不(아니다) + 转(한자) + 睛(한자) → 가져가다
+  - 目(한자) + 不(한자) + 转(한자) + 睛(한자) → 가져가다
 - HSK 등급: 7급
 
 <!-- id: hsk_7_4913 -->
@@ -409,7 +409,7 @@
 ### 6041. 苦心 / kǔ xīn / [명사] / painstaking effort
 
 - 한자 풀이:
-  - 苦(한자) + 心(마음) → painstaking effort
+  - 苦(한자) + 心(한자) → painstaking effort
 - HSK 등급: 7급
 
 <!-- id: hsk_7_4918 -->
@@ -419,17 +419,17 @@
 ### 6042. 一揽子 / yī lǎn zi / [명사] / all-inclusive
 
 - 한자 풀이:
-  - 一(한자) + 揽(한자) + 子(아들) → all-inclusive
+  - 一(한자) + 揽(한자) + 子(한자) → all-inclusive
 - HSK 등급: 7급
 
 <!-- id: hsk_7_4919 -->
 
 ---
 
-### 6043. 卫视 / wèi shì / [명사] / 위성
+### 6043. 卫视 / wèi shì / [명사] / satellite TV
 
 - 한자 풀이:
-  - 卫(한자) + 视(한자) → 위성
+  - 卫(한자) + 视(한자) → satellite TV
 - HSK 등급: 7급
 
 <!-- id: hsk_7_4920 -->
@@ -489,7 +489,7 @@
 ### 6049. 舵手 / duò shǒu / [명사] / helmsman
 
 - 한자 풀이:
-  - 舵(한자) + 手(손) → helmsman
+  - 舵(한자) + 手(한자) → helmsman
 - HSK 등급: 7급
 
 <!-- id: hsk_7_4926 -->
@@ -536,10 +536,10 @@
 
 ---
 
-### 6054. 酒楼 / jiǔ lóu / [명사] / restaurant
+### 6054. 酒楼 / jiǔ lóu / [명사] / 식당
 
 - 한자 풀이:
-  - 酒(한자) + 楼(한자) → restaurant
+  - 酒(한자) + 楼(한자) → 식당
 - HSK 등급: 7급
 
 <!-- id: hsk_7_4931 -->
@@ -556,10 +556,10 @@
 
 ---
 
-### 6056. 驮 / tuó / [동사] / variant of 驮
+### 6056. 驮 / tuó / [동사] / 변형
 
 - 한자 풀이:
-  - 驮(한자) → variant of 驮
+  - 驮(한자) → 변형
 - HSK 등급: 7급
 
 <!-- id: hsk_7_4933 -->
@@ -616,10 +616,10 @@
 
 ---
 
-### 6062. 淡季 / dàn jì / [명사] / off season
+### 6062. 淡季 / dàn jì / [명사] / 계절
 
 - 한자 풀이:
-  - 淡(한자) + 季(한자) → off season
+  - 淡(한자) + 季(한자) → 계절
 - HSK 등급: 7급
 
 <!-- id: hsk_7_4939 -->
@@ -639,7 +639,7 @@
 ### 6064. 日新月异 / rì xīn yuè yì / [동사] / daily renewal, monthly change
 
 - 한자 풀이:
-  - 日(날) + 新(한자) + 月(달) + 异(한자) → daily renewal, monthly change
+  - 日(한자) + 新(한자) + 月(한자) + 异(한자) → daily renewal, monthly change
 - HSK 등급: 7급
 
 <!-- id: hsk_7_4941 -->
@@ -669,17 +669,17 @@
 ### 6067. 生命线 / shēng mìng xiàn / [명사] / lifeline
 
 - 한자 풀이:
-  - 生(생기다) + 命(한자) + 线(한자) → lifeline
+  - 生(한자) + 命(한자) + 线(한자) → lifeline
 - HSK 등급: 7급
 
 <!-- id: hsk_7_4944 -->
 
 ---
 
-### 6068. 夜以继日 / yè yǐ jì rì / [명사] / night and day
+### 6068. 夜以继日 / yè yǐ jì rì / [명사] / 밤
 
 - 한자 풀이:
-  - 夜(한자) + 以(이용하여) + 继(한자) + 日(날) → night and day
+  - 夜(한자) + 以(한자) + 继(한자) + 日(한자) → 밤
 - HSK 등급: 7급
 
 <!-- id: hsk_7_4945 -->
@@ -729,7 +729,7 @@
 ### 6073. 骇人听闻 / hài rén tīng wén / [동사] / shocking
 
 - 한자 풀이:
-  - 骇(한자) + 人(사람) + 听(한자) + 闻(한자) → shocking
+  - 骇(한자) + 人(한자) + 听(한자) + 闻(한자) → shocking
 - HSK 등급: 7급
 
 <!-- id: hsk_7_4950 -->
@@ -769,7 +769,7 @@
 ### 6077. 出土 / chū tǔ / [동사] / to dig up
 
 - 한자 풀이:
-  - 出(한자) + 土(흙) → to dig up
+  - 出(한자) + 土(한자) → to dig up
 - HSK 등급: 7급
 
 <!-- id: hsk_7_4954 -->
@@ -779,7 +779,7 @@
 ### 6078. 好客 / hào kè / [형용사] / hospitality
 
 - 한자 풀이:
-  - 好(좋다) + 客(한자) → hospitality
+  - 好(한자) + 客(한자) → hospitality
 - HSK 등급: 7급
 
 <!-- id: hsk_7_4955 -->
@@ -789,7 +789,7 @@
 ### 6079. 不服 / bù fú / [동사] / not to accept sth
 
 - 한자 풀이:
-  - 不(아니다) + 服(한자) → not to accept sth
+  - 不(한자) + 服(한자) → not to accept sth
 - HSK 등급: 7급
 
 <!-- id: hsk_7_4956 -->
@@ -816,10 +816,10 @@
 
 ---
 
-### 6082. 罢免 / bà miǎn / [동사] / 직책
+### 6082. 罢免 / bà miǎn / [동사] / to remove sb from their post
 
 - 한자 풀이:
-  - 罢(한자) + 免(한자) → 직책
+  - 罢(한자) + 免(한자) → to remove sb from their post
 - HSK 등급: 7급
 
 <!-- id: hsk_7_4959 -->
@@ -846,10 +846,10 @@
 
 ---
 
-### 6085. 求学 / qiú xué / [동사] / 찾다
+### 6085. 求学 / qiú xué / [동사] / to seek knowledge
 
 - 한자 풀이:
-  - 求(한자) + 学(한자) → 찾다
+  - 求(한자) + 学(한자) → to seek knowledge
 - HSK 등급: 7급
 
 <!-- id: hsk_7_4962 -->
@@ -879,7 +879,7 @@
 ### 6088. 帘子 / lián zi / [명사] / curtain
 
 - 한자 풀이:
-  - 帘(한자) + 子(아들) → curtain
+  - 帘(한자) + 子(한자) → curtain
 - HSK 등급: 7급
 
 <!-- id: hsk_7_4965 -->
@@ -969,7 +969,7 @@
 ### 6097. 拜年 / bài nián / [동사] / 지불하다
 
 - 한자 풀이:
-  - 拜(한자) + 年(해) → 지불하다
+  - 拜(한자) + 年(한자) → 지불하다
 - HSK 등급: 7급
 
 <!-- id: hsk_7_4974 -->
@@ -979,7 +979,7 @@
 ### 6098. 古今中外 / gǔ jīn zhōng wài / [명사] / at all times and in all places
 
 - 한자 풀이:
-  - 古(한자) + 今(한자) + 中(중간) + 外(한자) → at all times and in all places
+  - 古(한자) + 今(한자) + 中(한자) + 外(한자) → at all times and in all places
 - HSK 등급: 7급
 
 <!-- id: hsk_7_4975 -->
@@ -996,10 +996,10 @@
 
 ---
 
-### 6100. 惊诧 / jīng chà / [형용사] / to be surprised
+### 6100. 惊诧 / jīng chà / [형용사] / 놀란
 
 - 한자 풀이:
-  - 惊(한자) + 诧(한자) → to be surprised
+  - 惊(한자) + 诧(한자) → 놀란
 - HSK 등급: 7급
 
 <!-- id: hsk_7_4977 -->

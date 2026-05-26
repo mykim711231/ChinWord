@@ -6,10 +6,10 @@
 
 ---
 
-### 6201. 掉队 / diào duì / [동사] / to fall behind
+### 6201. 掉队 / diào duì / [동사] / 가을
 
 - 한자 풀이:
-  - 掉(한자) + 队(한자) → to fall behind
+  - 掉(한자) + 队(한자) → 가을
 - HSK 등급: 7급
 
 <!-- id: hsk_7_5078 -->
@@ -49,7 +49,7 @@
 ### 6205. 大同小异 / dà tóng xiǎo yì / [동사] / virtually the same
 
 - 한자 풀이:
-  - 大(크다) + 同(한자) + 小(한자) + 异(한자) → virtually the same
+  - 大(한자) + 同(같다) + 小(한자) + 异(한자) → virtually the same
 - HSK 등급: 7급
 
 <!-- id: hsk_7_5082 -->
@@ -106,20 +106,20 @@
 
 ---
 
-### 6211. 豁 / huá / [동사] / to play Chinese finger-guessing gam
+### 6211. 豁 / huá / [동사] / 놀다
 
 - 한자 풀이:
-  - 豁(한자) → to play Chinese finger-guessing gam
+  - 豁(한자) → 놀다
 - HSK 등급: 7급
 
 <!-- id: hsk_7_5088 -->
 
 ---
 
-### 6212. 主题歌 / zhǔ tí gē / [명사] / theme song
+### 6212. 主题歌 / zhǔ tí gē / [명사] / 노래
 
 - 한자 풀이:
-  - 主(한자) + 题(한자) + 歌(한자) → theme song
+  - 主(한자) + 题(한자) + 歌(한자) → 노래
 - HSK 등급: 7급
 
 <!-- id: hsk_7_5089 -->
@@ -159,7 +159,7 @@
 ### 6216. 素不相识 / sù bù xiāng shí / [동사] / to be total strangers
 
 - 한자 풀이:
-  - 素(한자) + 不(아니다) + 相(한자) + 识(한자) → to be total strangers
+  - 素(한자) + 不(한자) + 相(한자) + 识(한자) → to be total strangers
 - HSK 등급: 7급
 
 <!-- id: hsk_7_5093 -->
@@ -169,7 +169,7 @@
 ### 6217. 重中之重 / zhòng zhōng zhī zhòng / [명사] / of the utmost importance
 
 - 한자 풀이:
-  - 重(한자) + 中(중간) + 之(한자) + 重(한자) → of the utmost importance
+  - 重(한자) + 中(한자) + 之(한자) + 重(한자) → of the utmost importance
 - HSK 등급: 7급
 
 <!-- id: hsk_7_5094 -->
@@ -189,7 +189,7 @@
 ### 6219. 面面俱到 / miàn miàn jù dào / [동사] / 가져가다
 
 - 한자 풀이:
-  - 面(한자) + 面(한자) + 俱(한자) + 到(도달) → 가져가다
+  - 面(한자) + 面(한자) + 俱(한자) + 到(한자) → 가져가다
 - HSK 등급: 7급
 
 <!-- id: hsk_7_5096 -->
@@ -246,10 +246,10 @@
 
 ---
 
-### 6225. 富强 / fù qiáng / [형용사] / rich and powerful
+### 6225. 富强 / fù qiáng / [형용사] / 부유한
 
 - 한자 풀이:
-  - 富(한자) + 强(한자) → rich and powerful
+  - 富(한자) + 强(한자) → 부유한
 - HSK 등급: 7급
 
 <!-- id: hsk_7_5102 -->
@@ -259,7 +259,7 @@
 ### 6226. 目中无人 / mù zhōng wú rén / [동사] / to consider everyone else beneath o
 
 - 한자 풀이:
-  - 目(한자) + 中(중간) + 无(한자) + 人(사람) → to consider everyone else beneath o
+  - 目(한자) + 中(한자) + 无(한자) + 人(한자) → to consider everyone else beneath o
 - HSK 등급: 7급
 
 <!-- id: hsk_7_5103 -->
@@ -289,7 +289,7 @@
 ### 6229. 痴心 / chī xīn / [명사] / infatuation
 
 - 한자 풀이:
-  - 痴(한자) + 心(마음) → infatuation
+  - 痴(한자) + 心(한자) → infatuation
 - HSK 등급: 7급
 
 <!-- id: hsk_7_5106 -->
@@ -309,7 +309,7 @@
 ### 6231. 无所作为 / wú suǒ zuò wéi / [동사] / attempting nothing and accomplishin
 
 - 한자 풀이:
-  - 无(한자) + 所(한자) + 作(한자) + 为(하다) → attempting nothing and accomplishin
+  - 无(한자) + 所(한자) + 作(하다) + 为(한자) → attempting nothing and accomplishin
 - HSK 등급: 7급
 
 <!-- id: hsk_7_5108 -->
@@ -339,17 +339,17 @@
 ### 6234. 旭日 / xù rì / [명사] / 태양
 
 - 한자 풀이:
-  - 旭(한자) + 日(날) → 태양
+  - 旭(한자) + 日(한자) → 태양
 - HSK 등급: 7급
 
 <!-- id: hsk_7_5111 -->
 
 ---
 
-### 6235. 争光 / zhēng guāng / [동사] / to win an honor
+### 6235. 争光 / zhēng guāng / [동사] / 이기다
 
 - 한자 풀이:
-  - 争(한자) + 光(한자) → to win an honor
+  - 争(한자) + 光(한자) → 이기다
 - HSK 등급: 7급
 
 <!-- id: hsk_7_5112 -->
@@ -366,10 +366,10 @@
 
 ---
 
-### 6237. 回落 / huí luò / [동사] / to fall back
+### 6237. 回落 / huí luò / [동사] / 가을
 
 - 한자 풀이:
-  - 回(한자) + 落(한자) → to fall back
+  - 回(한자) + 落(한자) → 가을
 - HSK 등급: 7급
 
 <!-- id: hsk_7_5114 -->
@@ -456,20 +456,20 @@
 
 ---
 
-### 6246. 因人而异 / yīn rén ér yì / [동사] / varying from person to person
+### 6246. 因人而异 / yīn rén ér yì / [동사] / 사람
 
 - 한자 풀이:
-  - 因(한자) + 人(사람) + 而(한자) + 异(한자) → varying from person to person
+  - 因(한자) + 人(한자) + 而(한자) + 异(한자) → 사람
 - HSK 등급: 7급
 
 <!-- id: hsk_7_5123 -->
 
 ---
 
-### 6247. 旷课 / kuàng kè / [동사] / to play truant
+### 6247. 旷课 / kuàng kè / [동사] / 놀다
 
 - 한자 풀이:
-  - 旷(한자) + 课(한자) → to play truant
+  - 旷(한자) + 课(한자) → 놀다
 - HSK 등급: 7급
 
 <!-- id: hsk_7_5124 -->
@@ -479,7 +479,7 @@
 ### 6248. 不利于 / bù lìyú / [동사] / is harmful to
 
 - 한자 풀이:
-  - 不(아니다) + 利(한자) + 于(한자) → is harmful to
+  - 不(한자) + 利(한자) + 于(곳) → is harmful to
 - HSK 등급: 7급
 
 <!-- id: hsk_7_5125 -->
@@ -496,10 +496,10 @@
 
 ---
 
-### 6250. 义工 / yì gōng / [명사] / volunteer worker
+### 6250. 义工 / yì gōng / [명사] / 근로자
 
 - 한자 풀이:
-  - 义(한자) + 工(한자) → volunteer worker
+  - 义(한자) + 工(한자) → 근로자
 - HSK 등급: 7급
 
 <!-- id: hsk_7_5127 -->
@@ -519,7 +519,7 @@
 ### 6252. 不约而同 / bù yuē ér tóng / [명사] / to agree by chance
 
 - 한자 풀이:
-  - 不(아니다) + 约(한자) + 而(한자) + 同(한자) → to agree by chance
+  - 不(한자) + 约(한자) + 而(한자) + 同(같다) → to agree by chance
 - HSK 등급: 7급
 
 <!-- id: hsk_7_5129 -->
@@ -579,7 +579,7 @@
 ### 6258. 按说 / àn shuō / [부사] / in the ordinary course of events
 
 - 한자 풀이:
-  - 按(한자) + 说(말하다) → in the ordinary course of events
+  - 按(한자) + 说(한자) → in the ordinary course of events
 - HSK 등급: 7급
 
 <!-- id: hsk_7_5135 -->
@@ -599,7 +599,7 @@
 ### 6260. 心急如焚 / xīn jí rú fén / [동사] / to burn with impatience
 
 - 한자 풀이:
-  - 心(마음) + 急(한자) + 如(한자) + 焚(한자) → to burn with impatience
+  - 心(한자) + 急(한자) + 如(같다) + 焚(한자) → to burn with impatience
 - HSK 등급: 7급
 
 <!-- id: hsk_7_5137 -->
@@ -616,10 +616,10 @@
 
 ---
 
-### 6262. 千家万户 / qiān jiā wàn hù / [명사] / every family
+### 6262. 千家万户 / qiān jiā wàn hù / [명사] / 가족
 
 - 한자 풀이:
-  - 千(한자) + 家(집) + 万(한자) + 户(한자) → every family
+  - 千(한자) + 家(한자) + 万(한자) + 户(한자) → 가족
 - HSK 등급: 7급
 
 <!-- id: hsk_7_5139 -->
@@ -636,10 +636,10 @@
 
 ---
 
-### 6264. 走后门 / zǒu hòu mén / [동사] / lit. to enter by the back door
+### 6264. 走后门 / zǒu hòu mén / [동사] / 문
 
 - 한자 풀이:
-  - 走(한자) + 后(한자) + 门(한자) → lit. to enter by the back door
+  - 走(한자) + 后(한자) + 门(한자) → 문
 - HSK 등급: 7급
 
 <!-- id: hsk_7_5141 -->
@@ -659,7 +659,7 @@
 ### 6266. 改为 / gǎi wéi / [동사] / to change into
 
 - 한자 풀이:
-  - 改(한자) + 为(하다) → to change into
+  - 改(한자) + 为(한자) → to change into
 - HSK 등급: 7급
 
 <!-- id: hsk_7_5143 -->
@@ -706,10 +706,10 @@
 
 ---
 
-### 6271. 碧绿 / bì lǜ / [명사] / dark green
+### 6271. 碧绿 / bì lǜ / [명사] / 초록
 
 - 한자 풀이:
-  - 碧(한자) + 绿(한자) → dark green
+  - 碧(한자) + 绿(한자) → 초록
 - HSK 등급: 7급
 
 <!-- id: hsk_7_5148 -->
@@ -719,7 +719,7 @@
 ### 6272. 不辞而别 / bù cí ér bié / [동사] / to leave without saying good-bye
 
 - 한자 풀이:
-  - 不(아니다) + 辞(한자) + 而(한자) + 别(한자) → to leave without saying good-bye
+  - 不(한자) + 辞(한자) + 而(한자) + 别(한자) → to leave without saying good-bye
 - HSK 등급: 7급
 
 <!-- id: hsk_7_5149 -->
@@ -736,10 +736,10 @@
 
 ---
 
-### 6274. 常温 / cháng wēn / [명사] / room temperature
+### 6274. 常温 / cháng wēn / [명사] / 방
 
 - 한자 풀이:
-  - 常(한자) + 温(한자) → room temperature
+  - 常(한자) + 温(한자) → 방
 - HSK 등급: 7급
 
 <!-- id: hsk_7_5151 -->
@@ -776,20 +776,20 @@
 
 ---
 
-### 6278. 美中不足 / měi zhōng bù zú / [명사] / everything is fine except for one s
+### 6278. 美中不足 / měi zhōng bù zú / [명사] / 작다
 
 - 한자 풀이:
-  - 美(한자) + 中(중간) + 不(아니다) + 足(발) → everything is fine except for one s
+  - 美(한자) + 中(한자) + 不(한자) + 足(한자) → 작다
 - HSK 등급: 7급
 
 <!-- id: hsk_7_5155 -->
 
 ---
 
-### 6279. 不假思索 / bù jiǎ sī suǒ / [명사] / 생각하다
+### 6279. 不假思索 / bù jiǎ sī suǒ / [명사] / 시간
 
 - 한자 풀이:
-  - 不(아니다) + 假(한자) + 思(한자) + 索(한자) → 생각하다
+  - 不(한자) + 假(한자) + 思(한자) + 索(한자) → 시간
 - HSK 등급: 7급
 
 <!-- id: hsk_7_5156 -->
@@ -806,10 +806,10 @@
 
 ---
 
-### 6281. 防盗门 / fáng dào mén / [명사] / security door
+### 6281. 防盗门 / fáng dào mén / [명사] / 문
 
 - 한자 풀이:
-  - 防(한자) + 盗(한자) + 门(한자) → security door
+  - 防(한자) + 盗(한자) + 门(한자) → 문
 - HSK 등급: 7급
 
 <!-- id: hsk_7_5158 -->
@@ -849,7 +849,7 @@
 ### 6285. 前无古人 / qián wú gǔ rén / [명사] / unprecedented
 
 - 한자 풀이:
-  - 前(한자) + 无(한자) + 古(한자) + 人(사람) → unprecedented
+  - 前(한자) + 无(한자) + 古(한자) + 人(한자) → unprecedented
 - HSK 등급: 7급
 
 <!-- id: hsk_7_5162 -->
@@ -866,10 +866,10 @@
 
 ---
 
-### 6287. 朝夕相处 / zhāo xī xiāng chǔ / [동사] / to spend all one's time together
+### 6287. 朝夕相处 / zhāo xī xiāng chǔ / [동사] / 시간
 
 - 한자 풀이:
-  - 朝(한자) + 夕(한자) + 相(한자) + 处(한자) → to spend all one's time together
+  - 朝(한자) + 夕(한자) + 相(한자) + 处(한자) → 시간
 - HSK 등급: 7급
 
 <!-- id: hsk_7_5164 -->
@@ -916,10 +916,10 @@
 
 ---
 
-### 6292. 小曲 / xiǎo qǔ / [명사] / popular song
+### 6292. 小曲 / xiǎo qǔ / [명사] / 노래
 
 - 한자 풀이:
-  - 小(한자) + 曲(한자) → popular song
+  - 小(한자) + 曲(한자) → 노래
 - HSK 등급: 7급
 
 <!-- id: hsk_7_5169 -->
@@ -956,10 +956,10 @@
 
 ---
 
-### 6296. 月初 / yuè chū / [명사] / 시작하다
+### 6296. 月初 / yuè chū / [명사] / 달
 
 - 한자 풀이:
-  - 月(달) + 初(한자) → 시작하다
+  - 月(한자) + 初(한자) → 달
 - HSK 등급: 7급
 
 <!-- id: hsk_7_5173 -->
@@ -969,7 +969,7 @@
 ### 6297. 风和日丽 / fēng hé rì lì / [동사] / 바람
 
 - 한자 풀이:
-  - 风(한자) + 和(그리고) + 日(날) + 丽(한자) → 바람
+  - 风(한자) + 和(한자) + 日(한자) + 丽(한자) → 바람
 - HSK 등급: 7급
 
 <!-- id: hsk_7_5174 -->
@@ -996,10 +996,10 @@
 
 ---
 
-### 6300. 家家户户 / jiā jiā hù hù / [명사] / each and every family
+### 6300. 家家户户 / jiā jiā hù hù / [명사] / 가족
 
 - 한자 풀이:
-  - 家(집) + 家(집) + 户(한자) + 户(한자) → each and every family
+  - 家(한자) + 家(한자) + 户(한자) + 户(한자) → 가족
 - HSK 등급: 7급
 
 <!-- id: hsk_7_5177 -->

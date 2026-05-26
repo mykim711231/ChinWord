@@ -16,10 +16,10 @@
 
 ---
 
-### 5702. 时隔 / shí gé / [동사] / separated in time
+### 5702. 时隔 / shí gé / [동사] / 시간
 
 - 한자 풀이:
-  - 时(한자) + 隔(한자) → separated in time
+  - 时(한자) + 隔(한자) → 시간
 - HSK 등급: 7급
 
 <!-- id: hsk_7_4579 -->
@@ -36,10 +36,10 @@
 
 ---
 
-### 5704. 伯父 / bó fù / [명사] / father's elder brother
+### 5704. 伯父 / bó fù / [명사] / 형제
 
 - 한자 풀이:
-  - 伯(한자) + 父(한자) → father's elder brother
+  - 伯(한자) + 父(한자) → 형제
 - HSK 등급: 7급
 
 <!-- id: hsk_7_4581 -->
@@ -59,7 +59,7 @@
 ### 5706. 超车 / chāo chē / [동사] / to overtake
 
 - 한자 풀이:
-  - 超(한자) + 车(한자) → to overtake
+  - 超(초월) + 车(한자) → to overtake
 - HSK 등급: 7급
 
 <!-- id: hsk_7_4583 -->
@@ -116,10 +116,10 @@
 
 ---
 
-### 5712. 麻辣 / má là / [명사] / hot and numbing
+### 5712. 麻辣 / má là / [명사] / 뜨겁다
 
 - 한자 풀이:
-  - 麻(한자) + 辣(한자) → hot and numbing
+  - 麻(한자) + 辣(한자) → 뜨겁다
 - HSK 등급: 7급
 
 <!-- id: hsk_7_4589 -->
@@ -199,7 +199,7 @@
 ### 5720. 不以为然 / bù yǐ wéi rán / [동사] / not to accept as correct
 
 - 한자 풀이:
-  - 不(아니다) + 以(이용하여) + 为(하다) + 然(한자) → not to accept as correct
+  - 不(한자) + 以(한자) + 为(한자) + 然(한자) → not to accept as correct
 - HSK 등급: 7급
 
 <!-- id: hsk_7_4597 -->
@@ -226,10 +226,10 @@
 
 ---
 
-### 5723. 国画 / guó huà / [명사] / traditional Chinese painting
+### 5723. 国画 / guó huà / [명사] / 그림
 
 - 한자 풀이:
-  - 国(한자) + 画(한자) → traditional Chinese painting
+  - 国(한자) + 画(한자) → 그림
 - HSK 등급: 7급
 
 <!-- id: hsk_7_4600 -->
@@ -256,10 +256,10 @@
 
 ---
 
-### 5726. 振兴 / Zhèn xīng / [동사] / Zhengxing district of Dandong city 
+### 5726. 振兴 / Zhèn xīng / [동사] / 도시
 
 - 한자 풀이:
-  - 振(한자) + 兴(한자) → Zhengxing district of Dandong city 
+  - 振(한자) + 兴(한자) → 도시
 - HSK 등급: 7급
 
 <!-- id: hsk_7_4603 -->
@@ -296,10 +296,10 @@
 
 ---
 
-### 5730. 贫富 / pín fù / [명사] / poor and rich
+### 5730. 贫富 / pín fù / [명사] / 가난한
 
 - 한자 풀이:
-  - 贫(한자) + 富(한자) → poor and rich
+  - 贫(한자) + 富(한자) → 가난한
 - HSK 등급: 7급
 
 <!-- id: hsk_7_4607 -->
@@ -309,7 +309,7 @@
 ### 5731. 疲惫不堪 / pí bèi bù kān / [명사] / exhausted
 
 - 한자 풀이:
-  - 疲(한자) + 惫(한자) + 不(아니다) + 堪(한자) → exhausted
+  - 疲(한자) + 惫(한자) + 不(한자) + 堪(한자) → exhausted
 - HSK 등급: 7급
 
 <!-- id: hsk_7_4608 -->
@@ -329,7 +329,7 @@
 ### 5733. 土生土长 / tǔ shēng tǔ zhǎng / [동사] / locally born and bred
 
 - 한자 풀이:
-  - 土(흙) + 生(생기다) + 土(흙) + 长(한자) → locally born and bred
+  - 土(한자) + 生(한자) + 土(한자) + 长(한자) → locally born and bred
 - HSK 등급: 7급
 
 <!-- id: hsk_7_4610 -->
@@ -366,10 +366,10 @@
 
 ---
 
-### 5737. 每逢 / měi féng / [동사] / every time
+### 5737. 每逢 / měi féng / [동사] / 시간
 
 - 한자 풀이:
-  - 每(한자) + 逢(한자) → every time
+  - 每(한자) + 逢(한자) → 시간
 - HSK 등급: 7급
 
 <!-- id: hsk_7_4614 -->
@@ -386,10 +386,10 @@
 
 ---
 
-### 5739. 出道 / chū dào / [동사] / 시작하다
+### 5739. 出道 / chū dào / [동사] / to start one's career
 
 - 한자 풀이:
-  - 出(한자) + 道(한자) → 시작하다
+  - 出(한자) + 道(한자) → to start one's career
 - HSK 등급: 7급
 
 <!-- id: hsk_7_4616 -->
@@ -399,7 +399,7 @@
 ### 5740. 人工智能 / rén gōng zhì néng / [명사] / artificial intelligence
 
 - 한자 풀이:
-  - 人(사람) + 工(한자) + 智(한자) + 能(한자) → artificial intelligence
+  - 人(한자) + 工(한자) + 智(한자) + 能(한자) → artificial intelligence
 - HSK 등급: 7급
 
 <!-- id: hsk_7_4617 -->
@@ -459,7 +459,7 @@
 ### 5746. 亲和力 / qīn hé lì / [명사] / warmth
 
 - 한자 풀이:
-  - 亲(한자) + 和(그리고) + 力(한자) → warmth
+  - 亲(한자) + 和(한자) + 力(한자) → warmth
 - HSK 등급: 7급
 
 <!-- id: hsk_7_4623 -->
@@ -616,10 +616,10 @@
 
 ---
 
-### 5762. 年迈 / nián mài / [명사] / old
+### 5762. 年迈 / nián mài / [명사] / 오래된
 
 - 한자 풀이:
-  - 年(해) + 迈(한자) → old
+  - 年(한자) + 迈(한자) → 오래된
 - HSK 등급: 7급
 
 <!-- id: hsk_7_4639 -->
@@ -669,17 +669,17 @@
 ### 5767. 生硬 / shēng yìng / [형용사] / stiff
 
 - 한자 풀이:
-  - 生(생기다) + 硬(한자) → stiff
+  - 生(한자) + 硬(한자) → stiff
 - HSK 등급: 7급
 
 <!-- id: hsk_7_4644 -->
 
 ---
 
-### 5768. 国情 / guó qíng / [명사] / the characteristics and circumstanc
+### 5768. 国情 / guó qíng / [명사] / 국가
 
 - 한자 풀이:
-  - 国(한자) + 情(한자) → the characteristics and circumstanc
+  - 国(한자) + 情(한자) → 국가
 - HSK 등급: 7급
 
 <!-- id: hsk_7_4645 -->
@@ -689,7 +689,7 @@
 ### 5769. 供不应求 / gōng bù yìng qiú / [동사] / supply does not meet demand
 
 - 한자 풀이:
-  - 供(한자) + 不(아니다) + 应(한자) + 求(한자) → supply does not meet demand
+  - 供(한자) + 不(한자) + 应(한자) + 求(한자) → supply does not meet demand
 - HSK 등급: 7급
 
 <!-- id: hsk_7_4646 -->
@@ -716,30 +716,30 @@
 
 ---
 
-### 5772. 邻国 / lín guó / [명사] / bordering country
+### 5772. 邻国 / lín guó / [명사] / 국가
 
 - 한자 풀이:
-  - 邻(한자) + 国(한자) → bordering country
+  - 邻(한자) + 国(한자) → 국가
 - HSK 등급: 7급
 
 <!-- id: hsk_7_4649 -->
 
 ---
 
-### 5773. 避暑 / bì shǔ / [명사] / to be away for the summer holidays
+### 5773. 避暑 / bì shǔ / [명사] / 여름
 
 - 한자 풀이:
-  - 避(한자) + 暑(한자) → to be away for the summer holidays
+  - 避(한자) + 暑(한자) → 여름
 - HSK 등급: 7급
 
 <!-- id: hsk_7_4650 -->
 
 ---
 
-### 5774. 元宵节 / Yuán xiāo jié / [명사] / 축제
+### 5774. 元宵节 / Yuán xiāo jié / [명사] / 봄
 
 - 한자 풀이:
-  - 元(한자) + 宵(한자) + 节(한자) → 축제
+  - 元(한자) + 宵(한자) + 节(한자) → 봄
 - HSK 등급: 7급
 
 <!-- id: hsk_7_4651 -->
@@ -826,10 +826,10 @@
 
 ---
 
-### 5783. 热腾腾 / rè téng téng / [명사] / steaming hot
+### 5783. 热腾腾 / rè téng téng / [명사] / 뜨겁다
 
 - 한자 풀이:
-  - 热(한자) + 腾(한자) + 腾(한자) → steaming hot
+  - 热(한자) + 腾(한자) + 腾(한자) → 뜨겁다
 - HSK 등급: 7급
 
 <!-- id: hsk_7_4660 -->
@@ -869,7 +869,7 @@
 ### 5787. 不了了之 / bù liǎo liǎo zhī / [동사] / to settle a matter by leaving it un
 
 - 한자 풀이:
-  - 不(아니다) + 了(완료) + 了(완료) + 之(한자) → to settle a matter by leaving it un
+  - 不(한자) + 了(한자) + 了(한자) + 之(한자) → to settle a matter by leaving it un
 - HSK 등급: 7급
 
 <!-- id: hsk_7_4664 -->
@@ -896,10 +896,10 @@
 
 ---
 
-### 5790. 整数 / zhěng shù / [명사] / whole number
+### 5790. 整数 / zhěng shù / [명사] / 숫자
 
 - 한자 풀이:
-  - 整(한자) + 数(한자) → whole number
+  - 整(한자) + 数(한자) → 숫자
 - HSK 등급: 7급
 
 <!-- id: hsk_7_4667 -->
@@ -919,7 +919,7 @@
 ### 5792. 传人 / chuán rén / [명사] / 가르치다
 
 - 한자 풀이:
-  - 传(한자) + 人(사람) → 가르치다
+  - 传(한자) + 人(한자) → 가르치다
 - HSK 등급: 7급
 
 <!-- id: hsk_7_4669 -->
@@ -956,10 +956,10 @@
 
 ---
 
-### 5796. 竣工 / jùn gōng / [동사] / 완성하다
+### 5796. 竣工 / jùn gōng / [동사] / to complete a project
 
 - 한자 풀이:
-  - 竣(한자) + 工(한자) → 완성하다
+  - 竣(한자) + 工(한자) → to complete a project
 - HSK 등급: 7급
 
 <!-- id: hsk_7_4673 -->
@@ -969,7 +969,7 @@
 ### 5797. 水温 / shuǐ wēn / [명사] / 물
 
 - 한자 풀이:
-  - 水(물) + 温(한자) → 물
+  - 水(한자) + 温(한자) → 물
 - HSK 등급: 7급
 
 <!-- id: hsk_7_4674 -->
@@ -996,10 +996,10 @@
 
 ---
 
-### 5800. 燃放 / rán fàng / [동사] / to light
+### 5800. 燃放 / rán fàng / [동사] / 가볍다
 
 - 한자 풀이:
-  - 燃(한자) + 放(한자) → to light
+  - 燃(한자) + 放(한자) → 가볍다
 - HSK 등급: 7급
 
 <!-- id: hsk_7_4677 -->

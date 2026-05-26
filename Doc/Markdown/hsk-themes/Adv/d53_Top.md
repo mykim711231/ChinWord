@@ -6,10 +6,10 @@
 
 ---
 
-### 5201. 绿地 / lǜ dì / [명사] / green area
+### 5201. 绿地 / lǜ dì / [명사] / 초록
 
 - 한자 풀이:
-  - 绿(한자) + 地(땅) → green area
+  - 绿(한자) + 地(한자) → 초록
 - HSK 등급: 7급
 
 <!-- id: hsk_7_4078 -->
@@ -19,7 +19,7 @@
 ### 5202. 一言不发 / yī yán bù fā / [동사] / 말하다
 
 - 한자 풀이:
-  - 一(한자) + 言(한자) + 不(아니다) + 发(한자) → 말하다
+  - 一(한자) + 言(한자) + 不(한자) + 发(한자) → 말하다
 - HSK 등급: 7급
 
 <!-- id: hsk_7_4079 -->
@@ -29,17 +29,17 @@
 ### 5203. 诸如此类 / zhū rú cǐ lèi / [명사] / 좋아하다
 
 - 한자 풀이:
-  - 诸(한자) + 如(한자) + 此(한자) + 类(한자) → 좋아하다
+  - 诸(한자) + 如(같다) + 此(한자) + 类(한자) → 좋아하다
 - HSK 등급: 7급
 
 <!-- id: hsk_7_4080 -->
 
 ---
 
-### 5204. 路况 / lù kuàng / [명사] / road condition
+### 5204. 路况 / lù kuàng / [명사] / 길
 
 - 한자 풀이:
-  - 路(한자) + 况(한자) → road condition
+  - 路(한자) + 况(한자) → 길
 - HSK 등급: 7급
 
 <!-- id: hsk_7_4081 -->
@@ -79,7 +79,7 @@
 ### 5208. 死心 / sǐ xīn / [동사] / 주다
 
 - 한자 풀이:
-  - 死(한자) + 心(마음) → 주다
+  - 死(한자) + 心(한자) → 주다
 - HSK 등급: 7급
 
 <!-- id: hsk_7_4085 -->
@@ -89,7 +89,7 @@
 ### 5209. 犹豫不决 / yóu yù bù jué / [동사] / hesitancy
 
 - 한자 풀이:
-  - 犹(한자) + 豫(한자) + 不(아니다) + 决(한자) → hesitancy
+  - 犹(한자) + 豫(한자) + 不(한자) + 决(한자) → hesitancy
 - HSK 등급: 7급
 
 <!-- id: hsk_7_4086 -->
@@ -119,7 +119,7 @@
 ### 5212. 人文 / rén wén / [명사] / humanities
 
 - 한자 풀이:
-  - 人(사람) + 文(한자) → humanities
+  - 人(한자) + 文(한자) → humanities
 - HSK 등급: 7급
 
 <!-- id: hsk_7_4089 -->
@@ -129,7 +129,7 @@
 ### 5213. 口才 / kǒu cái / [명사] / eloquence
 
 - 한자 풀이:
-  - 口(입) + 才(한자) → eloquence
+  - 口(한자) + 才(한자) → eloquence
 - HSK 등급: 7급
 
 <!-- id: hsk_7_4090 -->
@@ -139,7 +139,7 @@
 ### 5214. 脱口而出 / tuō kǒu ér chū / [동사] / to blurt out
 
 - 한자 풀이:
-  - 脱(한자) + 口(입) + 而(한자) + 出(한자) → to blurt out
+  - 脱(한자) + 口(한자) + 而(한자) + 出(한자) → to blurt out
 - HSK 등급: 7급
 
 <!-- id: hsk_7_4091 -->
@@ -199,7 +199,7 @@
 ### 5220. 仅次于 / jǐn cì yú / [동사] / second only to ...
 
 - 한자 풀이:
-  - 仅(한자) + 次(한자) + 于(한자) → second only to ...
+  - 仅(한자) + 次(한자) + 于(곳) → second only to ...
 - HSK 등급: 7급
 
 <!-- id: hsk_7_4097 -->
@@ -239,7 +239,7 @@
 ### 5224. 个案 / gè àn / [명사] / individual case
 
 - 한자 풀이:
-  - 个(개) + 案(한자) → individual case
+  - 个(한자) + 案(한자) → individual case
 - HSK 등급: 7급
 
 <!-- id: hsk_7_4101 -->
@@ -259,7 +259,7 @@
 ### 5226. 成家 / chéng jiā / [동사] / to settle down and get married
 
 - 한자 풀이:
-  - 成(한자) + 家(집) → to settle down and get married
+  - 成(한자) + 家(한자) → to settle down and get married
 - HSK 등급: 7급
 
 <!-- id: hsk_7_4103 -->
@@ -299,7 +299,7 @@
 ### 5230. 一目了然 / yī mù liǎo rán / [동사] / obvious at a glance
 
 - 한자 풀이:
-  - 一(한자) + 目(한자) + 了(완료) + 然(한자) → obvious at a glance
+  - 一(한자) + 目(한자) + 了(한자) + 然(한자) → obvious at a glance
 - HSK 등급: 7급
 
 <!-- id: hsk_7_4107 -->
@@ -309,17 +309,17 @@
 ### 5231. 火速 / huǒ sù / [부사] / at top speed
 
 - 한자 풀이:
-  - 火(불) + 速(한자) → at top speed
+  - 火(한자) + 速(한자) → at top speed
 - HSK 등급: 7급
 
 <!-- id: hsk_7_4108 -->
 
 ---
 
-### 5232. 亮丽 / liàng lì / [형용사] / bright and beautiful
+### 5232. 亮丽 / liàng lì / [형용사] / 아름답다
 
 - 한자 풀이:
-  - 亮(한자) + 丽(한자) → bright and beautiful
+  - 亮(한자) + 丽(한자) → 아름답다
 - HSK 등급: 7급
 
 <!-- id: hsk_7_4109 -->
@@ -429,7 +429,7 @@
 ### 5243. 担子 / dàn zi / [명사] / carrying pole and the loads on it
 
 - 한자 풀이:
-  - 担(한자) + 子(아들) → carrying pole and the loads on it
+  - 担(한자) + 子(한자) → carrying pole and the loads on it
 - HSK 등급: 7급
 
 <!-- id: hsk_7_4120 -->
@@ -459,7 +459,7 @@
 ### 5246. 俗话说 / sú huà shuō / [동사] / as the proverb says
 
 - 한자 풀이:
-  - 俗(한자) + 话(한자) + 说(말하다) → as the proverb says
+  - 俗(한자) + 话(한자) + 说(한자) → as the proverb says
 - HSK 등급: 7급
 
 <!-- id: hsk_7_4123 -->
@@ -489,7 +489,7 @@
 ### 5249. 一心一意 / yī xīn yī yì / [명사] / concentrating one's thoughts and ef
 
 - 한자 풀이:
-  - 一(한자) + 心(마음) + 一(한자) + 意(한자) → concentrating one's thoughts and ef
+  - 一(한자) + 心(한자) + 一(한자) + 意(한자) → concentrating one's thoughts and ef
 - HSK 등급: 7급
 
 <!-- id: hsk_7_4126 -->
@@ -516,10 +516,10 @@
 
 ---
 
-### 5252. 机舱 / jī cāng / [명사] / cabin of a plane
+### 5252. 机舱 / jī cāng / [명사] / 비행기
 
 - 한자 풀이:
-  - 机(한자) + 舱(한자) → cabin of a plane
+  - 机(한자) + 舱(한자) → 비행기
 - HSK 등급: 7급
 
 <!-- id: hsk_7_4129 -->
@@ -536,10 +536,10 @@
 
 ---
 
-### 5254. 健美 / jiàn měi / [명사] / healthy and beautiful
+### 5254. 健美 / jiàn měi / [명사] / 건강한
 
 - 한자 풀이:
-  - 健(한자) + 美(한자) → healthy and beautiful
+  - 健(한자) + 美(한자) → 건강한
 - HSK 등급: 7급
 
 <!-- id: hsk_7_4131 -->
@@ -676,10 +676,10 @@
 
 ---
 
-### 5268. 热气球 / rè qì qiú / [명사] / hot air balloon
+### 5268. 热气球 / rè qì qiú / [명사] / 뜨겁다
 
 - 한자 풀이:
-  - 热(한자) + 气(한자) + 球(한자) → hot air balloon
+  - 热(한자) + 气(한자) + 球(한자) → 뜨겁다
 - HSK 등급: 7급
 
 <!-- id: hsk_7_4145 -->
@@ -746,10 +746,10 @@
 
 ---
 
-### 5275. 杜绝 / dù jué / [동사] / 끝나다
+### 5275. 杜绝 / dù jué / [동사] / to put an end to
 
 - 한자 풀이:
-  - 杜(한자) + 绝(한자) → 끝나다
+  - 杜(한자) + 绝(한자) → to put an end to
 - HSK 등급: 7급
 
 <!-- id: hsk_7_4152 -->
@@ -786,10 +786,10 @@
 
 ---
 
-### 5279. 红火 / hóng huǒ / [형용사] / 번영하는
+### 5279. 红火 / hóng huǒ / [형용사] / prosperous
 
 - 한자 풀이:
-  - 红(한자) + 火(불) → 번영하는
+  - 红(한자) + 火(한자) → prosperous
 - HSK 등급: 7급
 
 <!-- id: hsk_7_4156 -->
@@ -829,7 +829,7 @@
 ### 5283. 目瞪口呆 / mù dèng kǒu dāi / [명사] / dumbstruck
 
 - 한자 풀이:
-  - 目(한자) + 瞪(한자) + 口(입) + 呆(한자) → dumbstruck
+  - 目(한자) + 瞪(한자) + 口(한자) + 呆(한자) → dumbstruck
 - HSK 등급: 7급
 
 <!-- id: hsk_7_4160 -->
@@ -919,7 +919,7 @@
 ### 5292. 饱和 / bǎo hé / [동사] / saturated
 
 - 한자 풀이:
-  - 饱(한자) + 和(그리고) → saturated
+  - 饱(한자) + 和(한자) → saturated
 - HSK 등급: 7급
 
 <!-- id: hsk_7_4169 -->
@@ -939,7 +939,7 @@
 ### 5294. 一成不变 / yī chéng bù biàn / [동사] / immutable
 
 - 한자 풀이:
-  - 一(한자) + 成(한자) + 不(아니다) + 变(한자) → immutable
+  - 一(한자) + 成(한자) + 不(한자) + 变(한자) → immutable
 - HSK 등급: 7급
 
 <!-- id: hsk_7_4171 -->
@@ -966,10 +966,10 @@
 
 ---
 
-### 5297. 牡丹 / Mǔ dan / [명사] / Mudan District of Heze City 菏泽市, Sh
+### 5297. 牡丹 / Mǔ dan / [명사] / 도시
 
 - 한자 풀이:
-  - 牡(한자) + 丹(한자) → Mudan District of Heze City 菏泽市, Sh
+  - 牡(한자) + 丹(한자) → 도시
 - HSK 등급: 7급
 
 <!-- id: hsk_7_4174 -->
