@@ -1,0 +1,298 @@
+# 상위 6701–6729위 (HSK 6-7급)
+
+> 순위: 6701–6729
+> 수준: HSK 6-7급 빈출
+> 단어 수: 29개
+
+---
+
+### 6701. 领军 / lǐng jūn / [명사] / 이끌다
+
+- 한자 풀이:
+  - 领(한자) + 军(한자) → 이끌다
+- HSK 등급: 7급
+
+<!-- id: hsk_7_5578 -->
+
+---
+
+### 6702. 聋人 / lóng rén / [명사] / deaf person
+
+- 한자 풀이:
+  - 聋(한자) + 人(사람) → deaf person
+- HSK 등급: 7급
+
+<!-- id: hsk_7_5579 -->
+
+---
+
+### 6703. 沐浴露 / mù yù lù / [명사] / shower gel
+
+- 한자 풀이:
+  - 沐(한자) + 浴(한자) + 露(한자) → shower gel
+- HSK 등급: 7급
+
+<!-- id: hsk_7_5580 -->
+
+---
+
+### 6704. 哪知道 / nǎ zhī dào / [명사] / who would have thought that ...?
+
+- 한자 풀이:
+  - 哪(한자) + 知(한자) + 道(한자) → who would have thought that ...?
+- HSK 등급: 7급
+
+<!-- id: hsk_7_5581 -->
+
+---
+
+### 6705. 难得一见 / nán dé yī jiàn / [명사] / rarely seen
+
+- 한자 풀이:
+  - 难(한자) + 得(한자) + 一(한자) + 见(한자) → rarely seen
+- HSK 등급: 7급
+
+<!-- id: hsk_7_5582 -->
+
+---
+
+### 6706. 难以想象 / nányǐxiǎngxiàng / [명사] / Unimaginable
+
+- 한자 풀이:
+  - 难(한자) + 以(이용하여) + 想(한자) + 象(한자) → Unimaginable
+- HSK 등급: 7급
+
+<!-- id: hsk_7_5583 -->
+
+---
+
+### 6707. 人缘儿 / rén yuán r / [명사] / erhua variant of 人缘
+
+- 한자 풀이:
+  - 人(사람) + 缘(한자) + 儿(한자) → erhua variant of 人缘
+- HSK 등급: 7급
+
+<!-- id: hsk_7_5584 -->
+
+---
+
+### 6708. 如果说 / rú guǒ shuō / [명사] / if
+
+- 한자 풀이:
+  - 如(한자) + 果(한자) + 说(말하다) → if
+- HSK 등급: 7급
+
+<!-- id: hsk_7_5585 -->
+
+---
+
+### 6709. 软实力 / ruǎn shí lì / [명사] / soft power
+
+- 한자 풀이:
+  - 软(한자) + 实(한자) + 力(한자) → soft power
+- HSK 등급: 7급
+
+<!-- id: hsk_7_5586 -->
+
+---
+
+### 6710. 时好时坏 / shí hǎo shí huài / [명사] / sometimes good, sometimes bad
+
+- 한자 풀이:
+  - 时(한자) + 好(좋다) + 时(한자) + 坏(한자) → sometimes good, sometimes bad
+- HSK 등급: 7급
+
+<!-- id: hsk_7_5587 -->
+
+---
+
+### 6711. 受过 / shòu guò / [명사] / 가져가다
+
+- 한자 풀이:
+  - 受(한자) + 过(한자) → 가져가다
+- HSK 등급: 7급
+
+<!-- id: hsk_7_5588 -->
+
+---
+
+### 6712. 双赢 / shuāng yíng / [명사] / profitable to both sides
+
+- 한자 풀이:
+  - 双(한자) + 赢(한자) → profitable to both sides
+- HSK 등급: 7급
+
+<!-- id: hsk_7_5589 -->
+
+---
+
+### 6713. 谁知道 / shéi zhī dào / [명사] / God knows...
+
+- 한자 풀이:
+  - 谁(한자) + 知(한자) + 道(한자) → God knows...
+- HSK 등급: 7급
+
+<!-- id: hsk_7_5590 -->
+
+---
+
+### 6714. 说干就干 / shuō gàn jiù gàn / [명사] / 하다
+
+- 한자 풀이:
+  - 说(말하다) + 干(한자) + 就(한자) + 干(한자) → 하다
+- HSK 등급: 7급
+
+<!-- id: hsk_7_5591 -->
+
+---
+
+### 6715. 说老实话 / shuō lǎo shi huà / [명사] / to be honest
+
+- 한자 풀이:
+  - 说(말하다) + 老(한자) + 实(한자) + 话(한자) → to be honest
+- HSK 등급: 7급
+
+<!-- id: hsk_7_5592 -->
+
+---
+
+### 6716. 说起来 / shuō qǐlái / [명사] / 말하다
+
+- 한자 풀이:
+  - 说(말하다) + 起(한자) + 来(한자) → 말하다
+- HSK 등급: 7급
+
+<!-- id: hsk_7_5593 -->
+
+---
+
+### 6717. 说真的 / shuō zhēn de / [명사] / 말해주다
+
+- 한자 풀이:
+  - 说(말하다) + 真(한자) + 的(~의) → 말해주다
+- HSK 등급: 7급
+
+<!-- id: hsk_7_5594 -->
+
+---
+
+### 6718. 私家车 / sī jiā chē / [명사] / private car
+
+- 한자 풀이:
+  - 私(한자) + 家(집) + 车(한자) → private car
+- HSK 등급: 7급
+
+<!-- id: hsk_7_5595 -->
+
+---
+
+### 6719. 搜救 / sōu jiù / [명사] / 찾다
+
+- 한자 풀이:
+  - 搜(한자) + 救(한자) → 찾다
+- HSK 등급: 7급
+
+<!-- id: hsk_7_5596 -->
+
+---
+
+### 6720. 贪玩儿 / tān wánr5 / [명사] / Greedy
+
+- 한자 풀이:
+  - 贪(한자) + 玩(한자) + 儿(한자) → Greedy
+- HSK 등급: 7급
+
+<!-- id: hsk_7_5597 -->
+
+---
+
+### 6721. 讨人喜欢 / tǎo rén xǐ huan / [명사] / to attract people's affection
+
+- 한자 풀이:
+  - 讨(한자) + 人(사람) + 喜(한자) + 欢(한자) → to attract people's affection
+- HSK 등급: 7급
+
+<!-- id: hsk_7_5598 -->
+
+---
+
+### 6722. 性价比 / xìng jià bǐ / [명사] / cost-performance ratio
+
+- 한자 풀이:
+  - 性(한자) + 价(한자) + 比(한자) → cost-performance ratio
+- HSK 등급: 7급
+
+<!-- id: hsk_7_5599 -->
+
+---
+
+### 6723. 一卡通 / Yī kǎ tōng / [명사] / the name of various contactless sma
+
+- 한자 풀이:
+  - 一(한자) + 卡(한자) + 通(한자) → the name of various contactless sma
+- HSK 등급: 7급
+
+<!-- id: hsk_7_5600 -->
+
+---
+
+### 6724. 与时俱进 / yǔ shí jù jìn / [명사] / abreast of modern developments
+
+- 한자 풀이:
+  - 与(한자) + 时(한자) + 俱(한자) + 进(한자) → abreast of modern developments
+- HSK 등급: 7급
+
+<!-- id: hsk_7_5601 -->
+
+---
+
+### 6725. 原创 / yuán chuàng / [명사] / to create
+
+- 한자 풀이:
+  - 原(한자) + 创(한자) → to create
+- HSK 등급: 7급
+
+<!-- id: hsk_7_5602 -->
+
+---
+
+### 6726. 着眼于 / zhuóyǎn yú / [명사] / Focus on
+
+- 한자 풀이:
+  - 着(한자) + 眼(한자) + 于(한자) → Focus on
+- HSK 등급: 7급
+
+<!-- id: hsk_7_5603 -->
+
+---
+
+### 6727. 正能量 / zhèng néng liàng / [명사] / positive energy
+
+- 한자 풀이:
+  - 正(한자) + 能(한자) + 量(한자) → positive energy
+- HSK 등급: 7급
+
+<!-- id: hsk_7_5604 -->
+
+---
+
+### 6728. 追尾 / zhuī wěi / [명사] / to tailgate
+
+- 한자 풀이:
+  - 追(한자) + 尾(한자) → to tailgate
+- HSK 등급: 7급
+
+<!-- id: hsk_7_5605 -->
+
+---
+
+### 6729. 做证 / zuò zhèng / [명사] / variant of 作证
+
+- 한자 풀이:
+  - 做(한자) + 证(한자) → variant of 作证
+- HSK 등급: 7급
+
+<!-- id: hsk_7_5606 -->
+
+---
+
