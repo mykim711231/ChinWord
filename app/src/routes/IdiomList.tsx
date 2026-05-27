@@ -289,7 +289,7 @@ function IdiomEntrySection({
         <SpeakerButton text={entry.word} pinyin={entry.pinyin} />
         <div className="flex-1 min-w-0">
           <div className="flex items-baseline flex-wrap gap-x-2 gap-y-1">
-            <span className="hanzi-text text-2xl leading-tight">{entry.word}</span>
+            <span className="hanzi-text text-xl leading-tight">{entry.word}</span>
             <span className="pinyin-text text-sm">({entry.pinyin})</span>
             {entry.pos ? (
               <span className="text-xs text-muted">[{entry.pos}]</span>
