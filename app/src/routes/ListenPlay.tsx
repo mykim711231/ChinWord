@@ -223,6 +223,34 @@ export default function ListenPlay(): JSX.Element {
           </button>
         </div>
 
+        {/* Loop & Shuffle toggles — 카드 상단 */}
+        <div className="mb-3 flex items-center justify-center gap-3">
+          <button
+            type="button"
+            onClick={() => setLoop(!loop)}
+            aria-pressed={loop}
+            className={
+              "inline-flex items-center gap-1 rounded-chip px-3 py-1 text-sm border " +
+              (loop ? "bg-primary text-white border-primary" : "bg-surface text-fg border-divider")
+            }
+          >
+            <Repeat size={14} aria-hidden />
+            <span>반복 재생</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => setShuffle(!shuffle)}
+            aria-pressed={shuffle}
+            className={
+              "inline-flex items-center gap-1 rounded-chip px-3 py-1 text-sm border " +
+              (shuffle ? "bg-primary text-white border-primary" : "bg-surface text-fg border-divider")
+            }
+          >
+            <Shuffle size={14} aria-hidden />
+            <span>무작위</span>
+          </button>
+        </div>
+
         {finished ? (
           <div className="card text-center py-8 min-h-[220px] flex flex-col justify-center items-center gap-2">
             <div className="text-success">
@@ -324,34 +352,6 @@ export default function ListenPlay(): JSX.Element {
             aria-label="다음"
           >
             <SkipForward size={18} aria-hidden />
-          </button>
-        </div>
-
-        {/* Loop & Shuffle toggles */}
-        <div className="mt-4 flex items-center justify-center gap-3">
-          <button
-            type="button"
-            onClick={() => setLoop(!loop)}
-            aria-pressed={loop}
-            className={
-              "inline-flex items-center gap-1 rounded-chip px-3 py-1 text-sm border " +
-              (loop ? "bg-primary text-white border-primary" : "bg-surface text-fg border-divider")
-            }
-          >
-            <Repeat size={14} aria-hidden />
-            <span>반복 재생</span>
-          </button>
-          <button
-            type="button"
-            onClick={() => setShuffle(!shuffle)}
-            aria-pressed={shuffle}
-            className={
-              "inline-flex items-center gap-1 rounded-chip px-3 py-1 text-sm border " +
-              (shuffle ? "bg-primary text-white border-primary" : "bg-surface text-fg border-divider")
-            }
-          >
-            <Shuffle size={14} aria-hidden />
-            <span>무작위</span>
           </button>
         </div>
 

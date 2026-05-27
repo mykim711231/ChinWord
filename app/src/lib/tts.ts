@@ -477,11 +477,26 @@ function abortableSleep(ms: number, signal?: AbortSignal): Promise<void> {
  * 한국어 TTS — Web Speech API 전용 (모든 기기에 ko-KR 음성 내장).
  * 사전녹음 mp3 불필요.
  */
+/**
+ * 한국어 의미 텍스트 정리 — TTS 엔진이 기호를 그대로 읽는 것을 방지.
+ *
+ * - `~` → 빈 문자열 (TTS가 "물결표"로 읽음, 의미 없는 placeholder)
+ * - `…` → 빈 문자열 (TTS가 "말줄임표"로 읽음)
+ * - 연속 공백 정리, 양끝 trim
+ */
+function cleanKoreanForTts(text: string): string {
+  return text
+    .replace(/[~…]/g, "")
+    .replace(/\s{2,}/g, " ")
+    .trim();
+}
+
 export function speakKoreanAsync(
   text: string,
   opts: { rate?: number; signal?: AbortSignal } = {},
 ): Promise<void> {
-  if (!text) return Promise.resolve();
+  const cleaned = cleanKoreanForTts(text);
+  if (!cleaned) return Promise.resolve();
   if (typeof window === "undefined" || !("speechSynthesis" in window))
     return Promise.resolve();
   if (opts.signal?.aborted) return Promise.resolve();
@@ -502,7 +517,7 @@ export function speakKoreanAsync(
     opts.signal?.addEventListener("abort", onAbort, { once: true });
 
     safeCancelSynth();
-    const u = new SpeechSynthesisUtterance(text);
+    const u = new SpeechSynthesisUtterance(cleaned);
     u.lang = "ko-KR";
     // 한국어 음성 선택 — ko-KR, ko 등
     const voices = getVoices();
