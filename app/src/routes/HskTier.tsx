@@ -10,10 +10,7 @@ import {
   hskWordsByLevel,
   type HskLevel,
 } from "@/lib/hsk";
-import {
-  hskThemesByTier,
-  getHanjaBreakdown,
-} from "@/lib/hsk-themes";
+import { hskThemesByTier } from "@/lib/hsk-themes";
 import type { HskEntry } from "@/types";
 
 const PAGE_SIZE = 50;
@@ -523,8 +520,6 @@ function RowList({
 
 function HskRow({ entry, ordinal }: { entry: HskEntry; ordinal: number }) {
   const m = displayMeaning(entry);
-  const [expanded, setExpanded] = useState(false);
-  const breakdown = useMemo(() => getHanjaBreakdown(entry.id), [entry.id]);
 
   return (
     <li className="py-3">
@@ -555,36 +550,6 @@ function HskRow({ entry, ordinal }: { entry: HskEntry; ordinal: number }) {
               </span>
             ) : null}
           </div>
-          {/* 한자 풀이 (hsk-enrichment.json 데이터) */}
-          {breakdown && breakdown.length > 0 ? (
-            expanded ? (
-              <div className="mt-2">
-                <button
-                  type="button"
-                  onClick={() => setExpanded(false)}
-                  className="text-[11px] text-primary mb-1"
-                >
-                  한자 풀이 접기 ▲
-                </button>
-                <ul className="ml-3 list-disc list-outside marker:text-muted space-y-0.5 text-xs">
-                  {breakdown.map((h, i) => (
-                    <li key={i}>
-                      <span className="font-medium">{h.char}</span>
-                      <span className="text-muted">:</span> {h.detail}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ) : (
-              <button
-                type="button"
-                onClick={() => setExpanded(true)}
-                className="mt-1 text-[11px] text-primary"
-              >
-                한자 풀이 보기 ▼
-              </button>
-            )
-          ) : null}
         </div>
         <FavStar id={entry.id} />
       </div>

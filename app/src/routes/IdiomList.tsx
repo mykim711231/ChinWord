@@ -92,7 +92,7 @@ export default function IdiomList() {
         <ol className="mt-3 list-none divide-y divide-divider">
           {entries.map((e, i) => (
             <li key={e.id} id={e.id} className="scroll-mt-32">
-              <IdiomEntrySection entry={e} ordinal={i + 1} />
+              <IdiomFlatRow entry={e} ordinal={i + 1} />
             </li>
           ))}
           {entries.length === 0 ? (
@@ -376,5 +376,36 @@ function IdiomEntrySection({
         </div>
       ) : null}
     </section>
+  );
+}
+
+/** 성어 전체보기용 평면 행 — 간체(병음) + 뜻만 표시 */
+function IdiomFlatRow({
+  entry,
+  ordinal,
+}: {
+  entry: import("@/types").IdiomEntry;
+  ordinal: number;
+}) {
+  return (
+    <div className="py-3">
+      <div className="flex items-start gap-3">
+        <span className="text-muted tabular-nums text-xs pt-1 w-10 flex-none text-right">
+          {ordinal}
+        </span>
+        <SpeakerButton text={entry.word} pinyin={entry.pinyin} />
+        <div className="min-w-0 flex-1">
+          <div className="flex items-baseline flex-wrap gap-x-2 gap-y-0.5">
+            <span className="hanzi-text text-xl leading-tight">{entry.word}</span>
+            <span className="pinyin-text text-xs">({entry.pinyin})</span>
+            {entry.pos ? (
+              <span className="text-[11px] text-muted">[{entry.pos}]</span>
+            ) : null}
+          </div>
+          <div className="mt-0.5 text-sm">{entry.meaning}</div>
+        </div>
+        <FavStar id={entry.id} />
+      </div>
+    </div>
   );
 }
