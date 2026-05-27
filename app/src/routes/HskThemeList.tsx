@@ -211,34 +211,21 @@ function VocabEntrySection({
 
   return (
     <section className="py-5">
-      {/* 헤더 — 한자 + 루비 병음 + 품사 + 뜻 */}
-      <div className="flex items-end gap-2">
-        <span className="text-muted tabular-nums font-bold text-base pb-1">
+      {/* 헤더 — 번호 · 스피커 · 간체(병음) [품사] · 즐겨찾기 */}
+      <div className="flex items-start gap-2">
+        <span className="text-muted tabular-nums font-bold text-base mt-0.5">
           {ordinal}.
         </span>
         <SpeakerButton text={entry.word} pinyin={entry.pinyin} />
         <div className="flex-1 min-w-0">
-          <div className="flex items-end flex-wrap gap-x-3 gap-y-1">
-            <h3 className="flex items-end gap-2 m-0">
-              {hanziChars.map((ch, i) => (
-                <span
-                  key={i}
-                  className="inline-flex flex-col items-center leading-none"
-                >
-                  {perCharPinyin?.[i] ? (
-                    <span className="pinyin-text text-base mb-1 leading-none">
-                      {perCharPinyin[i]}
-                    </span>
-                  ) : null}
-                  <span className="text-3xl leading-none">{ch}</span>
-                </span>
-              ))}
-            </h3>
+          <div className="flex items-baseline flex-wrap gap-x-2 gap-y-1">
+            <span className="hanzi-text text-2xl leading-tight">{entry.word}</span>
+            <span className="pinyin-text text-sm">({entry.pinyin})</span>
             {entry.pos ? (
-              <span className="text-xs text-muted pb-1">[{entry.pos}]</span>
+              <span className="text-xs text-muted">[{entry.pos}]</span>
             ) : null}
           </div>
-          <div className="mt-2 text-base">{entry.meaning}</div>
+          <div className="mt-1 text-base">{entry.meaning}</div>
         </div>
         <FavStar id={entry.id} />
       </div>
@@ -261,12 +248,7 @@ function VocabEntrySection({
             <ul className="ml-5 list-disc list-outside marker:text-muted space-y-1">
               {entry.hanjaBreakdown.map((h, i) => (
                 <li key={i}>
-                  <span className="font-medium mr-1">{h.char}</span>
-                  {perCharPinyin?.[i] ? (
-                    <span className="pinyin-text text-sm mr-1">
-                      ({perCharPinyin[i]})
-                    </span>
-                  ) : null}
+                  <span className="font-medium">{h.char}({perCharPinyin?.[i] ?? ""})</span>
                   <span className="text-muted">:</span>{" "}
                   <span>{h.detail}</span>
                 </li>

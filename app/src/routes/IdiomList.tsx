@@ -1,6 +1,6 @@
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import { useLayoutEffect, useMemo, useState } from "react";
-import { Headphones, PenLine, ChevronRight } from "lucide-react";
+import { Headphones, PenLine, ChevronRight, Sparkles } from "lucide-react";
 import { TopBar } from "@/components/TopBar";
 import { PageShell } from "@/components/PageShell";
 import { FavStar } from "@/components/FavStar";
@@ -57,6 +57,50 @@ export default function IdiomList() {
     const s = useListen.getState();
     s.setScope({ kind: "theme", groupId: id });
     navigate("/listen/play");
+  }
+
+  // 전체 보기 모드 — 모든 그룹의 성어를 하나의 리스트로 표시
+  const allEntries = useMemo(
+    () => htGroups.flatMap((g) => g.entries),
+    [htGroups],
+  );
+
+  if (groupId === "all") {
+    const q = filter.trim().toLowerCase();
+    const entries = !q
+      ? allEntries
+      : allEntries.filter(
+          (e) =>
+            e.word.includes(q) ||
+            e.pinyin.toLowerCase().includes(q) ||
+            e.meaning.toLowerCase().includes(q),
+        );
+    return (
+      <PageShell>
+        <TopBar title="고사성어 · 전체" subtitle={`${allEntries.length}개`} back />
+
+        <div className="mt-3">
+          <input
+            type="search"
+            placeholder="검색 (한자·병음·뜻)"
+            value={filter}
+            onChange={(e) => setFilter(e.target.value)}
+            className="w-full rounded-btn border border-divider bg-surface px-3 py-2 text-sm"
+          />
+        </div>
+
+        <ol className="mt-3 list-none divide-y divide-divider">
+          {entries.map((e, i) => (
+            <li key={e.id} id={e.id} className="scroll-mt-32">
+              <IdiomEntrySection entry={e} ordinal={i + 1} />
+            </li>
+          ))}
+          {entries.length === 0 ? (
+            <li className="text-center text-muted py-6 text-sm">검색 결과 없음</li>
+          ) : null}
+        </ol>
+      </PageShell>
+    );
   }
 
   if (groupId && group) {
@@ -121,7 +165,6 @@ export default function IdiomList() {
           />
         </div>
 
-        {/* Entry stack — 플레인 페이지 섹션, 항목 간 divider. 카드 메타포는 Flashcards 전용. */}
         <ol className="mt-3 list-none divide-y divide-divider">
           {entries.map((e, i) => (
             <li
@@ -173,19 +216,35 @@ export default function IdiomList() {
         <span className="text-sm text-primary">시작 →</span>
       </button>
 
+      {/* 전체 보기 */}
+      <Link
+        to="/vocab/idioms/all"
+        className="mt-3 card w-full flex items-center justify-between hover:shadow-lg transition"
+      >
+        <div className="flex items-center gap-3">
+          <div className="w-9 h-9 rounded-lg bg-primary-soft inline-flex items-center justify-center">
+            <Sparkles size={16} aria-hidden className="text-primary" />
+          </div>
+          <div className="text-left">
+            <div className="font-semibold text-sm">전체 보기</div>
+            <div className="text-[11px] text-muted mt-0.5">
+              성어 {totalIdioms}개 평면 리스트
+            </div>
+          </div>
+        </div>
+        <span className="text-sm text-primary">시작 →</span>
+      </Link>
+
       {/* 성어 그룹 목록 */}
-      <ul className="mt-4 space-y-2">
+      <ul className="mt-3 grid grid-cols-2 gap-2">
         {htGroups.map((g) => (
           <li key={g.id}>
             <Link
               to={`/vocab/idioms/${g.id}`}
-              className="card flex items-center justify-between hover:shadow-lg transition"
+              className="card flex flex-col items-center text-center py-4 hover:shadow-lg transition"
             >
-              <div>
-                <div className="font-semibold text-sm">{g.title}</div>
-                <div className="text-[11px] text-muted mt-0.5">{g.entries.length}개</div>
-              </div>
-              <ChevronRight size={16} aria-hidden className="text-muted" />
+              <div className="font-medium text-sm">{g.title}</div>
+              <div className="text-[10px] text-muted mt-0.5">{g.entries.length}개</div>
             </Link>
           </li>
         ))}
@@ -222,49 +281,53 @@ function IdiomEntrySection({
 
   return (
     <section className="py-5">
-      {/* H3 헤더 — 큰 한자(text-3xl) 위에 글자별 병음(루비), 우측 [품사]/⭐, 뜻은 다음 줄. */}
-      <div className="flex items-end gap-2">
-        <span className="text-muted tabular-nums font-bold text-base pb-1">
+      {/* 헤더 — 번호 · 스피커 · 간체(병음) [성어] · 즐겨찾기 */}
+      <div className="flex items-start gap-2">
+        <span className="text-muted tabular-nums font-bold text-base mt-0.5">
           {ordinal}.
         </span>
         <SpeakerButton text={entry.word} pinyin={entry.pinyin} />
         <div className="flex-1 min-w-0">
-          <div className="flex items-end flex-wrap gap-x-3 gap-y-1">
-            <h3 className="flex items-end gap-2 m-0">
-              {hanziChars.map((ch, i) => (
-                <span
-                  key={i}
-                  className="inline-flex flex-col items-center leading-none"
-                >
-                  {perCharPinyin?.[i] ? (
-                    <span className="pinyin-text text-base mb-1 leading-none">
-                      {perCharPinyin[i]}
-                    </span>
-                  ) : null}
-                  <span className="text-3xl leading-none">{ch}</span>
-                </span>
-              ))}
-            </h3>
+          <div className="flex items-baseline flex-wrap gap-x-2 gap-y-1">
+            <span className="hanzi-text text-2xl leading-tight">{entry.word}</span>
+            <span className="pinyin-text text-sm">({entry.pinyin})</span>
             {entry.pos ? (
-              <span className="text-xs text-muted pb-1">[{entry.pos}]</span>
+              <span className="text-xs text-muted">[{entry.pos}]</span>
             ) : null}
           </div>
-          <div className="mt-2 text-base">{entry.meaning}</div>
+          <div className="mt-1 text-base">{entry.meaning}</div>
         </div>
         <FavStar id={entry.id} />
       </div>
 
-      {/* 2) 글자별 풀이 — 글자는 본문 글자 크기와 동일 */}
+      {/* 1) 의미 — 유래와 원문을 합쳐 하나의 "의미" 블록으로 표시 */}
+      {entry.origin || entry.sourceText ? (
+        <div className="mt-4 text-sm">
+          <div className="font-semibold mb-1">의미</div>
+          {entry.origin ? (
+            <div className="leading-relaxed">{entry.origin}</div>
+          ) : null}
+          {entry.sourceText ? (
+            <div className={`flex items-start gap-2${entry.origin ? " mt-2" : ""}`}>
+              <SpeakerButton
+                text={extractZhPrefix(entry.sourceText)}
+                label="원문 듣기"
+                className="inline-flex items-center justify-center w-7 h-7 min-h-0 rounded text-fg hover:bg-primary-soft active:bg-primary-soft shrink-0"
+              />
+              <span className="flex-1">{entry.sourceText}</span>
+            </div>
+          ) : null}
+        </div>
+      ) : null}
+
+      {/* 2) 글자별 풀이 — 간체(병음) 형식 */}
       {entry.charBreakdown.length > 0 ? (
         <div className="mt-4 text-sm">
           <div className="font-semibold mb-1">글자별 풀이</div>
           <ul className="ml-5 list-disc list-outside marker:text-muted space-y-1">
             {entry.charBreakdown.map((c, i) => (
               <li key={i}>
-                <span className="font-medium mr-1">{c.char}</span>
-                {c.pinyin ? (
-                  <span className="pinyin-text text-sm mr-1">({c.pinyin})</span>
-                ) : null}
+                <span className="font-medium">{c.char}{c.pinyin ? `(${c.pinyin})` : ""}</span>
                 <span className="text-muted">:</span>{" "}
                 <span>{c.meaning}</span>
               </li>
@@ -288,26 +351,6 @@ function IdiomEntrySection({
             </Link>
           </div>
           <InlineStrokes word={entry.word} pinyinPerChar={perCharPinyin} />
-        </div>
-      ) : null}
-
-      {/* 4) 의미 — 유래와 원문을 합쳐 하나의 "의미" 블록으로 표시 */}
-      {entry.origin || entry.sourceText ? (
-        <div className="mt-4 text-sm">
-          <div className="font-semibold mb-1">의미</div>
-          {entry.origin ? (
-            <div className="leading-relaxed">{entry.origin}</div>
-          ) : null}
-          {entry.sourceText ? (
-            <div className={`flex items-start gap-2${entry.origin ? " mt-2" : ""}`}>
-              <SpeakerButton
-                text={extractZhPrefix(entry.sourceText)}
-                label="원문 듣기"
-                className="inline-flex items-center justify-center w-7 h-7 min-h-0 rounded text-fg hover:bg-primary-soft active:bg-primary-soft shrink-0"
-              />
-              <span className="flex-1">{entry.sourceText}</span>
-            </div>
-          ) : null}
         </div>
       ) : null}
 

@@ -3,6 +3,7 @@ import { Link, useLocation, useParams, useSearchParams } from "react-router-dom"
 import { Sparkles } from "lucide-react";
 import { TopBar } from "@/components/TopBar";
 import { PageShell } from "@/components/PageShell";
+import { FavStar } from "@/components/FavStar";
 import { SpeakerButton } from "@/components/SpeakerButton";
 import {
   displayMeaning,
@@ -88,13 +89,36 @@ function BasicTier() {
   }, [level]);
 
   if (!viewAll) {
-    // 랜딩 — 테마 카드 그리드
+    // 랜딩 — 전체 보기 + 테마 카드 그리드
     return (
       <PageShell>
         <TopBar
           title="기초 (HSK 1-4)"
           subtitle={`일상 회화의 뼈대 · ${totalEntries.toLocaleString()}개 (테마별)`}
         />
+
+        <button
+          type="button"
+          onClick={() => {
+            const next = new URLSearchParams(sp);
+            next.set("view", "all");
+            setSp(next, { replace: true });
+          }}
+          className="mt-3 card w-full flex items-center justify-between hover:shadow-lg transition"
+        >
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 rounded-lg bg-primary-soft inline-flex items-center justify-center">
+              <Sparkles size={16} aria-hidden className="text-primary" />
+            </div>
+            <div className="text-left">
+              <div className="font-semibold text-sm">전체 보기</div>
+              <div className="text-[11px] text-muted mt-0.5">
+                HSK 1-4급 {pool.length.toLocaleString()}개 평면 리스트
+              </div>
+            </div>
+          </div>
+          <span className="text-sm text-primary">시작 →</span>
+        </button>
 
         <ul className="mt-3 grid grid-cols-2 gap-2">
           {themes.map((t) => (
@@ -111,29 +135,6 @@ function BasicTier() {
             </li>
           ))}
         </ul>
-
-        <button
-          type="button"
-          onClick={() => {
-            const next = new URLSearchParams(sp);
-            next.set("view", "all");
-            setSp(next, { replace: true });
-          }}
-          className="mt-4 card w-full flex items-center justify-between hover:shadow-lg transition"
-        >
-          <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-lg bg-primary-soft inline-flex items-center justify-center">
-              <Sparkles size={16} aria-hidden className="text-primary" />
-            </div>
-            <div className="text-left">
-              <div className="font-semibold text-sm">전체 보기</div>
-              <div className="text-[11px] text-muted mt-0.5">
-                HSK 1-4급 {pool.length.toLocaleString()}개 평면 리스트
-              </div>
-            </div>
-          </div>
-          <span className="text-sm text-primary">시작 →</span>
-        </button>
       </PageShell>
     );
   }
@@ -186,13 +187,36 @@ function MidTier() {
   const pool = useMemo(() => hskWordsByLevel(5), []);
 
   if (!viewAll) {
-    // 랜딩 — 실제 테마 카드 그리드
+    // 랜딩 — 전체 보기 + 테마 카드 그리드
     return (
       <PageShell>
         <TopBar
           title="중급 (HSK 5)"
           subtitle={`주제별 어휘 확장 · ${totalEntries.toLocaleString()}개 (테마별)`}
         />
+
+        <button
+          type="button"
+          onClick={() => {
+            const next = new URLSearchParams(sp);
+            next.set("view", "all");
+            setSp(next, { replace: true });
+          }}
+          className="mt-3 card w-full flex items-center justify-between hover:shadow-lg transition"
+        >
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 rounded-lg bg-primary-soft inline-flex items-center justify-center">
+              <Sparkles size={16} aria-hidden className="text-primary" />
+            </div>
+            <div className="text-left">
+              <div className="font-semibold text-sm">전체 보기</div>
+              <div className="text-[11px] text-muted mt-0.5">
+                HSK 5급 {pool.length.toLocaleString()}개 평면 리스트
+              </div>
+            </div>
+          </div>
+          <span className="text-sm text-primary">시작 →</span>
+        </button>
 
         <ul className="mt-3 grid grid-cols-2 gap-2">
           {themes.map((t) => (
@@ -209,29 +233,6 @@ function MidTier() {
             </li>
           ))}
         </ul>
-
-        <button
-          type="button"
-          onClick={() => {
-            const next = new URLSearchParams(sp);
-            next.set("view", "all");
-            setSp(next, { replace: true });
-          }}
-          className="mt-4 card w-full flex items-center justify-between hover:shadow-lg transition"
-        >
-          <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-lg bg-primary-soft inline-flex items-center justify-center">
-              <Sparkles size={16} aria-hidden className="text-primary" />
-            </div>
-            <div className="text-left">
-              <div className="font-semibold text-sm">전체 보기</div>
-              <div className="text-[11px] text-muted mt-0.5">
-                HSK 5급 {pool.length.toLocaleString()}개 평면 리스트
-              </div>
-            </div>
-          </div>
-          <span className="text-sm text-primary">시작 →</span>
-        </button>
       </PageShell>
     );
   }
@@ -317,31 +318,13 @@ function AdvTier() {
     );
   }
 
-  // 랜딩 — 빈도 배치 그룹 카드 목록 (클릭 → /vocab/theme/:groupId)
+  // 랜딩 — 전체 보기 + 빈도 배치 2열 그리드
   return (
     <PageShell>
       <TopBar
         title="고급 (HSK 6-9)"
         subtitle={`빈도별 배치 · ${totalEntries.toLocaleString()}개`}
       />
-
-      <div className="mt-3 space-y-2">
-        {themes.map((g) => (
-          <Link
-            key={g.id}
-            to={`/vocab/theme/${g.id}`}
-            className="card flex items-center justify-between hover:shadow-lg transition"
-          >
-            <div>
-              <div className="font-medium text-sm">{g.title}</div>
-              <div className="text-[10px] text-muted mt-0.5">
-                {g.entries.length}개
-              </div>
-            </div>
-            <span className="text-sm text-primary">→</span>
-          </Link>
-        ))}
-      </div>
 
       <button
         type="button"
@@ -350,7 +333,7 @@ function AdvTier() {
           next.set("view", "all");
           setSp(next, { replace: true });
         }}
-        className="mt-4 card w-full flex items-center justify-between hover:shadow-lg transition"
+        className="mt-3 card w-full flex items-center justify-between hover:shadow-lg transition"
       >
         <div className="flex items-center gap-3">
           <div className="w-9 h-9 rounded-lg bg-primary-soft inline-flex items-center justify-center">
@@ -365,6 +348,22 @@ function AdvTier() {
         </div>
         <span className="text-sm text-primary">시작 →</span>
       </button>
+
+      <ul className="mt-3 grid grid-cols-2 gap-2">
+        {themes.map((g) => (
+          <li key={g.id}>
+            <Link
+              to={`/vocab/theme/${g.id}`}
+              className="card flex flex-col items-center text-center py-4 hover:shadow-lg transition"
+            >
+              <div className="font-medium text-sm">{g.title}</div>
+              <div className="text-[10px] text-muted mt-0.5">
+                {g.entries.length}개
+              </div>
+            </Link>
+          </li>
+        ))}
+      </ul>
     </PageShell>
   );
 }
@@ -537,7 +536,7 @@ function HskRow({ entry, ordinal }: { entry: HskEntry; ordinal: number }) {
         <div className="min-w-0 flex-1">
           <div className="flex items-baseline flex-wrap gap-x-2 gap-y-0.5">
             <span className="hanzi-text text-xl leading-tight">{entry.word}</span>
-            <span className="pinyin-text text-xs">{entry.pinyin}</span>
+            <span className="pinyin-text text-xs">({entry.pinyin})</span>
             {entry.pos.length > 0 ? (
               <span className="text-[11px] text-muted">[{entry.pos.join(",")}]</span>
             ) : null}
@@ -587,6 +586,7 @@ function HskRow({ entry, ordinal }: { entry: HskEntry; ordinal: number }) {
             )
           ) : null}
         </div>
+        <FavStar id={entry.id} />
       </div>
     </li>
   );

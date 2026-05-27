@@ -243,7 +243,7 @@ export default function ListenPlay(): JSX.Element {
               </button>
             );
           })}
-          <span className="text-divider mx-0.5">|</span>
+          <span className="text-divider mx-0.5 hidden sm:inline">|</span>
           <button
             type="button"
             onClick={() => setLoop(!loop)}

@@ -50,8 +50,8 @@ function shuffleArray<T>(arr: T[]): T[] {
 export default function StrokesPlay(): JSX.Element {
   const navigate = useNavigate();
   const {
-    scope, area, display, strokeRepeats, loop, shuffle,
-    setDisplay, setStrokeRepeats, setLoop, setShuffle,
+    scope, area, display, intervalSec, strokeRepeats, loop, shuffle,
+    setDisplay, setIntervalSec, setStrokeRepeats, setLoop, setShuffle,
   } = useListen();
   const ttsRate = useSettings((s) => s.ttsRate);
 
@@ -75,6 +75,8 @@ export default function StrokesPlay(): JSX.Element {
   const [error, setError] = useState<string | null>(null);
   const [ready, setReady] = useState(false);
 
+  const intervalRef = useRef(intervalSec);
+  intervalRef.current = intervalSec;
   const strokeRepeatsRef = useRef(strokeRepeats);
   strokeRepeatsRef.current = strokeRepeats;
   const rateRef = useRef(ttsRate);
@@ -302,7 +304,7 @@ export default function StrokesPlay(): JSX.Element {
         if (ac.signal.aborted) return;
       }
 
-      await wait(500, ac);
+      await wait(intervalRef.current * 1000, ac);
       if (ac.signal.aborted) return;
 
       if (rep < strokeRepeatsRef.current) {
@@ -416,7 +418,7 @@ export default function StrokesPlay(): JSX.Element {
               </button>
             );
           })}
-          <span className="text-divider mx-0.5">|</span>
+          <span className="text-divider mx-0.5 hidden sm:inline">|</span>
           <button
             type="button"
             onClick={() => setLoop(!loop)}
@@ -566,8 +568,25 @@ export default function StrokesPlay(): JSX.Element {
           </button>
         </div>
 
-        {/* Inline repeat control */}
-        <div className="mt-5 flex items-center justify-between px-2">
+        {/* Inline interval control */}
+        <div className="mt-5 px-2">
+          <div className="flex items-center justify-between mb-1">
+            <span className="text-xs text-muted">카드 간격</span>
+            <span className="text-sm tabular-nums">{intervalSec.toFixed(1)}s</span>
+          </div>
+          <input
+            type="range"
+            min={0.3}
+            max={5}
+            step={0.1}
+            value={intervalSec}
+            onChange={(e) => setIntervalSec(Number(e.target.value))}
+            className="w-full"
+            aria-label="카드 간격"
+          />
+        </div>
+
+        <div className="mt-3 flex items-center justify-between px-2">
           <span className="text-xs text-muted">카드 반복</span>
           <div className="inline-flex items-center gap-2">
             <button
