@@ -3,13 +3,10 @@ import { useMemo } from "react";
 import { Headphones, PenLine, Layers, ChevronRight, BarChart3 } from "lucide-react";
 import { TopBar } from "@/components/TopBar";
 import { PageShell } from "@/components/PageShell";
-import { useSrs } from "@/state/srsStore";
 import { hskLevelSummaries } from "@/lib/hsk-meta";
 import { hskThemeIdioms } from "@/lib/hsk-themes";
 
 export default function Learn(): JSX.Element {
-  const total = useSrs((s) => Object.keys(s.cards).length);
-  const due = useSrs((s) => s.dueCards().length);
 
   const tiers = useMemo(() => {
     const ls = hskLevelSummaries();
@@ -91,12 +88,6 @@ export default function Learn(): JSX.Element {
         </div>
         <ChevronRight size={20} aria-hidden className="text-muted" />
       </Link>
-
-      {total > 0 ? (
-        <div className="text-xs text-muted text-center mt-3">
-          전체 복습 카드 {total}개 · 오늘 {due}개 학습 예정
-        </div>
-      ) : null}
 
       {/* 학습 통계 — tier별 진행도 */}
       <section className="mt-6">

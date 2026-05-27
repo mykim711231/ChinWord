@@ -4,14 +4,12 @@ import {
   useMemo,
   useRef,
   useState,
-  useSyncExternalStore,
 } from "react";
 import { Navigate, useNavigate, useParams } from "react-router-dom";
 import {
   CheckCircle2,
-  Frown,
-  Meh,
-  Smile,
+  Circle,
+  CircleX,
   RotateCcw,
   X,
   Layers,
@@ -22,117 +20,75 @@ import { speakAsync, unlock } from "@/lib/tts";
 import { useSettings } from "@/state/settings";
 import { buildListenQueue, lessonTitleFor } from "@/lib/content";
 import { useFlashcards } from "@/state/flashcards";
-import { useSrs } from "@/state/srsStore";
-import { nextIntervalDays, type Difficulty } from "@/lib/srs";
-
-/**
- * SRS store 가 IndexedDB 에서 hydration 되는 동안 cards 는 `{}` 이다.
- * 이때 dueOnly 모드의 큐 빌드를 돌리면 cardMap[id] 가 전부 undefined 라
- * 큐가 강제로 비고 empty-deck guard 가 즉시 발동해 사용자를 설정 화면으로
- * 튕겨낸다. hasHydrated 가 true 가 될 때까지 마운트를 지연시켜 막는다.
- * (SMCB 는 main.tsx 에서 사전 hydrate 후 render — 동일 보호 효과.)
- */
-function useSrsHydrated(): boolean {
-  return useSyncExternalStore(
-    (cb) => useSrs.persist.onFinishHydration(cb),
-    () => useSrs.persist.hasHydrated(),
-    () => false,
-  );
-}
 
 type AreaKind = "vocab" | "idiom";
 
 export default function FlashcardsPlay(): JSX.Element {
   const { area } = useParams<{ area?: string }>();
-  const srsReady = useSrsHydrated();
   if (area !== "vocab" && area !== "idiom") {
     return <Navigate to="/flashcards/vocab" replace />;
-  }
-  // SRS hydration 대기 — dueOnly 모드 즉시 튕김 방지. 첫 페인트 후 ~수 ms.
-  if (!srsReady) {
-    return (
-      <PageShell>
-        <div className="text-center text-muted mt-12">불러오는 중…</div>
-      </PageShell>
-    );
   }
   return <Player area={area} />;
 }
 
 function Player({ area }: { area: AreaKind }): JSX.Element {
   const navigate = useNavigate();
-  const { vocabScope, idiomScope, dueOnly, direction } = useFlashcards();
+  const { vocabScope, idiomScope, direction } = useFlashcards();
   const scope = area === "vocab" ? vocabScope : idiomScope;
-
-  const addCard = useSrs((s) => s.addCard);
-  const reviewCard = useSrs((s) => s.reviewCard);
-  const cardMap = useSrs((s) => s.cards);
   const ttsRate = useSettings((s) => s.ttsRate);
 
-  // Build queue once at session start. We snapshot it so that grading
-  // (which mutates SRS state) doesn't shorten the deck mid-session.
-  const queue = useMemo(() => {
-    const full = buildListenQueue({
-      scope,
-      area: { vocab: area === "vocab", idiom: area === "idiom" },
-    });
-    if (!dueOnly) return full;
-    const now = Date.now();
-    return full.filter((e) => {
-      const c = cardMap[e.id];
-      return c && !c.masteredAt && c.dueAt <= now;
-    });
-    // intentionally do not depend on cardMap — snapshot on entry
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [scope, area, dueOnly]);
+  // Build queue once at session start.
+  const baseQueue = useMemo(
+    () =>
+      buildListenQueue({
+        scope,
+        area: { vocab: area === "vocab", idiom: area === "idiom" },
+      }),
+    [scope, area],
+  );
 
+  // 현재 세션 큐 — 틀린 카드가 뒤에 재삽입됨
+  const [queue, setQueue] = useState(baseQueue);
   const [cursor, setCursor] = useState(0);
   const [revealed, setRevealed] = useState(false);
-  const [stats, setStats] = useState({ easy: 0, ok: 0, hard: 0 });
+  const [stats, setStats] = useState({ correct: 0, wrong: 0 });
 
-  // 더블탭 방어 — disabled prop 만으로는 React 18 concurrent 환경에서
-  // re-render flush 전에 두 번째 탭이 들어올 수 있다. useRef 가드를 병행해
-  // 같은 카드에 대한 reviewCard() 가 중복 실행되어 SM-2 진행이 잘못되는 것을 차단.
-  // 다음 카드로 넘어갈 때(cursor 변경) 자동 해제.
+  // 더블탭 방어
   const gradingRef = useRef(false);
   useEffect(() => {
     gradingRef.current = false;
   }, [cursor]);
 
   /**
-   * 키보드 단축키 (Anki 스타일):
-   *  - Space: 답 미공개 → 공개, 공개 상태 → '보통(ok)' 채점
-   *  - 1 / 2 / 3: 답 공개 후 어려움/보통/쉬움
-   *  - R: 현재 카드의 한자(또는 pinyin) 다시 발화
-   *
-   * stateRef 패턴으로 핸들러 클로저가 stale 해지는 것을 막고,
-   * keydown 리스너를 매 렌더 재바인딩하지 않는다.
+   * 키보드 단축키:
+   *  - Space: 답 미공개 → 공개, 공개 상태 → '맞음' 채점
+   *  - 1(틀림) / 2(맞음): 답 공개 후 채점
+   *  - R: 현재 카드 다시 발화
    */
-  const stateRef = useRef({
-    revealed,
-    queue,
-    cursor,
-    cardMap,
-    ttsRate,
-  });
+  const stateRef = useRef({ revealed, queue, cursor, ttsRate });
   useEffect(() => {
-    stateRef.current = { revealed, queue, cursor, cardMap, ttsRate };
-  }, [revealed, queue, cursor, cardMap, ttsRate]);
+    stateRef.current = { revealed, queue, cursor, ttsRate };
+  }, [revealed, queue, cursor, ttsRate]);
 
   const handleAnswer = useCallback(
-    (diff: Difficulty) => {
+    (correct: boolean) => {
       if (gradingRef.current) return;
-      const { queue: q, cursor: c, cardMap: cm } = stateRef.current;
+      const { queue: q, cursor: c } = stateRef.current;
       if (c >= q.length) return;
-      const e = q[c];
       gradingRef.current = true;
-      if (!cm[e.id]) addCard(e.id, area);
-      reviewCard(e.id, diff);
-      setStats((s) => ({ ...s, [diff]: s[diff] + 1 }));
+
+      if (correct) {
+        setStats((s) => ({ ...s, correct: s.correct + 1 }));
+      } else {
+        // 틀린 카드는 큐 끝에 재삽입
+        const entry = q[c];
+        setQueue((prev) => [...prev, entry]);
+        setStats((s) => ({ ...s, wrong: s.wrong + 1 }));
+      }
       setRevealed(false);
       setCursor((x) => x + 1);
     },
-    [addCard, reviewCard, area],
+    [],
   );
 
   const handleRespeak = useCallback(() => {
@@ -145,7 +101,6 @@ function Player({ area }: { area: AreaKind }): JSX.Element {
 
   useEffect(() => {
     function onKey(ev: KeyboardEvent) {
-      // 입력 필드에서는 단축키 무시 — 의도치 않은 채점 방지.
       const t = ev.target as HTMLElement | null;
       if (
         t &&
@@ -160,17 +115,12 @@ function Player({ area }: { area: AreaKind }): JSX.Element {
       if (ev.key === " " || ev.code === "Space") {
         ev.preventDefault();
         if (!rv) setRevealed(true);
-        else handleAnswer("ok");
+        else handleAnswer(true);
         return;
       }
-      if (rv && (ev.key === "1" || ev.key === "2" || ev.key === "3")) {
+      if (rv && (ev.key === "1" || ev.key === "2")) {
         ev.preventDefault();
-        const map: Record<string, Difficulty> = {
-          "1": "hard",
-          "2": "ok",
-          "3": "easy",
-        };
-        handleAnswer(map[ev.key]);
+        handleAnswer(ev.key === "2");
         return;
       }
       if (ev.key === "r" || ev.key === "R") {
@@ -182,18 +132,14 @@ function Player({ area }: { area: AreaKind }): JSX.Element {
     return () => window.removeEventListener("keydown", onKey);
   }, [handleAnswer, handleRespeak]);
 
-  // empty-deck: 자동 튕김 대신 명시적 CTA 를 보여준다.
-  // dueOnly 모드일 때 "복습 카드가 없다" 는 정상 상태이므로 사용자가 상황을 인지하고
-  // dueOnly 를 끄거나 범위를 넓힐 기회를 줘야 한다. 즉시 redirect 는 의도 불명.
+  // empty deck
   if (queue.length === 0) {
     return (
       <PageShell>
         <div className="card text-center mt-6 py-8">
           <div className="font-semibold">재생할 카드가 없습니다.</div>
           <div className="text-sm text-muted mt-2">
-            {dueOnly
-              ? "오늘 복습할 카드가 없습니다. 모드를 바꾸거나 범위를 넓혀보세요."
-              : "선택한 범위에 카드가 없습니다."}
+            선택한 범위에 카드가 없습니다.
           </div>
           <div className="flex justify-center gap-2 mt-5">
             <button
@@ -209,8 +155,9 @@ function Player({ area }: { area: AreaKind }): JSX.Element {
     );
   }
 
+  // 완료 화면
   if (cursor >= queue.length) {
-    const total = stats.easy + stats.ok + stats.hard;
+    const total = stats.correct + stats.wrong;
     return (
       <PageShell>
         <div className="card text-center mt-6 py-8">
@@ -219,15 +166,16 @@ function Player({ area }: { area: AreaKind }): JSX.Element {
           </div>
           <div className="font-semibold text-lg">완료!</div>
           <div className="text-sm text-muted mt-2">
-            {total}개 · 쉬움 {stats.easy} · 보통 {stats.ok} · 어려움 {stats.hard}
+            {total}회 · 맞음 {stats.correct} · 틀림 {stats.wrong}
           </div>
           <div className="flex justify-center gap-2 mt-5">
             <button
               type="button"
               onClick={() => {
+                setQueue(baseQueue);
                 setCursor(0);
                 setRevealed(false);
-                setStats({ easy: 0, ok: 0, hard: 0 });
+                setStats({ correct: 0, wrong: 0 });
               }}
               className="btn-ghost inline-flex items-center gap-1 border border-divider"
             >
@@ -250,16 +198,9 @@ function Player({ area }: { area: AreaKind }): JSX.Element {
   const entry = queue[cursor];
   const lessonTitle = lessonTitleFor(entry);
 
-  function answer(diff: Difficulty) {
-    // 키보드 핸들러와 동일 진입점 — gradingRef 가드/stateRef 일관성 유지.
-    handleAnswer(diff);
+  function answer(correct: boolean) {
+    handleAnswer(correct);
   }
-
-  /** 현재 카드 기준 채점 시 다음 노출까지 며칠인지 — Anki 스타일 미리보기. */
-  const intervalLabel = (diff: Difficulty): string => {
-    const r = nextIntervalDays(cardMap[entry.id], diff);
-    return r === "mastered" ? "졸업" : `${r}일`;
-  };
 
   function skip() {
     if (gradingRef.current) return;
@@ -345,48 +286,24 @@ function Player({ area }: { area: AreaKind }): JSX.Element {
             </button>
           </div>
         ) : (
-          <div className="mt-5 grid grid-cols-3 gap-2">
+          <div className="mt-5 grid grid-cols-2 gap-3">
             <button
               type="button"
-              className="btn-ghost border border-divider flex flex-col items-center justify-center gap-0.5 py-3"
-              onClick={() => answer("hard")}
-              aria-label={`어려움 — 다음 노출 ${intervalLabel("hard")}`}
+              className="btn-ghost border border-divider flex items-center justify-center gap-2 py-3"
+              onClick={() => answer(false)}
+              aria-label="틀림"
             >
-              <span className="inline-flex items-center gap-1">
-                <Frown size={16} aria-hidden />
-                <span>어려움</span>
-              </span>
-              <span className="text-[11px] text-muted tabular-nums">
-                {intervalLabel("hard")}
-              </span>
+              <CircleX size={18} aria-hidden />
+              <span>틀림</span>
             </button>
             <button
               type="button"
-              className="btn-ghost border border-divider flex flex-col items-center justify-center gap-0.5 py-3"
-              onClick={() => answer("ok")}
-              aria-label={`보통 — 다음 노출 ${intervalLabel("ok")}`}
+              className="btn-primary flex items-center justify-center gap-2 py-3"
+              onClick={() => answer(true)}
+              aria-label="맞음"
             >
-              <span className="inline-flex items-center gap-1">
-                <Meh size={16} aria-hidden />
-                <span>보통</span>
-              </span>
-              <span className="text-[11px] text-muted tabular-nums">
-                {intervalLabel("ok")}
-              </span>
-            </button>
-            <button
-              type="button"
-              className="btn-primary flex flex-col items-center justify-center gap-0.5 py-3"
-              onClick={() => answer("easy")}
-              aria-label={`쉬움 — 다음 노출 ${intervalLabel("easy")}`}
-            >
-              <span className="inline-flex items-center gap-1">
-                <Smile size={16} aria-hidden />
-                <span>쉬움</span>
-              </span>
-              <span className="text-[11px] opacity-80 tabular-nums">
-                {intervalLabel("easy")}
-              </span>
+              <Circle size={18} aria-hidden />
+              <span>맞음</span>
             </button>
           </div>
         )}
