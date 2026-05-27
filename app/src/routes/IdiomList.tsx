@@ -1,12 +1,12 @@
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import { useLayoutEffect, useMemo, useState } from "react";
-import { Sparkles, Headphones, PenLine } from "lucide-react";
+import { Headphones, PenLine, ChevronRight } from "lucide-react";
 import { TopBar } from "@/components/TopBar";
 import { PageShell } from "@/components/PageShell";
 import { FavStar } from "@/components/FavStar";
 import { SpeakerButton } from "@/components/SpeakerButton";
 import { InlineStrokes } from "@/components/InlineStrokes";
-import { randomIdiom } from "@/lib/content";
+import { buildListenQueue } from "@/lib/content";
 import {
   hskThemeIdioms,
   findHskThemeIdiomGroup,
@@ -31,9 +31,16 @@ export default function IdiomList() {
 
   const [filter, setFilter] = useState("");
 
-  // 허브 전용이지만 hooks 규칙상 조건문 밖에서 호출
-  const featured = useMemo(() => randomIdiom(), []);
   const totalIdioms = htGroups.reduce((s, g) => s + g.entries.length, 0);
+
+  const totalListen = useMemo(
+    () =>
+      buildListenQueue({
+        scope: { kind: "tier", tier: "idiom" },
+        area: { vocab: false, idiom: true },
+      }).length,
+    [],
+  );
 
   // Scroll to hashed entry on mount / hash change
   useLayoutEffect(() => {
@@ -133,49 +140,56 @@ export default function IdiomList() {
     );
   }
 
+  function startAllIdiomListen() {
+    const s = useListen.getState();
+    s.setScope({ kind: "tier", tier: "idiom" });
+    s.setArea({ vocab: false, idiom: true });
+    navigate("/listen/play");
+  }
+
   // Group index view (reached only if no groupId provided)
   return (
     <PageShell>
       <TopBar title="고사성어" subtitle={`${totalIdioms}개 · ${htGroups.length}개 그룹`} />
-      <section className="mt-2">
-        <div className="text-xs text-muted px-1 mb-1 inline-flex items-center gap-1">
-          <Sparkles size={12} aria-hidden />
-          <span>오늘의 성어</span>
-        </div>
-        <Link
-          to={`/vocab/idioms/${featured.group.id}#${encodeURIComponent(featured.entry.id)}`}
-          className="card block hover:shadow-lg transition"
-        >
-          <div className="text-center">
-            <div className="hanzi-text text-3xl">{featured.entry.word}</div>
-            <div className="pinyin-text mt-1">{featured.entry.pinyin}</div>
-            <div className="mt-2 text-base">{featured.entry.meaning}</div>
-            <div className="text-xs text-muted mt-1">— {featured.group.title}</div>
-          </div>
-          <div className="flex justify-center mt-2">
-            <SpeakerButton text={featured.entry.word} pinyin={featured.entry.pinyin} />
-          </div>
-        </Link>
-      </section>
 
-      <section className="mt-6">
-        <h2 className="font-semibold mb-2 px-1">성어 그룹</h2>
-        <div className="space-y-2">
-          {htGroups.map((g) => (
+      {/* 전체 이어듣기 CTA */}
+      <button
+        type="button"
+        onClick={startAllIdiomListen}
+        disabled={totalListen === 0}
+        className="mt-3 card w-full flex items-center justify-between hover:shadow-lg transition disabled:opacity-50"
+      >
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-lg bg-primary-soft inline-flex items-center justify-center">
+            <Headphones size={18} aria-hidden className="text-primary" />
+          </div>
+          <div className="text-left">
+            <div className="font-semibold">전체 이어듣기</div>
+            <div className="text-xs text-muted mt-0.5">
+              성어 {totalListen}개를 순서대로 재생
+            </div>
+          </div>
+        </div>
+        <span className="text-sm text-primary">시작 →</span>
+      </button>
+
+      {/* 성어 그룹 목록 */}
+      <ul className="mt-4 space-y-2">
+        {htGroups.map((g) => (
+          <li key={g.id}>
             <Link
-              key={g.id}
               to={`/vocab/idioms/${g.id}`}
               className="card flex items-center justify-between hover:shadow-lg transition"
             >
               <div>
                 <div className="font-semibold text-sm">{g.title}</div>
-                <div className="text-[10px] text-muted mt-0.5">{g.entries.length}개</div>
+                <div className="text-[11px] text-muted mt-0.5">{g.entries.length}개</div>
               </div>
-              <span className="text-sm text-primary">→</span>
+              <ChevronRight size={16} aria-hidden className="text-muted" />
             </Link>
-          ))}
-        </div>
-      </section>
+          </li>
+        ))}
+      </ul>
     </PageShell>
   );
 }
