@@ -51,7 +51,7 @@ export default function StrokesPlay(): JSX.Element {
   const navigate = useNavigate();
   const {
     scope, area, display, strokeRepeats, loop, shuffle,
-    setStrokeRepeats, setLoop, setShuffle,
+    setDisplay, setStrokeRepeats, setLoop, setShuffle,
   } = useListen();
   const ttsRate = useSettings((s) => s.ttsRate);
 
@@ -396,14 +396,33 @@ export default function StrokesPlay(): JSX.Element {
           </button>
         </div>
 
-        {/* Loop & Shuffle toggles — 카드 상단 */}
-        <div className="mb-3 flex items-center justify-center gap-3">
+        {/* 표시 + 재생 방식 토글 — 카드 상단 */}
+        <div className="mb-3 flex items-center justify-center gap-2 flex-wrap">
+          {(["hanzi", "pinyin", "korean"] as const).map((k) => {
+            const label = k === "hanzi" ? "한자" : k === "pinyin" ? "병음" : "한국어";
+            const on = display[k];
+            return (
+              <button
+                key={k}
+                type="button"
+                onClick={() => setDisplay({ [k]: !on })}
+                aria-pressed={on}
+                className={
+                  "rounded-chip px-2.5 py-1 text-sm border " +
+                  (on ? "bg-primary text-white border-primary" : "bg-surface text-fg border-divider")
+                }
+              >
+                {label}
+              </button>
+            );
+          })}
+          <span className="text-divider mx-0.5">|</span>
           <button
             type="button"
             onClick={() => setLoop(!loop)}
             aria-pressed={loop}
             className={
-              "inline-flex items-center gap-1 rounded-chip px-3 py-1 text-sm border " +
+              "inline-flex items-center gap-1 rounded-chip px-2.5 py-1 text-sm border " +
               (loop ? "bg-primary text-white border-primary" : "bg-surface text-fg border-divider")
             }
           >
@@ -415,7 +434,7 @@ export default function StrokesPlay(): JSX.Element {
             onClick={() => setShuffle(!shuffle)}
             aria-pressed={shuffle}
             className={
-              "inline-flex items-center gap-1 rounded-chip px-3 py-1 text-sm border " +
+              "inline-flex items-center gap-1 rounded-chip px-2.5 py-1 text-sm border " +
               (shuffle ? "bg-primary text-white border-primary" : "bg-surface text-fg border-divider")
             }
           >
