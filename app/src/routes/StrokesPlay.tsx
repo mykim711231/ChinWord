@@ -59,9 +59,13 @@ export default function StrokesPlay(): JSX.Element {
     () => buildListenQueue({ scope, area }).filter((e) => hasHanzi(e.word)),
     [scope, area],
   );
+
+  // shuffleKey: loop 반복 시 매번 증가 → useMemo 무효화 → 재셔플
+  const [shuffleKey, setShuffleKey] = useState(0);
   const queue = useMemo(
     () => (shuffle ? shuffleArray(rawQueue) : rawQueue),
-    [rawQueue, shuffle],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [rawQueue, shuffle, shuffleKey],
   );
 
   const [index, setIndex] = useState(0);
@@ -77,6 +81,8 @@ export default function StrokesPlay(): JSX.Element {
   rateRef.current = ttsRate;
   const loopRef = useRef(loop);
   loopRef.current = loop;
+  const shuffleRef = useRef(shuffle);
+  shuffleRef.current = shuffle;
   const displayRef = useRef(display);
   displayRef.current = display;
 
@@ -234,6 +240,8 @@ export default function StrokesPlay(): JSX.Element {
       if (loopRef.current) {
         setRep(1);
         setIndex(0);
+        // loop+shuffle: 매 바퀴 재셔플
+        if (shuffleRef.current) setShuffleKey((k) => k + 1);
         return;
       }
       setFinished(true);
@@ -318,6 +326,7 @@ export default function StrokesPlay(): JSX.Element {
       setFinished(false);
       setIndex(0);
       setRep(1);
+      if (shuffle) setShuffleKey((k) => k + 1);
       setPlaying(true);
       return;
     }
@@ -335,9 +344,20 @@ export default function StrokesPlay(): JSX.Element {
   function onNext() {
     unlock();
     setRep(1);
+    if (index >= queue.length - 1) {
+      // 마지막 카드 — loop 시 처음으로, 아니면 완료
+      if (loop) {
+        setIndex(0);
+        if (shuffle) setShuffleKey((k) => k + 1);
+      } else {
+        setFinished(true);
+        setPlaying(false);
+      }
+      return;
+    }
     setFinished(false);
     setPlaying(true);
-    setIndex((i) => Math.min(queue.length, i + 1));
+    setIndex((i) => i + 1);
   }
 
   function onExit() {
@@ -393,6 +413,7 @@ export default function StrokesPlay(): JSX.Element {
                   setFinished(false);
                   setIndex(0);
                   setRep(1);
+                  if (shuffle) setShuffleKey((k) => k + 1);
                   setPlaying(true);
                 }}
                 className="btn-ghost inline-flex items-center gap-1 border border-divider"
@@ -516,7 +537,7 @@ export default function StrokesPlay(): JSX.Element {
             }
           >
             <Repeat size={14} aria-hidden />
-            <span>반복</span>
+            <span>반복 재생</span>
           </button>
           <button
             type="button"
@@ -534,14 +555,14 @@ export default function StrokesPlay(): JSX.Element {
 
         {/* Inline repeat control */}
         <div className="mt-5 flex items-center justify-between px-2">
-          <span className="text-xs text-muted">반복</span>
+          <span className="text-xs text-muted">카드 반복</span>
           <div className="inline-flex items-center gap-2">
             <button
               type="button"
               onClick={() => setStrokeRepeats(strokeRepeats - 1)}
               disabled={strokeRepeats <= 1}
               className="w-8 h-8 rounded-md border border-divider inline-flex items-center justify-center disabled:opacity-40"
-              aria-label="반복 감소"
+              aria-label="카드 반복 횟수 감소"
             >
               <Minus size={12} aria-hidden />
             </button>
@@ -551,7 +572,7 @@ export default function StrokesPlay(): JSX.Element {
               onClick={() => setStrokeRepeats(strokeRepeats + 1)}
               disabled={strokeRepeats >= 10}
               className="w-8 h-8 rounded-md border border-divider inline-flex items-center justify-center disabled:opacity-40"
-              aria-label="반복 증가"
+              aria-label="카드 반복 횟수 증가"
             >
               <Plus size={12} aria-hidden />
             </button>

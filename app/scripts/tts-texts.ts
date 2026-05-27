@@ -50,36 +50,32 @@ const COMMON_HANZI_PATH = join(
 // CJK Unified Ideographs (BMP). 확장 한자(B/C/D)는 학습 교재 범위 밖.
 export const HANZI_RE = /[一-鿿]/;
 
-type VocabEntry = {
-  id: string;
-  word: string;
-  pinyin: string;
-  pos: string;
-  meaning: string;
-  hanjaBreakdown: { char: string; detail: string }[];
-  hskLevel: number;
-};
-
 type VocabGroup = {
   id: string;
-  entries: VocabEntry[];
-};
-
-type IdiomEntry = {
-  id: string;
-  word: string;
-  pinyin: string;
-  pos: string;
-  meaning: string;
-  sourceText: string;
-  origin: string;
-  charBreakdown: { char: string; pinyin: string; meaning: string }[];
-  synonyms: string[];
+  entries: {
+    id: string;
+    word: string;
+    pinyin: string;
+    pos: string;
+    meaning: string;
+    hanjaBreakdown: { char: string; detail: string }[];
+    hskLevel: number;
+  }[];
 };
 
 type IdiomGroup = {
   id: string;
-  entries: IdiomEntry[];
+  entries: {
+    id: string;
+    word: string;
+    pinyin: string;
+    pos: string;
+    meaning: string;
+    sourceText: string;
+    origin: string;
+    charBreakdown: { char: string; pinyin: string; meaning: string }[];
+    synonyms: string[];
+  }[];
 };
 
 function loadJson<T>(name: string): T {
@@ -90,22 +86,6 @@ function loadJson<T>(name: string): T {
     );
   }
   return JSON.parse(readFileSync(p, "utf8")) as T;
-}
-
-function loadJsonOptional<T>(name: string): T | null {
-  const p = join(DATA_DIR, name);
-  if (!existsSync(p)) return null;
-  return JSON.parse(readFileSync(p, "utf8")) as T;
-}
-
-/** 레거시 vocab-groups (optional — 파일 없으면 빈 배열) */
-export function loadVocab(): VocabGroup[] {
-  return loadJsonOptional<VocabGroup[]>("vocab-groups.json") ?? [];
-}
-
-/** 레거시 idiom-groups (optional — 파일 없으면 빈 배열) */
-export function loadIdioms(): IdiomGroup[] {
-  return loadJsonOptional<IdiomGroup[]>("idiom-groups.json") ?? [];
 }
 
 /** hsk-theme 단어 그룹 (Basic + Mid + Adv) */
@@ -172,44 +152,6 @@ export function loadCommonHanzi(): Set<string> {
 export function collectAllTtsTexts(): Set<string> {
   const set = new Set<string>();
   for (const ch of loadCommonHanzi()) set.add(ch);
-
-  // ── 레거시 vocab/idiom ──
-  for (const g of loadVocab()) {
-    for (const e of g.entries) {
-      const w = e.word?.trim();
-      if (!w) continue;
-      set.add(w);
-      addCharsOf(w, set);
-    }
-  }
-  for (const g of loadIdioms()) {
-    for (const e of g.entries) {
-      const w = e.word?.trim();
-      if (w) {
-        set.add(w);
-        addCharsOf(w, set);
-      }
-      // sourceText/synonyms 는 한자 + 괄호 병음 + 한국어 주석이 한 줄에 묶여 있어
-      // 그대로 합성하면 신경음이 병음·한국어를 다시 읽어 "두 번 발음"하는 듯한
-      // 결과가 된다. 한자 본문만 추출해 합성·인덱싱한다.
-      const src = extractZhPrefix(e.sourceText ?? "");
-      if (src) {
-        set.add(src);
-        addCharsOf(src, set);
-      }
-      for (const cb of e.charBreakdown ?? []) {
-        const c = cb.char?.trim();
-        if (c && HANZI_RE.test(c)) set.add(c);
-      }
-      for (const sy of e.synonyms ?? []) {
-        const s = extractZhPrefix(sy);
-        if (s) {
-          set.add(s);
-          addCharsOf(s, set);
-        }
-      }
-    }
-  }
 
   // ── hsk-themes vocab (Basic + Mid + Adv) ──
   for (const g of loadHskThemeVocab()) {
