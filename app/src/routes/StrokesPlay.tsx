@@ -398,8 +398,8 @@ export default function StrokesPlay(): JSX.Element {
 
         {/* 표시 + 재생 방식 토글 — 카드 상단 */}
         <div className="mb-3 flex items-center justify-center gap-2 flex-wrap">
-          {(["hanzi", "pinyin", "korean"] as const).map((k) => {
-            const label = k === "hanzi" ? "한자" : k === "pinyin" ? "병음" : "한국어";
+          {(["pinyin", "korean"] as const).map((k) => {
+            const label = k === "pinyin" ? "병음" : "한국어";
             const on = display[k];
             return (
               <button
@@ -502,29 +502,23 @@ export default function StrokesPlay(): JSX.Element {
               />
             </div>
 
-            {display.hanzi ? (
-              <div ref={containerRef} className="w-full overflow-hidden relative">
+            <div ref={containerRef} className="w-full overflow-hidden relative">
+              <div
+                ref={rowRef}
+                className="flex items-center justify-center gap-2 flex-nowrap"
+                style={{ minHeight: charSize }}
+              />
+              {!ready && !error ? (
                 <div
-                  ref={rowRef}
-                  className="flex items-center justify-center gap-2 flex-nowrap"
-                  style={{ minHeight: charSize }}
-                />
-                {!ready && !error ? (
-                  <div
-                    className="absolute inset-0 flex items-center justify-center pointer-events-none text-muted"
-                    role="status"
-                    aria-live="polite"
-                  >
-                    <Loader2 size={20} aria-hidden className="animate-spin" />
-                    <span className="sr-only">필순 준비 중</span>
-                  </div>
-                ) : null}
-              </div>
-            ) : (
-              <div className="text-muted text-sm py-6">
-                표시 토글에서 '한자'를 켜야 캔버스가 보입니다.
-              </div>
-            )}
+                  className="absolute inset-0 flex items-center justify-center pointer-events-none text-muted"
+                  role="status"
+                  aria-live="polite"
+                >
+                  <Loader2 size={20} aria-hidden className="animate-spin" />
+                  <span className="sr-only">필순 준비 중</span>
+                </div>
+              ) : null}
+            </div>
 
             {error ? (
               <div className="text-xs text-muted mt-2">{error}</div>
