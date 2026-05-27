@@ -473,6 +473,66 @@ function abortableSleep(ms: number, signal?: AbortSignal): Promise<void> {
   });
 }
 
+/**
+ * 한국어 TTS — Web Speech API 전용 (모든 기기에 ko-KR 음성 내장).
+ * 사전녹음 mp3 불필요.
+ */
+export function speakKoreanAsync(
+  text: string,
+  opts: { rate?: number; signal?: AbortSignal } = {},
+): Promise<void> {
+  if (!text) return Promise.resolve();
+  if (typeof window === "undefined" || !("speechSynthesis" in window))
+    return Promise.resolve();
+  if (opts.signal?.aborted) return Promise.resolve();
+
+  return new Promise<void>((resolve) => {
+    const epoch = ++speakEpoch;
+    let done = false;
+    const finish = (): void => {
+      if (done) return;
+      done = true;
+      opts.signal?.removeEventListener("abort", onAbort);
+      resolve();
+    };
+    const onAbort = (): void => {
+      cancelSpeak();
+      finish();
+    };
+    opts.signal?.addEventListener("abort", onAbort, { once: true });
+
+    safeCancelSynth();
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = "ko-KR";
+    // 한국어 음성 선택 — ko-KR, ko 등
+    const voices = getVoices();
+    const koVoice = voices.find((v) => /^ko(-|_)?/i.test(v.lang));
+    if (koVoice) {
+      u.voice = koVoice;
+      u.lang = koVoice.lang;
+    }
+    u.rate = opts.rate ?? 1.0;
+
+    let finished = false;
+    let watchdog: number | null = null;
+    const clearWd = (): void => {
+      if (watchdog != null) { window.clearTimeout(watchdog); watchdog = null; }
+    };
+    const end = (): void => {
+      if (finished) return;
+      finished = true;
+      clearWd();
+      if (epoch !== speakEpoch) { finish(); return; }
+      finish();
+    };
+    u.onstart = clearWd;
+    u.onend = end;
+    u.onerror = end;
+    watchdog = window.setTimeout(() => { end(); safeCancelSynth(); }, SPEAK_WATCHDOG_MS);
+    window.speechSynthesis.speak(u);
+  });
+}
+
 /** Play a list of texts sequentially with a gap. */
 export async function speakSequence(
   texts: string[],

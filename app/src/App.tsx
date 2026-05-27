@@ -1,13 +1,13 @@
 import { Suspense, lazy, useEffect } from "react";
-import { HashRouter, Route, Routes } from "react-router-dom";
+import { HashRouter, Navigate, Route, Routes, useParams, useLocation } from "react-router-dom";
 import Layout from "@/components/Layout";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { InstallPrompt } from "@/components/InstallPrompt";
 import { applySettingsToDom } from "@/state/settings";
 
 const Home = lazy(() => import("@/routes/Home"));
-const Toc = lazy(() => import("@/routes/Toc"));
-const SituationList = lazy(() => import("@/routes/SituationList"));
+const VocabHub = lazy(() => import("@/routes/VocabHub"));
+// Toc, SituationList 삭제됨 — hsk-themes VocabHub + HskThemeList로 대체
 const VocabDetail = lazy(() => import("@/routes/VocabDetail"));
 const IdiomList = lazy(() => import("@/routes/IdiomList"));
 const IdiomDetail = lazy(() => import("@/routes/IdiomDetail"));
@@ -22,8 +22,8 @@ const StrokesPlay = lazy(() => import("@/routes/StrokesPlay"));
 const StrokeStudy = lazy(() => import("@/routes/StrokeStudy"));
 const Listen = lazy(() => import("@/routes/Listen"));
 const ListenPlay = lazy(() => import("@/routes/ListenPlay"));
-const Hsk = lazy(() => import("@/routes/Hsk"));
 const HskTier = lazy(() => import("@/routes/HskTier"));
+const HskThemeList = lazy(() => import("@/routes/HskThemeList"));
 
 function LoadingFallback(): JSX.Element {
   return (
@@ -49,21 +49,22 @@ export default function App(): JSX.Element {
           <Suspense fallback={<LoadingFallback />}>
             <Routes>
               <Route path="/" element={<Home />} />
-              {/* legacy: defaults to combined view */}
-              <Route path="/toc" element={<Toc />} />
-              <Route path="/toc/:vol" element={<Toc />} />
-              {/* 단어 (vocab) */}
-              <Route path="/words" element={<Toc />} />
-              <Route path="/words/:vol" element={<Toc />} />
-              <Route path="/situations" element={<SituationList />} />
-              <Route path="/situations/:groupId" element={<SituationList />} />
+
+              {/* ─── 통합 단어장 ─── */}
+              <Route path="/vocab" element={<VocabHub />} />
+              {/* HSK tier 하위 */}
+              <Route path="/vocab/basic" element={<HskTier />} />
+              <Route path="/vocab/mid" element={<HskTier />} />
+              <Route path="/vocab/adv" element={<HskTier />} />
+              {/* 성어 허브 + 그룹 상세 */}
+              <Route path="/vocab/idioms" element={<IdiomList />} />
+              <Route path="/vocab/idioms/:groupId" element={<IdiomList />} />
+              {/* 테마별 단어 목록 (hsk-themes 데이터 기반) */}
+              <Route path="/vocab/theme/:groupId" element={<HskThemeList />} />
+              {/* 단어/성어 단건 디테일 (리다이렉트) */}
               <Route path="/vocab/:id" element={<VocabDetail />} />
-              {/* 성어 (idiom) */}
-              <Route path="/idioms" element={<Toc />} />
-              <Route path="/idioms/:vol" element={<Toc />} />
-              <Route path="/idiom-group/:groupId" element={<IdiomList />} />
-              <Route path="/idiom/:id" element={<IdiomDetail />} />
-              {/* 학습 허브 */}
+
+              {/* ─── 학습 허브 ─── */}
               <Route path="/learn" element={<Learn />} />
               {/* 필순 (stroke order marathon) */}
               <Route path="/strokes" element={<Strokes />} />
@@ -72,13 +73,32 @@ export default function App(): JSX.Element {
               {/* 이어듣기 (marathon listen) */}
               <Route path="/listen" element={<Listen />} />
               <Route path="/listen/play" element={<ListenPlay />} />
-              {/* HSK 급수별 어휘 (3.0) — 3-tier: basic(1-4) / mid(5) / adv(6-9) */}
-              <Route path="/hsk" element={<Hsk />} />
-              <Route path="/hsk/:tier" element={<HskTier />} />
-              {/* misc */}
+              {/* 플래시카드 */}
               <Route path="/flashcards" element={<Flashcards />} />
               <Route path="/flashcards/:area" element={<Flashcards />} />
               <Route path="/flashcards/:area/play" element={<FlashcardsPlay />} />
+
+              {/* ─── 레거시 리다이렉트 ─── */}
+              {/* /words → /vocab */}
+              <Route path="/words" element={<Navigate to="/vocab" replace />} />
+              <Route path="/words/:vol" element={<Navigate to="/vocab" replace />} />
+              <Route path="/toc" element={<Navigate to="/vocab" replace />} />
+              <Route path="/toc/:vol" element={<Navigate to="/vocab" replace />} />
+              {/* /idioms → /vocab/idioms */}
+              <Route path="/idioms" element={<Navigate to="/vocab/idioms" replace />} />
+              <Route path="/idioms/:vol" element={<Navigate to="/vocab/idioms" replace />} />
+              {/* /idiom-group/:id → /vocab/idioms/:id */}
+              <Route path="/idiom-group/:groupId" element={<LegacyIdiomGroupRedirect />} />
+              {/* /situations/:id → /vocab/theme/:id */}
+              <Route path="/situations/:groupId" element={<LegacySituationRedirect />} />
+              {/* /hsk → /vocab */}
+              <Route path="/hsk" element={<Navigate to="/vocab" replace />} />
+              <Route path="/hsk/basic" element={<Navigate to="/vocab/basic" replace />} />
+              <Route path="/hsk/mid" element={<Navigate to="/vocab/mid" replace />} />
+              <Route path="/hsk/adv" element={<Navigate to="/vocab/adv" replace />} />
+              <Route path="/hsk/:tier" element={<Navigate to="/vocab" replace />} />
+
+              {/* ─── misc ─── */}
               <Route path="/search" element={<Search />} />
               <Route path="/settings" element={<Settings />} />
               <Route path="/about" element={<About />} />
@@ -90,4 +110,21 @@ export default function App(): JSX.Element {
       </HashRouter>
     </ErrorBoundary>
   );
+}
+
+/** 레거시 /idiom-group/:groupId → /vocab/idioms/:groupId (hash 보존) */
+function LegacyIdiomGroupRedirect() {
+  return <RedirectWithGroupId base="/vocab/idioms" />;
+}
+
+/** 레거시 /situations/:groupId → /vocab/theme/:groupId (hash 보존) */
+function LegacySituationRedirect() {
+  return <RedirectWithGroupId base="/vocab/theme" />;
+}
+
+/** 범용 param 전달 리다이렉트 — :groupId + location.hash 보존 */
+function RedirectWithGroupId({ base }: { base: string }) {
+  const { groupId } = useParams<{ groupId: string }>();
+  const loc = useLocation();
+  return <Navigate to={`${base}/${groupId ?? ""}${loc.hash}`} replace />;
 }

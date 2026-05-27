@@ -4,9 +4,8 @@ import { PageShell } from "@/components/PageShell";
 import { findIdiomEntry } from "@/lib/content";
 
 /**
- * Legacy single-entry detail route. The new flow shows the entire lesson on
- * one scrollable page; we redirect to that group page with the entry id as
- * the URL hash so the page can scroll-into-view the targeted card.
+ * Single-entry detail route — redirects to the idiom group page
+ * with the entry id as hash so the page scrolls to the card.
  */
 export default function IdiomDetail() {
   const { id = "" } = useParams<{ id: string }>();
@@ -21,7 +20,7 @@ export default function IdiomDetail() {
   }
   return (
     <Navigate
-      to={`/idiom-group/${hit.group.id}#${encodeURIComponent(hit.entry.id)}`}
+      to={`/vocab/idioms/${hit.group.id}#${encodeURIComponent(hit.entry.id)}`}
       replace
     />
   );

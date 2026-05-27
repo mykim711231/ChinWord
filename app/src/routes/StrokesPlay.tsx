@@ -13,31 +13,55 @@ import {
   Loader2,
   CheckCircle2,
   RotateCcw,
+  Repeat,
+  Shuffle,
 } from "lucide-react";
 import { PageShell } from "@/components/PageShell";
 import { buildListenQueue, lessonTitleFor } from "@/lib/content";
-import { cancelSpeak, speakAsync, unlock } from "@/lib/tts";
+import { cancelSpeak, speakAsync, speakKoreanAsync, unlock } from "@/lib/tts";
 import { useListen } from "@/state/listen";
 import { useSettings } from "@/state/settings";
 
 const HANZI_RE = /\p{Script=Han}/u;
-const MAX_CHAR_SIZE = 160;
+
+/**
+ * 4글자 기준 간체 사이즈를 표준으로 사용.
+ * 컨테이너 너비에 4글자가 들어가는 크기가 기본 → 글자 수 관계없이 동일 크기 유지.
+ * 최소 56px, 최대 120px.
+ */
+const STD_CHARS = 4;
+const MAX_CHAR_SIZE = 120;
 const MIN_CHAR_SIZE = 56;
-const CHAR_GAP = 8; // matches Tailwind gap-2
+const CHAR_GAP = 8;
 
 function hasHanzi(s: string): boolean {
   return Array.from(s).some((c) => HANZI_RE.test(c));
 }
 
+function shuffleArray<T>(arr: T[]): T[] {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
 export default function StrokesPlay(): JSX.Element {
   const navigate = useNavigate();
-  const { scope, area, display, strokeRepeats, setStrokeRepeats } = useListen();
+  const {
+    scope, area, display, strokeRepeats, loop, shuffle,
+    setStrokeRepeats, setLoop, setShuffle,
+  } = useListen();
   const ttsRate = useSettings((s) => s.ttsRate);
 
-  // Filter queue to entries that actually have at least one hanzi
-  const queue = useMemo(
+  const rawQueue = useMemo(
     () => buildListenQueue({ scope, area }).filter((e) => hasHanzi(e.word)),
     [scope, area],
+  );
+  const queue = useMemo(
+    () => (shuffle ? shuffleArray(rawQueue) : rawQueue),
+    [rawQueue, shuffle],
   );
 
   const [index, setIndex] = useState(0);
@@ -45,22 +69,20 @@ export default function StrokesPlay(): JSX.Element {
   const [playing, setPlaying] = useState(true);
   const [finished, setFinished] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  /** writers 가 mount 되어 캔버스가 준비되었는지 — 첫 카드/카드 전환 직후 잠깐 false. */
   const [ready, setReady] = useState(false);
 
-  // settings 라이브 변경 시 현재 카드 재시작을 피하기 위해 ref 로 캡처.
-  // (deps 에 넣으면 슬라이더/스피너 조작 중 매 tick 마다 effect 재실행되어 카드가 끊김)
   const strokeRepeatsRef = useRef(strokeRepeats);
   strokeRepeatsRef.current = strokeRepeats;
   const rateRef = useRef(ttsRate);
   rateRef.current = ttsRate;
+  const loopRef = useRef(loop);
+  loopRef.current = loop;
+  const displayRef = useRef(display);
+  displayRef.current = display;
 
   const containerRef = useRef<HTMLDivElement>(null);
   const rowRef = useRef<HTMLDivElement>(null);
   const writersRef = useRef<HanziWriter[]>([]);
-  // 현재 effect 가 들고 있는 AC. cleanup 으로 abort →
-  // in-flight speakAsync·animateOne·wait 가 즉시 풀려
-  // 정지/이전/다음/일시정지 가 무조건 즉시 반영된다.
   const acRef = useRef<AbortController | null>(null);
   const [containerW, setContainerW] = useState(0);
 
@@ -70,18 +92,14 @@ export default function StrokesPlay(): JSX.Element {
     [current],
   );
 
-  // Compute char size that fits all hanzi of the current card on one row.
-  // Recomputed when container width or card char count changes.
+  // 4글자 기준 사이즈 계산 — 실제 글자 수와 관계없이 동일 크기 유지
   const charSize = useMemo(() => {
-    const n = hanziChars.length;
-    if (n === 0 || containerW === 0) return MAX_CHAR_SIZE;
-    const avail = containerW - CHAR_GAP * (n - 1);
-    const size = Math.floor(avail / n);
+    if (containerW === 0) return MAX_CHAR_SIZE;
+    const avail = containerW - CHAR_GAP * (STD_CHARS - 1);
+    const size = Math.floor(avail / STD_CHARS);
     return Math.max(MIN_CHAR_SIZE, Math.min(MAX_CHAR_SIZE, size));
-  }, [containerW, hanziChars.length]);
+  }, [containerW]);
 
-  // Measure container width (parent of writer row). Width depends only on
-  // page layout, NOT on the writer slots, so there is no resize feedback loop.
   useEffect(() => {
     const el = containerRef.current;
     if (!el) return;
@@ -96,12 +114,10 @@ export default function StrokesPlay(): JSX.Element {
     return () => window.removeEventListener("resize", update);
   }, []);
 
-  // Empty queue → bounce back
   useEffect(() => {
     if (queue.length === 0) navigate("/strokes", { replace: true });
   }, [queue.length, navigate]);
 
-  // Helper: animate a single writer to completion
   const animateOne = useCallback(
     (w: HanziWriter, signal: AbortSignal): Promise<void> =>
       new Promise((resolve) => {
@@ -110,11 +126,7 @@ export default function StrokesPlay(): JSX.Element {
         const onAbort = () => {
           if (resolved) return;
           resolved = true;
-          try {
-            w.hideCharacter();
-          } catch {
-            /* ignore */
-          }
+          try { w.hideCharacter(); } catch { /* ignore */ }
           resolve();
         };
         signal.addEventListener("abort", onAbort, { once: true });
@@ -130,7 +142,6 @@ export default function StrokesPlay(): JSX.Element {
     [],
   );
 
-  /** Abort-aware sleep — resolves on timeout 또는 ac.signal.abort. */
   const wait = useCallback(
     (ms: number, ac: AbortController): Promise<void> =>
       new Promise((resolve) => {
@@ -139,16 +150,13 @@ export default function StrokesPlay(): JSX.Element {
           ac.signal.removeEventListener("abort", onAbort);
           resolve();
         }, ms);
-        const onAbort = (): void => {
-          clearTimeout(t);
-          resolve();
-        };
+        const onAbort = (): void => { clearTimeout(t); resolve(); };
         ac.signal.addEventListener("abort", onAbort, { once: true });
       }),
     [],
   );
 
-  // Build / rebuild HanziWriter instances whenever current card or sizing changes
+  // Build HanziWriter instances
   useEffect(() => {
     const root = rowRef.current;
     if (!root || hanziChars.length === 0 || charSize < MIN_CHAR_SIZE) return;
@@ -156,8 +164,6 @@ export default function StrokesPlay(): JSX.Element {
     writersRef.current = [];
     setError(null);
     setReady(false);
-    // 카드 전환 시 진행 중인 charDataLoader fetch 가 resolve 되면 unmounted state
-    // 에서 setError 가 호출될 수 있다. mounted flag 로 차단. (P1 S-03)
     let mounted = true;
 
     const slots = hanziChars.map((ch) => {
@@ -219,15 +225,17 @@ export default function StrokesPlay(): JSX.Element {
     };
   }, [hanziChars.join(""), charSize]);
 
-  // Playback: "한 effect = 한 rep 의 한 카드 1회 재생".
-  // 일시정지/이전/다음/카드끝 → setState → cleanup(ac.abort, cancelSpeak)
-  // → in-flight speakAsync·animateOne·wait 즉시 풀림 → 새 effect 가 새 카드를 재생.
-  // 이 단순화로 prev/next 무반응 + audio bleed-through 가 모두 해소된다.
+  // Playback effect
   useEffect(() => {
     if (queue.length === 0) return;
     if (!playing) return;
     if (finished) return;
     if (index >= queue.length) {
+      if (loopRef.current) {
+        setRep(1);
+        setIndex(0);
+        return;
+      }
       setFinished(true);
       setPlaying(false);
       return;
@@ -237,21 +245,13 @@ export default function StrokesPlay(): JSX.Element {
     acRef.current = ac;
 
     const run = async (): Promise<void> => {
-      // Wait briefly for writers to mount for this card.
-      // 새 카드 진입 시 writers useEffect 가 먼저 돌지만 HanziWriter.create 가
-      // charDataLoader fetch 를 기다리는 동안 writersRef 는 채워져 있다.
       let tries = 0;
-      while (
-        writersRef.current.length === 0 &&
-        !ac.signal.aborted &&
-        tries < 30
-      ) {
+      while (writersRef.current.length === 0 && !ac.signal.aborted && tries < 30) {
         await new Promise((r) => setTimeout(r, 80));
         tries++;
       }
       if (ac.signal.aborted) return;
       if (writersRef.current.length === 0) {
-        // 데이터 에러로 writer 가 안 잡힘 → 이 카드 건너뜀
         setRep(1);
         setIndex((n) => n + 1);
         return;
@@ -259,24 +259,15 @@ export default function StrokesPlay(): JSX.Element {
 
       const writers = writersRef.current;
       for (const w of writers) {
-        try {
-          w.hideCharacter();
-        } catch {
-          /* ignore */
-        }
+        try { w.hideCharacter(); } catch { /* ignore */ }
       }
 
-      // 글자별 필순 + 발화. 한자(hanziChars[i])를 보내야 매니페스트 hit →
-      // zh-CN-XiaoxiaoNeural mp3 재생. 병음 음절을 보내면 라틴 알파벳을 zh 로
-      // 읽으려 해 발음이 엉뚱해진다.
       for (let i = 0; i < writers.length; i++) {
         if (ac.signal.aborted) return;
         const w = writers[i];
         const ch = hanziChars[i];
         const audio = ch
-          ? speakAsync(ch, { rate: rateRef.current, signal: ac.signal }).catch(
-              () => {},
-            )
+          ? speakAsync(ch, { rate: rateRef.current, signal: ac.signal }).catch(() => {})
           : Promise.resolve();
         const anim = animateOne(w, ac.signal);
         await Promise.all([audio, anim]);
@@ -287,23 +278,25 @@ export default function StrokesPlay(): JSX.Element {
         }
       }
 
-      // Whole-word recap (multi-char 단어만) — WordStrokeCard 와 동일 패턴.
-      // 글자별 재생이 끝난 후 단어 전체를 한 번 더 발화.
+      // Whole-word recap
       if (writers.length > 1 && current?.word) {
         await wait(200, ac);
         if (ac.signal.aborted) return;
-        await speakAsync(current.word, {
-          rate: rateRef.current,
-          signal: ac.signal,
-        }).catch(() => {});
+        await speakAsync(current.word, { rate: rateRef.current, signal: ac.signal }).catch(() => {});
         if (ac.signal.aborted) return;
       }
 
-      // breath between reps
+      // 한국어 뜻 읽기 (korean 표시 활성 시)
+      if (displayRef.current.korean && current?.meaning) {
+        await wait(300, ac);
+        if (ac.signal.aborted) return;
+        await speakKoreanAsync(current.meaning, { rate: 1.0, signal: ac.signal }).catch(() => {});
+        if (ac.signal.aborted) return;
+      }
+
       await wait(500, ac);
       if (ac.signal.aborted) return;
 
-      // auto-advance: 같은 카드 반복인지, 다음 카드인지
       if (rep < strokeRepeatsRef.current) {
         setRep((r) => r + 1);
       } else {
@@ -313,29 +306,13 @@ export default function StrokesPlay(): JSX.Element {
     };
 
     void run();
-
-    return () => {
-      ac.abort();
-      cancelSpeak();
-    };
-    // strokeRepeats/ttsRate 는 의도적으로 deps 에서 제외 — ref 로 라이브 반영.
-    // hanziChars/current 는 index 로부터 파생되므로 index 만 deps 에 포함.
+    return () => { ac.abort(); cancelSpeak(); };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [queue, index, rep, playing, finished, animateOne, wait]);
 
-  // Cleanup on unmount
-  useEffect(() => {
-    return () => {
-      acRef.current?.abort();
-      cancelSpeak();
-    };
-  }, []);
+  useEffect(() => () => { acRef.current?.abort(); cancelSpeak(); }, []);
 
-  // 모든 핸들러는 단순 setState 만 호출 — useEffect cleanup 이 in-flight
-  // speakAsync·animateOne·wait 를 abort 시켜 즉시 풀어준다. 그리고 새 state
-  // 로 새 effect 인스턴스가 시작되어 새 카드를 재생.
   function onTogglePlay() {
-    // iOS Safari gesture lock 해제 — onTogglePlay/Prev/Next 모두 진입점에서 1회.
     unlock();
     if (finished) {
       setFinished(false);
@@ -347,8 +324,6 @@ export default function StrokesPlay(): JSX.Element {
     setPlaying((p) => !p);
   }
 
-  // Prev/Next: functional setIndex 로 빠른 연타 시 동일 값 합쳐지지 않고
-  // React queue 가 직전 값을 가져와 정확히 ±1 씩 누적.
   function onPrev() {
     unlock();
     setRep(1);
@@ -387,9 +362,7 @@ export default function StrokesPlay(): JSX.Element {
             <PenLine size={16} aria-hidden />
             <span>필순</span>
             {strokeRepeats > 1 ? (
-              <span className="text-xs text-muted">
-                · {rep}/{strokeRepeats}회
-              </span>
+              <span className="text-xs text-muted">· {rep}/{strokeRepeats}회</span>
             ) : null}
           </div>
           <button
@@ -404,7 +377,6 @@ export default function StrokesPlay(): JSX.Element {
         </div>
 
         {finished ? (
-          // 완료 카드 — 명시적 종료 상태. 작은 자막 한 줄로 묻혀버리지 않게.
           <div className="card text-center py-8 min-h-[220px] flex flex-col justify-center items-center gap-2">
             <div className="text-success">
               <CheckCircle2 size={40} aria-hidden />
@@ -446,7 +418,6 @@ export default function StrokesPlay(): JSX.Element {
               </span>
             </div>
 
-            {/* 진행률 — 카드 위치 + 끝까지 얼마 남았는지 시각화 */}
             <div
               className="h-1 mx-auto mb-3 w-full max-w-xs bg-divider/60 rounded-full overflow-hidden"
               role="progressbar"
@@ -458,11 +429,7 @@ export default function StrokesPlay(): JSX.Element {
               <div
                 className="h-full bg-primary transition-all duration-300"
                 style={{
-                  width: `${
-                    queue.length === 0
-                      ? 0
-                      : (Math.min(index + 1, queue.length) / queue.length) * 100
-                  }%`,
+                  width: `${queue.length === 0 ? 0 : (Math.min(index + 1, queue.length) / queue.length) * 100}%`,
                 }}
               />
             </div>
@@ -474,8 +441,6 @@ export default function StrokesPlay(): JSX.Element {
                   className="flex items-center justify-center gap-2 flex-nowrap"
                   style={{ minHeight: charSize }}
                 />
-                {/* 첫 카드 / 카드 전환 직후 writers mount 전 잠깐 보이는 spinner.
-                    데이터 fetch 가 끝나기 전 카드가 비어 있는 듯한 인상을 막는다. */}
                 {!ready && !error ? (
                   <div
                     className="absolute inset-0 flex items-center justify-center pointer-events-none text-muted"
@@ -497,13 +462,14 @@ export default function StrokesPlay(): JSX.Element {
               <div className="text-xs text-muted mt-2">{error}</div>
             ) : null}
 
+            {/* 병음·뜻 — 간체의 1/3 크기 (text-base = 1rem) */}
             {display.pinyin && current ? (
-              <div className="pinyin-text text-sm text-fg/80 mt-3">
+              <div className="pinyin-text text-base text-fg/80 mt-3">
                 {current.pinyin}
               </div>
             ) : null}
             {display.korean && current ? (
-              <div className="mt-1 text-sm text-fg/80">{current.meaning}</div>
+              <div className="mt-1 text-base text-fg/80">{current.meaning}</div>
             ) : null}
           </div>
         )}
@@ -525,11 +491,7 @@ export default function StrokesPlay(): JSX.Element {
             className="w-14 h-14 rounded-full bg-primary text-white inline-flex items-center justify-center shadow-lg active:scale-95 transition"
             aria-label={playing ? "일시정지" : finished ? "처음부터 다시" : "재생"}
           >
-            {playing ? (
-              <Pause size={22} aria-hidden />
-            ) : (
-              <Play size={22} aria-hidden />
-            )}
+            {playing ? <Pause size={22} aria-hidden /> : <Play size={22} aria-hidden />}
           </button>
           <button
             type="button"
@@ -542,8 +504,36 @@ export default function StrokesPlay(): JSX.Element {
           </button>
         </div>
 
+        {/* Loop & Shuffle toggles */}
+        <div className="mt-4 flex items-center justify-center gap-3">
+          <button
+            type="button"
+            onClick={() => setLoop(!loop)}
+            aria-pressed={loop}
+            className={
+              "inline-flex items-center gap-1 rounded-chip px-3 py-1 text-sm border " +
+              (loop ? "bg-primary text-white border-primary" : "bg-surface text-fg border-divider")
+            }
+          >
+            <Repeat size={14} aria-hidden />
+            <span>반복</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => setShuffle(!shuffle)}
+            aria-pressed={shuffle}
+            className={
+              "inline-flex items-center gap-1 rounded-chip px-3 py-1 text-sm border " +
+              (shuffle ? "bg-primary text-white border-primary" : "bg-surface text-fg border-divider")
+            }
+          >
+            <Shuffle size={14} aria-hidden />
+            <span>무작위</span>
+          </button>
+        </div>
+
         {/* Inline repeat control */}
-        <div className="mt-6 flex items-center justify-between px-2">
+        <div className="mt-5 flex items-center justify-between px-2">
           <span className="text-xs text-muted">반복</span>
           <div className="inline-flex items-center gap-2">
             <button

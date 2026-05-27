@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
-import { Link, useParams, useSearchParams } from "react-router-dom";
-import { Construction, Sparkles, Tag } from "lucide-react";
+import { Link, useLocation, useParams, useSearchParams } from "react-router-dom";
+import { Sparkles } from "lucide-react";
 import { TopBar } from "@/components/TopBar";
 import { PageShell } from "@/components/PageShell";
 import { SpeakerButton } from "@/components/SpeakerButton";
@@ -9,6 +9,10 @@ import {
   hskWordsByLevel,
   type HskLevel,
 } from "@/lib/hsk";
+import {
+  hskThemesByTier,
+  getHanjaBreakdown,
+} from "@/lib/hsk-themes";
 import type { HskEntry } from "@/types";
 
 const PAGE_SIZE = 50;
@@ -28,18 +32,30 @@ const BATCH_SIZE = 100;
  */
 export default function HskTier() {
   const { tier } = useParams<{ tier?: string }>();
+  const loc = useLocation();
 
-  if (tier === "basic") return <BasicTier />;
-  if (tier === "mid") return <MidTier />;
-  if (tier === "adv") return <AdvTier />;
+  // /vocab/basic, /vocab/mid, /vocab/adv 또는 레거시 /hsk/:tier 모두 지원
+  const resolved =
+    tier ??
+    (loc.pathname.includes("/basic")
+      ? "basic"
+      : loc.pathname.includes("/mid")
+      ? "mid"
+      : loc.pathname.includes("/adv")
+      ? "adv"
+      : undefined);
+
+  if (resolved === "basic") return <BasicTier />;
+  if (resolved === "mid") return <MidTier />;
+  if (resolved === "adv") return <AdvTier />;
 
   return (
     <PageShell>
       <TopBar title="HSK" />
       <div className="text-center text-muted mt-12">잘못된 경로입니다.</div>
       <div className="text-center mt-2">
-        <Link to="/hsk" className="text-primary text-sm">
-          ← 급수 선택으로
+        <Link to="/vocab" className="text-primary text-sm">
+          ← 단어장으로
         </Link>
       </div>
     </PageShell>
@@ -51,6 +67,7 @@ export default function HskTier() {
 // ────────────────────────────────────────────────────────────────────
 function BasicTier() {
   const [sp, setSp] = useSearchParams();
+  const viewAll = sp.get("view") === "all";
   const rawLevel = sp.get("level");
   const level: "all" | HskLevel =
     rawLevel === "1" || rawLevel === "2" || rawLevel === "3" || rawLevel === "4"
@@ -58,19 +75,78 @@ function BasicTier() {
       : "all";
   const [filter, setFilter] = useState("");
 
+  const themes = useMemo(() => hskThemesByTier("basic"), []);
+  const totalEntries = useMemo(
+    () => themes.reduce((s, g) => s + g.entries.length, 0),
+    [themes],
+  );
+
   const pool = useMemo(() => {
     const lvs: HskLevel[] =
       level === "all" ? [1, 2, 3, 4] : [level as HskLevel];
     return lvs.flatMap((lv) => hskWordsByLevel(lv));
   }, [level]);
 
+  if (!viewAll) {
+    // 랜딩 — 테마 카드 그리드
+    return (
+      <PageShell>
+        <TopBar
+          title="기초 (HSK 1-4)"
+          subtitle={`일상 회화의 뼈대 · ${totalEntries.toLocaleString()}개 (테마별)`}
+        />
+
+        <ul className="mt-3 grid grid-cols-2 gap-2">
+          {themes.map((t) => (
+            <li key={t.id}>
+              <Link
+                to={`/vocab/theme/${t.id}`}
+                className="card flex flex-col items-center text-center py-4 hover:shadow-lg transition"
+              >
+                <div className="font-medium text-sm">{t.title}</div>
+                <div className="text-[10px] text-muted mt-0.5">
+                  {t.entries.length}개
+                </div>
+              </Link>
+            </li>
+          ))}
+        </ul>
+
+        <button
+          type="button"
+          onClick={() => {
+            const next = new URLSearchParams(sp);
+            next.set("view", "all");
+            setSp(next, { replace: true });
+          }}
+          className="mt-4 card w-full flex items-center justify-between hover:shadow-lg transition"
+        >
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 rounded-lg bg-primary-soft inline-flex items-center justify-center">
+              <Sparkles size={16} aria-hidden className="text-primary" />
+            </div>
+            <div className="text-left">
+              <div className="font-semibold text-sm">전체 보기</div>
+              <div className="text-[11px] text-muted mt-0.5">
+                HSK 1-4급 {pool.length.toLocaleString()}개 평면 리스트
+              </div>
+            </div>
+          </div>
+          <span className="text-sm text-primary">시작 →</span>
+        </button>
+      </PageShell>
+    );
+  }
+
+  // 전체 보기 모드 — 기존 HskEntry 평면 리스트
   return (
     <TierFrame
-      title="기초 (HSK 1-4)"
+      title="기초 (HSK 1-4) · 전체"
       subtitle="일상 회화의 뼈대"
       pool={pool}
       filter={filter}
       onFilter={setFilter}
+      backLink={{ to: "/vocab/basic", label: "← 테마 선택으로" }}
     >
       <ChipNav
         items={[
@@ -86,14 +162,9 @@ function BasicTier() {
           if (v === "all") next.delete("level");
           else next.set("level", v);
           next.delete("page");
+          next.set("view", "all");
           setSp(next, { replace: true });
         }}
-      />
-
-      <PlaceholderBanner
-        icon={Tag}
-        text="주제 필터 (음식·가족·시간·…) 준비 중"
-        hint="LLM 분류 단계 추가 시 활성화됩니다"
       />
     </TierFrame>
   );
@@ -102,48 +173,39 @@ function BasicTier() {
 // ────────────────────────────────────────────────────────────────────
 // 중급 (HSK 5)
 // ────────────────────────────────────────────────────────────────────
-const MID_THEMES = [
-  { id: "daily",   title: "일상·구어" },
-  { id: "work",    title: "직장·경제" },
-  { id: "society", title: "사회·문화" },
-  { id: "emotion", title: "감정·심리" },
-  { id: "nature",  title: "자연·과학" },
-  { id: "abstract",title: "추상·논리" },
-] as const;
-
 function MidTier() {
   const [sp, setSp] = useSearchParams();
   const viewAll = sp.get("view") === "all";
   const [filter, setFilter] = useState("");
 
+  const themes = useMemo(() => hskThemesByTier("mid"), []);
+  const totalEntries = useMemo(
+    () => themes.reduce((s, g) => s + g.entries.length, 0),
+    [themes],
+  );
   const pool = useMemo(() => hskWordsByLevel(5), []);
 
   if (!viewAll) {
-    // 랜딩 — 주제 카드 placeholder + 전체보기 진입
+    // 랜딩 — 실제 테마 카드 그리드
     return (
       <PageShell>
         <TopBar
           title="중급 (HSK 5)"
-          subtitle={`${pool.length.toLocaleString()}개 단어 · 주제별 어휘 확장`}
-        />
-
-        <PlaceholderBanner
-          icon={Construction}
-          text="주제별 분류 준비 중"
-          hint="LLM 분류 후 6개 주제로 그룹화될 예정 (예: 일상·구어 200~300단어)"
+          subtitle={`주제별 어휘 확장 · ${totalEntries.toLocaleString()}개 (테마별)`}
         />
 
         <ul className="mt-3 grid grid-cols-2 gap-2">
-          {MID_THEMES.map((t) => (
+          {themes.map((t) => (
             <li key={t.id}>
-              <div
-                className="card flex flex-col items-center text-center py-4 opacity-60 cursor-not-allowed"
-                aria-disabled="true"
-                title="분류 데이터 준비 중"
+              <Link
+                to={`/vocab/theme/${t.id}`}
+                className="card flex flex-col items-center text-center py-4 hover:shadow-lg transition"
               >
                 <div className="font-medium text-sm">{t.title}</div>
-                <div className="text-[10px] text-muted mt-1">준비 중</div>
-              </div>
+                <div className="text-[10px] text-muted mt-0.5">
+                  {t.entries.length}개
+                </div>
+              </Link>
             </li>
           ))}
         </ul>
@@ -182,7 +244,7 @@ function MidTier() {
       pool={pool}
       filter={filter}
       onFilter={setFilter}
-      backLink={{ to: "/hsk/mid", label: "← 주제 선택으로" }}
+      backLink={{ to: "/vocab/mid", label: "← 주제 선택으로" }}
     />
   );
 }
@@ -192,94 +254,118 @@ function MidTier() {
 // ────────────────────────────────────────────────────────────────────
 function AdvTier() {
   const [sp, setSp] = useSearchParams();
+  const viewAll = sp.get("view") === "all";
   const rawLevel = sp.get("level");
   const level: "all" | HskLevel =
     rawLevel === "6" || rawLevel === "7"
       ? (Number(rawLevel) as HskLevel)
       : "all";
-  const rawGroup = sp.get("group");
-  // 기본: 빈도순 그룹 헤더. ?group=flat 으로 끄기 가능.
-  const groupByFreq = rawGroup !== "flat";
   const [filter, setFilter] = useState("");
 
-  const pool = useMemo(() => {
+  // hsk-theme-vocab.json 의 adv 그룹 (VocabEntry 형식, 상세 카드 뷰용)
+  const themes = useMemo(() => hskThemesByTier("adv"), []);
+  const totalEntries = useMemo(
+    () => themes.reduce((s, g) => s + g.entries.length, 0),
+    [themes],
+  );
+
+  // 전체보기 pool (HskEntry 형식, 급수별 필터 + 페이지네이션)
+  const allPool = useMemo(() => {
+    if (!viewAll) return [];
     const lvs: HskLevel[] = level === "all" ? [6, 7] : [level as HskLevel];
     const arr = lvs.flatMap((lv) => hskWordsByLevel(lv));
-    if (groupByFreq) {
-      // freqRank 가 없는 항목은 뒤로 정렬 (Infinity).
-      return [...arr].sort(
-        (a, b) => (a.freqRank ?? Number.POSITIVE_INFINITY) - (b.freqRank ?? Number.POSITIVE_INFINITY),
-      );
-    }
-    return arr;
-  }, [level, groupByFreq]);
+    return [...arr].sort(
+      (a, b) =>
+        (a.freqRank ?? Number.POSITIVE_INFINITY) -
+        (b.freqRank ?? Number.POSITIVE_INFINITY),
+    );
+  }, [viewAll, level]);
 
+  // ── 렌더 분기 (hooks 이후) ──
+
+  if (viewAll) {
+    return (
+      <TierFrame
+        title="고급 (HSK 6-9) · 전체"
+        subtitle="빈도·도메인별 심화"
+        pool={allPool}
+        filter={filter}
+        onFilter={setFilter}
+        sectionEvery={BATCH_SIZE}
+        sectionLabel={(start, end) =>
+          `빈도 Batch · Top ${start.toLocaleString()}–${end.toLocaleString()}`
+        }
+        backLink={{ to: "/vocab/adv", label: "← 배치 선택으로" }}
+      >
+        <ChipNav
+          items={[
+            { value: "all", label: "전체" },
+            { value: "6", label: "6급" },
+            { value: "7", label: "7-9급" },
+          ]}
+          value={String(level)}
+          onChange={(v) => {
+            const next = new URLSearchParams(sp);
+            if (v === "all") next.delete("level");
+            else next.set("level", v);
+            next.delete("page");
+            next.set("view", "all");
+            setSp(next, { replace: true });
+          }}
+        />
+      </TierFrame>
+    );
+  }
+
+  // 랜딩 — 빈도 배치 그룹 카드 목록 (클릭 → /vocab/theme/:groupId)
   return (
-    <TierFrame
-      title="고급 (HSK 6-9)"
-      subtitle="빈도·도메인별 심화"
-      pool={pool}
-      filter={filter}
-      onFilter={setFilter}
-      sectionEvery={groupByFreq ? BATCH_SIZE : 0}
-      sectionLabel={(start, end) =>
-        `빈도 Batch · Top ${start.toLocaleString()}–${end.toLocaleString()}`
-      }
-    >
-      <ChipNav
-        items={[
-          { value: "all", label: "전체" },
-          { value: "6", label: "6급" },
-          { value: "7", label: "7-9급" },
-        ]}
-        value={String(level)}
-        onChange={(v) => {
-          const next = new URLSearchParams(sp);
-          if (v === "all") next.delete("level");
-          else next.set("level", v);
-          next.delete("page");
-          setSp(next, { replace: true });
-        }}
+    <PageShell>
+      <TopBar
+        title="고급 (HSK 6-9)"
+        subtitle={`빈도별 배치 · ${totalEntries.toLocaleString()}개`}
       />
 
-      <div className="flex items-center justify-between gap-2 mt-2 px-1">
-        <span className="text-[11px] text-muted">정렬</span>
-        <div className="inline-flex rounded-btn border border-divider overflow-hidden text-xs">
-          <button
-            type="button"
-            onClick={() => {
-              const next = new URLSearchParams(sp);
-              next.delete("group");
-              next.delete("page");
-              setSp(next, { replace: true });
-            }}
-            aria-pressed={groupByFreq}
-            className={"px-2.5 py-1 " + (groupByFreq ? "bg-primary text-white" : "bg-surface")}
+      <div className="mt-3 space-y-2">
+        {themes.map((g) => (
+          <Link
+            key={g.id}
+            to={`/vocab/theme/${g.id}`}
+            className="card flex items-center justify-between hover:shadow-lg transition"
           >
-            빈도순 (100개씩)
-          </button>
-          <button
-            type="button"
-            onClick={() => {
-              const next = new URLSearchParams(sp);
-              next.set("group", "flat");
-              next.delete("page");
-              setSp(next, { replace: true });
-            }}
-            aria-pressed={!groupByFreq}
-            className={"px-2.5 py-1 " + (!groupByFreq ? "bg-primary text-white" : "bg-surface")}
-          >
-            급수순
-          </button>
-        </div>
+            <div>
+              <div className="font-medium text-sm">{g.title}</div>
+              <div className="text-[10px] text-muted mt-0.5">
+                {g.entries.length}개
+              </div>
+            </div>
+            <span className="text-sm text-primary">→</span>
+          </Link>
+        ))}
       </div>
 
-      <PlaceholderBanner
-        icon={Tag}
-        text="도메인 필터 (정치·법률·문학·과학기술·4자성어·서면어) 준비 중"
-        hint="LLM 분류 단계 추가 시 활성화됩니다"
-      />
-    </TierFrame>
+      <button
+        type="button"
+        onClick={() => {
+          const next = new URLSearchParams(sp);
+          next.set("view", "all");
+          setSp(next, { replace: true });
+        }}
+        className="mt-4 card w-full flex items-center justify-between hover:shadow-lg transition"
+      >
+        <div className="flex items-center gap-3">
+          <div className="w-9 h-9 rounded-lg bg-primary-soft inline-flex items-center justify-center">
+            <Sparkles size={16} aria-hidden className="text-primary" />
+          </div>
+          <div className="text-left">
+            <div className="font-semibold text-sm">전체 보기</div>
+            <div className="text-[11px] text-muted mt-0.5">
+              HSK 6-9급 전체 평면 리스트
+            </div>
+          </div>
+        </div>
+        <span className="text-sm text-primary">시작 →</span>
+      </button>
+    </PageShell>
   );
 }
 
@@ -438,6 +524,9 @@ function RowList({
 
 function HskRow({ entry, ordinal }: { entry: HskEntry; ordinal: number }) {
   const m = displayMeaning(entry);
+  const [expanded, setExpanded] = useState(false);
+  const breakdown = useMemo(() => getHanjaBreakdown(entry.id), [entry.id]);
+
   return (
     <li className="py-3">
       <div className="flex items-start gap-3">
@@ -467,6 +556,36 @@ function HskRow({ entry, ordinal }: { entry: HskEntry; ordinal: number }) {
               </span>
             ) : null}
           </div>
+          {/* 한자 풀이 (hsk-enrichment.json 데이터) */}
+          {breakdown && breakdown.length > 0 ? (
+            expanded ? (
+              <div className="mt-2">
+                <button
+                  type="button"
+                  onClick={() => setExpanded(false)}
+                  className="text-[11px] text-primary mb-1"
+                >
+                  한자 풀이 접기 ▲
+                </button>
+                <ul className="ml-3 list-disc list-outside marker:text-muted space-y-0.5 text-xs">
+                  {breakdown.map((h, i) => (
+                    <li key={i}>
+                      <span className="font-medium">{h.char}</span>
+                      <span className="text-muted">:</span> {h.detail}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ) : (
+              <button
+                type="button"
+                onClick={() => setExpanded(true)}
+                className="mt-1 text-[11px] text-primary"
+              >
+                한자 풀이 보기 ▼
+              </button>
+            )
+          ) : null}
         </div>
       </div>
     </li>
@@ -501,29 +620,6 @@ function ChipNav({
             {it.label}
           </button>
         ))}
-      </div>
-    </div>
-  );
-}
-
-function PlaceholderBanner({
-  icon: Icon,
-  text,
-  hint,
-}: {
-  icon: typeof Construction;
-  text: string;
-  hint?: string;
-}) {
-  return (
-    <div
-      role="note"
-      className="mt-3 rounded-card border border-divider bg-primary-soft/30 px-3 py-2 flex items-start gap-2"
-    >
-      <Icon size={14} aria-hidden className="text-primary mt-0.5 flex-none" />
-      <div className="min-w-0 text-xs">
-        <div className="text-fg">{text}</div>
-        {hint ? <div className="text-muted mt-0.5">{hint}</div> : null}
       </div>
     </div>
   );

@@ -3,11 +3,11 @@ import { Link, Navigate, useNavigate, useParams } from "react-router-dom";
 import { Play, Layers } from "lucide-react";
 import { TopBar } from "@/components/TopBar";
 import { PageShell } from "@/components/PageShell";
+import { buildListenQueue } from "@/lib/content";
 import {
-  buildListenQueue,
-  lessonsByVolume,
-  type Volume,
-} from "@/lib/content";
+  hskThemesByTier,
+  hskThemeIdioms,
+} from "@/lib/hsk-themes";
 import {
   useFlashcards,
   type FlashcardScope,
@@ -18,32 +18,77 @@ type AreaKind = "vocab" | "idiom";
 
 type ScopeOption = { value: string; label: string; scope: FlashcardScope };
 
-function buildScopeOptions(area: AreaKind): ScopeOption[] {
+/** 단어 영역: 기초/중급/고급 티어 + 개별 그룹 */
+function buildVocabScopeOptions(): ScopeOption[] {
   const out: ScopeOption[] = [
-    { value: "all", label: "전체", scope: { kind: "all" } },
+    { value: "all", label: "전체 (기초+중급+고급)", scope: { kind: "all" } },
   ];
-  for (const vol of [1, 2, 3] as Volume[]) {
-    // Only include lessons of the requested kind for area
-    const lessons = lessonsByVolume(vol).filter((l) => l.kind === area);
-    if (lessons.length === 0) continue;
+
+  const basic = hskThemesByTier("basic");
+  out.push({
+    value: "tier-basic",
+    label: `── 기초 (HSK 1-4) 전체 · ${basic.reduce((s, g) => s + g.entries.length, 0)}개`,
+    scope: { kind: "tier", tier: "basic" },
+  });
+  for (const g of basic)
     out.push({
-      value: `vol-${vol}`,
-      label: `${vol}권 전체`,
-      scope: { kind: "vol", vol },
+      value: `theme-${g.id}`,
+      label: `    ${g.title} · ${g.entries.length}개`,
+      scope: { kind: "theme", groupId: g.id },
     });
-    for (const l of lessons) {
-      out.push({
-        value: `lesson-${l.groupId}`,
-        label: `${vol}권.${String(l.no).padStart(2, "0")}과. ${l.titleKo}`,
-        scope: { kind: "lesson", groupId: l.groupId },
-      });
-    }
-  }
+
+  const mid = hskThemesByTier("mid");
+  out.push({
+    value: "tier-mid",
+    label: `── 중급 (HSK 5) 전체 · ${mid.reduce((s, g) => s + g.entries.length, 0)}개`,
+    scope: { kind: "tier", tier: "mid" },
+  });
+  for (const g of mid)
+    out.push({
+      value: `theme-${g.id}`,
+      label: `    ${g.title} · ${g.entries.length}개`,
+      scope: { kind: "theme", groupId: g.id },
+    });
+
+  const adv = hskThemesByTier("adv");
+  out.push({
+    value: "tier-adv",
+    label: `── 고급 (HSK 6-9) 전체 · ${adv.reduce((s, g) => s + g.entries.length, 0)}개`,
+    scope: { kind: "tier", tier: "adv" },
+  });
+  for (const g of adv)
+    out.push({
+      value: `theme-${g.id}`,
+      label: `    ${g.title} · ${g.entries.length}개`,
+      scope: { kind: "theme", groupId: g.id },
+    });
+
+  return out;
+}
+
+/** 성어 영역: 성어 티어 전체 + 개별 그룹 */
+function buildIdiomScopeOptions(): ScopeOption[] {
+  const idioms = hskThemeIdioms();
+  const out: ScopeOption[] = [
+    {
+      value: "all",
+      label: `전체 · ${idioms.reduce((s, g) => s + g.entries.length, 0)}개`,
+      scope: { kind: "tier", tier: "idiom" },
+    },
+  ];
+  for (const g of idioms)
+    out.push({
+      value: `theme-${g.id}`,
+      label: `${g.title} · ${g.entries.length}개`,
+      scope: { kind: "theme", groupId: g.id },
+    });
   return out;
 }
 
 function scopeKey(s: FlashcardScope): string {
   if (s.kind === "all") return "all";
+  if (s.kind === "tier") return `tier-${s.tier}`;
+  if (s.kind === "theme") return `theme-${s.groupId}`;
   if (s.kind === "vol") return `vol-${s.vol}`;
   return `lesson-${s.groupId}`;
 }
@@ -72,7 +117,10 @@ function FlashcardSetup({ area }: { area: AreaKind }): JSX.Element {
   const scope = area === "vocab" ? vocabScope : idiomScope;
   const setScope = area === "vocab" ? setVocabScope : setIdiomScope;
 
-  const scopeOptions = useMemo(() => buildScopeOptions(area), [area]);
+  const scopeOptions = useMemo(
+    () => (area === "vocab" ? buildVocabScopeOptions() : buildIdiomScopeOptions()),
+    [area],
+  );
 
   // Full queue in scope for this area
   const queue = useMemo(
@@ -246,15 +294,13 @@ function FlashcardSetup({ area }: { area: AreaKind }): JSX.Element {
               ? "이 범위에 오늘 복습할 카드가 없습니다."
               : "이 범위에 카드가 없습니다."}
           </div>
-          {/* dueOnly 모드에서 빈 큐는 dead-end 가 되기 쉽다 — 명시적 CTA 로
-              사용자가 한 번에 복귀할 수 있게 한다. (P1 S-02) */}
           {dueOnly && total > 0 ? (
             <button
               type="button"
               onClick={() => setDueOnly(false)}
               className="btn-ghost mt-2 text-xs inline-flex items-center gap-1 border border-divider"
             >
-              ‘복습 카드만’ 옵션 끄기 ({total}개 표시)
+              '복습 카드만' 옵션 끄기 ({total}개 표시)
             </button>
           ) : null}
         </div>

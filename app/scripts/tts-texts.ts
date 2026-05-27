@@ -92,12 +92,30 @@ function loadJson<T>(name: string): T {
   return JSON.parse(readFileSync(p, "utf8")) as T;
 }
 
-export function loadVocab(): VocabGroup[] {
-  return loadJson<VocabGroup[]>("vocab-groups.json");
+function loadJsonOptional<T>(name: string): T | null {
+  const p = join(DATA_DIR, name);
+  if (!existsSync(p)) return null;
+  return JSON.parse(readFileSync(p, "utf8")) as T;
 }
 
+/** 레거시 vocab-groups (optional — 파일 없으면 빈 배열) */
+export function loadVocab(): VocabGroup[] {
+  return loadJsonOptional<VocabGroup[]>("vocab-groups.json") ?? [];
+}
+
+/** 레거시 idiom-groups (optional — 파일 없으면 빈 배열) */
 export function loadIdioms(): IdiomGroup[] {
-  return loadJson<IdiomGroup[]>("idiom-groups.json");
+  return loadJsonOptional<IdiomGroup[]>("idiom-groups.json") ?? [];
+}
+
+/** hsk-theme 단어 그룹 (Basic + Mid + Adv) */
+export function loadHskThemeVocab(): VocabGroup[] {
+  return loadJson<VocabGroup[]>("hsk-theme-vocab.json");
+}
+
+/** hsk-theme 성어 그룹 */
+export function loadHskThemeIdioms(): IdiomGroup[] {
+  return loadJson<IdiomGroup[]>("hsk-theme-idioms.json");
 }
 
 /** 한 단어를 단음절 한자로 분해해 set 에 추가. */
@@ -154,6 +172,8 @@ export function loadCommonHanzi(): Set<string> {
 export function collectAllTtsTexts(): Set<string> {
   const set = new Set<string>();
   for (const ch of loadCommonHanzi()) set.add(ch);
+
+  // ── 레거시 vocab/idiom ──
   for (const g of loadVocab()) {
     for (const e of g.entries) {
       const w = e.word?.trim();
@@ -190,6 +210,44 @@ export function collectAllTtsTexts(): Set<string> {
       }
     }
   }
+
+  // ── hsk-themes vocab (Basic + Mid + Adv) ──
+  for (const g of loadHskThemeVocab()) {
+    for (const e of g.entries) {
+      const w = e.word?.trim();
+      if (!w) continue;
+      set.add(w);
+      addCharsOf(w, set);
+    }
+  }
+
+  // ── hsk-themes idioms ──
+  for (const g of loadHskThemeIdioms()) {
+    for (const e of g.entries) {
+      const w = e.word?.trim();
+      if (w) {
+        set.add(w);
+        addCharsOf(w, set);
+      }
+      const src = extractZhPrefix(e.sourceText ?? "");
+      if (src) {
+        set.add(src);
+        addCharsOf(src, set);
+      }
+      for (const cb of e.charBreakdown ?? []) {
+        const c = cb.char?.trim();
+        if (c && HANZI_RE.test(c)) set.add(c);
+      }
+      for (const sy of e.synonyms ?? []) {
+        const s = extractZhPrefix(sy);
+        if (s) {
+          set.add(s);
+          addCharsOf(s, set);
+        }
+      }
+    }
+  }
+
   set.delete("");
   return set;
 }

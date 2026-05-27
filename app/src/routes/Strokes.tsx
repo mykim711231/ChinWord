@@ -1,13 +1,13 @@
 import { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-import { PenLine, Minus, Plus } from "lucide-react";
+import { PenLine, Minus, Plus, Repeat, Shuffle } from "lucide-react";
 import { TopBar } from "@/components/TopBar";
 import { PageShell } from "@/components/PageShell";
+import { buildListenQueue } from "@/lib/content";
 import {
-  buildListenQueue,
-  lessonsByVolume,
-  type Volume,
-} from "@/lib/content";
+  hskThemesByTier,
+  hskThemeIdioms,
+} from "@/lib/hsk-themes";
 import { useListen, type ListenScope } from "@/state/listen";
 
 const HANZI_RE = /\p{Script=Han}/u;
@@ -19,26 +19,69 @@ function hasHanzi(s: string): boolean {
 type ScopeOption = { value: string; label: string; scope: ListenScope };
 
 function buildScopeOptions(): ScopeOption[] {
-  const out: ScopeOption[] = [{ value: "all", label: "전체", scope: { kind: "all" } }];
-  for (const vol of [1, 2, 3] as Volume[]) {
+  const out: ScopeOption[] = [
+    { value: "all", label: "전체", scope: { kind: "all" } },
+  ];
+
+  const basic = hskThemesByTier("basic");
+  out.push({
+    value: "tier-basic",
+    label: `── 기초 (HSK 1-4) 전체 · ${basic.reduce((s, g) => s + g.entries.length, 0)}개`,
+    scope: { kind: "tier", tier: "basic" },
+  });
+  for (const g of basic)
     out.push({
-      value: `vol-${vol}`,
-      label: `${vol}권 전체`,
-      scope: { kind: "vol", vol },
+      value: `theme-${g.id}`,
+      label: `    ${g.title} · ${g.entries.length}개`,
+      scope: { kind: "theme", groupId: g.id },
     });
-    for (const l of lessonsByVolume(vol)) {
-      out.push({
-        value: `lesson-${l.groupId}`,
-        label: `${vol}권.${String(l.no).padStart(2, "0")}과. ${l.titleKo}`,
-        scope: { kind: "lesson", groupId: l.groupId },
-      });
-    }
-  }
+
+  const mid = hskThemesByTier("mid");
+  out.push({
+    value: "tier-mid",
+    label: `── 중급 (HSK 5) 전체 · ${mid.reduce((s, g) => s + g.entries.length, 0)}개`,
+    scope: { kind: "tier", tier: "mid" },
+  });
+  for (const g of mid)
+    out.push({
+      value: `theme-${g.id}`,
+      label: `    ${g.title} · ${g.entries.length}개`,
+      scope: { kind: "theme", groupId: g.id },
+    });
+
+  const adv = hskThemesByTier("adv");
+  out.push({
+    value: "tier-adv",
+    label: `── 고급 (HSK 6-9) 전체 · ${adv.reduce((s, g) => s + g.entries.length, 0)}개`,
+    scope: { kind: "tier", tier: "adv" },
+  });
+  for (const g of adv)
+    out.push({
+      value: `theme-${g.id}`,
+      label: `    ${g.title} · ${g.entries.length}개`,
+      scope: { kind: "theme", groupId: g.id },
+    });
+
+  const idioms = hskThemeIdioms();
+  out.push({
+    value: "tier-idiom",
+    label: `── 고사성어 전체 · ${idioms.reduce((s, g) => s + g.entries.length, 0)}개`,
+    scope: { kind: "tier", tier: "idiom" },
+  });
+  for (const g of idioms)
+    out.push({
+      value: `theme-${g.id}`,
+      label: `    ${g.title} · ${g.entries.length}개`,
+      scope: { kind: "theme", groupId: g.id },
+    });
+
   return out;
 }
 
 function scopeKey(s: ListenScope): string {
   if (s.kind === "all") return "all";
+  if (s.kind === "tier") return `tier-${s.tier}`;
+  if (s.kind === "theme") return `theme-${s.groupId}`;
   if (s.kind === "vol") return `vol-${s.vol}`;
   return `lesson-${s.groupId}`;
 }
@@ -47,65 +90,39 @@ export default function Strokes(): JSX.Element {
   const navigate = useNavigate();
   const {
     scope,
-    area,
     display,
     strokeRepeats,
+    loop,
+    shuffle,
     setScope,
-    setArea,
     setDisplay,
     setStrokeRepeats,
+    setLoop,
+    setShuffle,
   } = useListen();
 
   const scopeOptions = useMemo(buildScopeOptions, []);
   const queue = useMemo(
-    () => buildListenQueue({ scope, area }).filter((e) => hasHanzi(e.word)),
-    [scope, area],
+    () =>
+      buildListenQueue({ scope, area: { vocab: true, idiom: true } }).filter(
+        (e) => hasHanzi(e.word),
+      ),
+    [scope],
   );
   const count = queue.length;
-  const canStart = count > 0 && (area.vocab || area.idiom);
+  const canStart = count > 0;
 
   return (
     <PageShell>
       <TopBar title="필순" back />
 
       <p className="text-xs text-muted mt-1 mb-3 px-1">
-        선택한 영역·범위의 한자를 순서대로 그립니다. 카드당 반복 횟수만큼 그린
+        선택한 범위의 한자를 순서대로 그립니다. 카드당 반복 횟수만큼 그린
         뒤 다음으로 넘어갑니다.
       </p>
 
-      {/* 영역 */}
-      <section className="card">
-        <span className="block text-xs text-muted mb-1">영역</span>
-        <div className="grid grid-cols-2 gap-2">
-          <button
-            type="button"
-            onClick={() => setArea({ vocab: !area.vocab })}
-            aria-pressed={area.vocab}
-            className={
-              "card text-left p-3 " +
-              (area.vocab ? "border-primary text-primary" : "border-divider")
-            }
-          >
-            <div className="font-semibold">단어</div>
-            <div className="text-xs text-muted mt-0.5">상황별 어휘</div>
-          </button>
-          <button
-            type="button"
-            onClick={() => setArea({ idiom: !area.idiom })}
-            aria-pressed={area.idiom}
-            className={
-              "card text-left p-3 " +
-              (area.idiom ? "border-primary text-primary" : "border-divider")
-            }
-          >
-            <div className="font-semibold">성어</div>
-            <div className="text-xs text-muted mt-0.5">고사성어</div>
-          </button>
-        </div>
-      </section>
-
       {/* 범위 */}
-      <section className="card mt-3">
+      <section className="card">
         <label htmlFor="strokes-scope" className="block text-xs text-muted mb-1">
           범위
         </label>
@@ -187,6 +204,44 @@ export default function Strokes(): JSX.Element {
         </div>
         <p className="text-[11px] text-muted mt-2">
           각 카드를 {strokeRepeats}회 그린 뒤 다음 카드로 진행합니다.
+        </p>
+      </section>
+
+      {/* 반복 재생 / 무작위 */}
+      <section className="card mt-3">
+        <span className="block text-xs text-muted mb-2">재생 방식</span>
+        <div className="flex flex-wrap gap-2">
+          <button
+            type="button"
+            onClick={() => setLoop(!loop)}
+            aria-pressed={loop}
+            className={
+              "inline-flex items-center gap-1 rounded-chip px-3 py-1 text-sm border " +
+              (loop
+                ? "bg-primary text-white border-primary"
+                : "bg-surface text-fg border-divider")
+            }
+          >
+            <Repeat size={14} aria-hidden />
+            <span>반복 재생</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => setShuffle(!shuffle)}
+            aria-pressed={shuffle}
+            className={
+              "inline-flex items-center gap-1 rounded-chip px-3 py-1 text-sm border " +
+              (shuffle
+                ? "bg-primary text-white border-primary"
+                : "bg-surface text-fg border-divider")
+            }
+          >
+            <Shuffle size={14} aria-hidden />
+            <span>무작위</span>
+          </button>
+        </div>
+        <p className="text-[11px] text-muted mt-1">
+          반복 재생: 범위 끝에서 처음으로 다시 시작 · 무작위: 카드 순서를 섞어서 재생
         </p>
       </section>
 

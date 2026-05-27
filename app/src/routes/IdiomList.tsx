@@ -6,7 +6,11 @@ import { PageShell } from "@/components/PageShell";
 import { FavStar } from "@/components/FavStar";
 import { SpeakerButton } from "@/components/SpeakerButton";
 import { InlineStrokes } from "@/components/InlineStrokes";
-import { contentMeta, findIdiomGroup, randomIdiom } from "@/lib/content";
+import { randomIdiom } from "@/lib/content";
+import {
+  hskThemeIdioms,
+  findHskThemeIdiomGroup,
+} from "@/lib/hsk-themes";
 import { splitPinyin, extractZhPrefix } from "@/lib/pinyin";
 import { useListen } from "@/state/listen";
 
@@ -16,11 +20,20 @@ export default function IdiomList() {
   const { groupId } = useParams<{ groupId?: string }>();
   const navigate = useNavigate();
   const loc = useLocation();
+
   const group = useMemo(
-    () => (groupId ? findIdiomGroup(groupId) : undefined),
+    () => (groupId ? findHskThemeIdiomGroup(groupId) : undefined),
     [groupId],
   );
+
+  // hsk-theme-idioms 그룹 목록 (hub + chip nav)
+  const htGroups = useMemo(() => hskThemeIdioms(), []);
+
   const [filter, setFilter] = useState("");
+
+  // 허브 전용이지만 hooks 규칙상 조건문 밖에서 호출
+  const featured = useMemo(() => randomIdiom(), []);
+  const totalIdioms = htGroups.reduce((s, g) => s + g.entries.length, 0);
 
   // Scroll to hashed entry on mount / hash change
   useLayoutEffect(() => {
@@ -35,8 +48,7 @@ export default function IdiomList() {
 
   function startLessonListen(id: string) {
     const s = useListen.getState();
-    s.setScope({ kind: "lesson", groupId: id });
-    s.setArea({ vocab: false, idiom: true });
+    s.setScope({ kind: "theme", groupId: id });
     navigate("/listen/play");
   }
 
@@ -56,10 +68,10 @@ export default function IdiomList() {
 
         <div className="-mx-4 px-4 overflow-x-auto whitespace-nowrap py-2 border-b border-divider sticky top-14 bg-bg/95 backdrop-blur z-20">
           <div className="flex gap-2">
-            {contentMeta.idioms.map((g) => (
+            {htGroups.map((g) => (
               <Link
                 key={g.id}
-                to={`/idiom-group/${g.id}`}
+                to={`/vocab/idioms/${g.id}`}
                 className={
                   "rounded-chip px-3 py-1 text-sm border " +
                   (g.id === groupId
@@ -122,17 +134,16 @@ export default function IdiomList() {
   }
 
   // Group index view (reached only if no groupId provided)
-  const featured = useMemo(() => randomIdiom(), []);
   return (
     <PageShell>
-      <TopBar title="고사성어" subtitle={`${contentMeta.idioms.length}개 주제`} />
+      <TopBar title="고사성어" subtitle={`${totalIdioms}개 · ${htGroups.length}개 그룹`} />
       <section className="mt-2">
         <div className="text-xs text-muted px-1 mb-1 inline-flex items-center gap-1">
           <Sparkles size={12} aria-hidden />
           <span>오늘의 성어</span>
         </div>
         <Link
-          to={`/idiom-group/${featured.group.id}#${encodeURIComponent(featured.entry.id)}`}
+          to={`/vocab/idioms/${featured.group.id}#${encodeURIComponent(featured.entry.id)}`}
           className="card block hover:shadow-lg transition"
         >
           <div className="text-center">
@@ -148,17 +159,19 @@ export default function IdiomList() {
       </section>
 
       <section className="mt-6">
-        <h2 className="font-semibold mb-2 px-1">주제별</h2>
-        <div className="grid grid-cols-2 gap-3">
-          {contentMeta.idioms.map((g) => (
+        <h2 className="font-semibold mb-2 px-1">성어 그룹</h2>
+        <div className="space-y-2">
+          {htGroups.map((g) => (
             <Link
               key={g.id}
-              to={`/idiom-group/${g.id}`}
-              className="card flex flex-col items-center text-center hover:shadow-lg transition py-5"
+              to={`/vocab/idioms/${g.id}`}
+              className="card flex items-center justify-between hover:shadow-lg transition"
             >
-              <div className="font-semibold">{g.title}</div>
-              <div className="text-xs text-muted mt-0.5">{g.titleZh}</div>
-              <div className="text-[11px] text-muted mt-1">{g.count}개</div>
+              <div>
+                <div className="font-semibold text-sm">{g.title}</div>
+                <div className="text-[10px] text-muted mt-0.5">{g.entries.length}개</div>
+              </div>
+              <span className="text-sm text-primary">→</span>
             </Link>
           ))}
         </div>
@@ -210,7 +223,7 @@ function IdiomEntrySection({
                   className="inline-flex flex-col items-center leading-none"
                 >
                   {perCharPinyin?.[i] ? (
-                    <span className="pinyin-text text-xs mb-1 leading-none">
+                    <span className="pinyin-text text-base mb-1 leading-none">
                       {perCharPinyin[i]}
                     </span>
                   ) : null}
@@ -264,26 +277,23 @@ function IdiomEntrySection({
         </div>
       ) : null}
 
-      {/* 4) 유래 */}
-      {entry.origin ? (
+      {/* 4) 의미 — 유래와 원문을 합쳐 하나의 "의미" 블록으로 표시 */}
+      {entry.origin || entry.sourceText ? (
         <div className="mt-4 text-sm">
-          <div className="font-semibold mb-1">유래</div>
-          <div className="leading-relaxed">{entry.origin}</div>
-        </div>
-      ) : null}
-
-      {/* 5) 원문 — 스피커 좌측 정렬(헤딩과 동일 패턴), 매니페스트는 한자 본문만 키로. */}
-      {entry.sourceText ? (
-        <div className="mt-4 text-sm">
-          <div className="font-semibold mb-1">원문</div>
-          <div className="flex items-start gap-2">
-            <SpeakerButton
-              text={extractZhPrefix(entry.sourceText)}
-              label="원문 듣기"
-              className="inline-flex items-center justify-center w-7 h-7 min-h-0 rounded text-fg hover:bg-primary-soft active:bg-primary-soft shrink-0"
-            />
-            <span className="flex-1">{entry.sourceText}</span>
-          </div>
+          <div className="font-semibold mb-1">의미</div>
+          {entry.origin ? (
+            <div className="leading-relaxed">{entry.origin}</div>
+          ) : null}
+          {entry.sourceText ? (
+            <div className={`flex items-start gap-2${entry.origin ? " mt-2" : ""}`}>
+              <SpeakerButton
+                text={extractZhPrefix(entry.sourceText)}
+                label="원문 듣기"
+                className="inline-flex items-center justify-center w-7 h-7 min-h-0 rounded text-fg hover:bg-primary-soft active:bg-primary-soft shrink-0"
+              />
+              <span className="flex-1">{entry.sourceText}</span>
+            </div>
+          ) : null}
         </div>
       ) : null}
 

@@ -1,125 +1,56 @@
 import { Link } from "react-router-dom";
 import { useMemo } from "react";
 import {
-  Sparkles,
   BookOpen,
   ScrollText,
   GraduationCap,
-  Languages,
+  Search,
   ChevronRight,
+  Sprout,
+  Building2,
+  Mountain,
 } from "lucide-react";
-import { SpeakerButton } from "@/components/SpeakerButton";
-import { useSrs } from "@/state/srsStore";
-import { contentMeta, randomVocab } from "@/lib/content";
 import { hskLevelSummaries, hskTotalAll } from "@/lib/hsk-meta";
+import { hskThemeIdioms } from "@/lib/hsk-themes";
 
 type HskTierCard = {
   id: "basic" | "mid" | "adv";
   short: string;
   range: string;
   total: number;
+  icon: typeof Sprout;
 };
 
 export default function Home() {
-  const today = useMemo(() => randomVocab(), []);
-  const due = useSrs((s) => s.dueCards()).length;
-  const total = useSrs((s) => s.total());
   const hskTotal = useMemo(() => hskTotalAll(), []);
+  const idiomCount = useMemo(
+    () => hskThemeIdioms().reduce((s, g) => s + g.entries.length, 0),
+    [],
+  );
   const hskTiers = useMemo<HskTierCard[]>(() => {
     const ls = hskLevelSummaries();
     const sum = (lvs: number[]) =>
       ls.filter((l) => lvs.includes(l.level)).reduce((s, l) => s + l.total, 0);
     return [
-      { id: "basic", short: "기초", range: "1-4급", total: sum([1, 2, 3, 4]) },
-      { id: "mid",   short: "중급", range: "5급",   total: sum([5]) },
-      { id: "adv",   short: "고급", range: "6-9급", total: sum([6, 7]) },
+      { id: "basic", short: "기초", range: "1-4급", total: sum([1, 2, 3, 4]), icon: Sprout },
+      { id: "mid",   short: "중급", range: "5급",   total: sum([5]),          icon: Building2 },
+      { id: "adv",   short: "고급", range: "6-9급", total: sum([6, 7]),       icon: Mountain },
     ];
   }, []);
 
   return (
     <>
-      <div className="mt-1 mb-3 text-xs text-muted">중국어 어휘 학습</div>
+      <div className="mt-1 mb-4 text-xs text-muted">중국어 어휘 학습</div>
 
-      <section className="mt-2">
-        <div className="text-xs text-muted px-1 mb-1 inline-flex items-center gap-1">
-          <Sparkles size={12} aria-hidden />
-          <span>오늘의 단어</span>
-        </div>
-        <Link
-          to={`/vocab/${today.entry.id}`}
-          className="card block hover:shadow-lg transition"
-        >
-          <div className="text-center">
-            <div className="hanzi-text text-4xl">{today.entry.word}</div>
-            <div className="pinyin-text mt-1">{today.entry.pinyin}</div>
-            <div className="mt-2 text-base">{today.entry.meaning}</div>
-            <div className="text-xs text-muted mt-1">— {today.group.title}</div>
-          </div>
-          <div className="flex justify-center mt-2">
-            <SpeakerButton text={today.entry.word} pinyin={today.entry.pinyin} />
-          </div>
-        </Link>
-      </section>
-
-      <section className="mt-6">
+      {/* HSK 급수별 */}
+      <section>
         <div className="flex items-center justify-between mb-2 px-1">
           <h2 className="font-semibold inline-flex items-center gap-1.5">
             <BookOpen size={16} aria-hidden className="text-primary" />
-            <span>상황별 단어</span>
-          </h2>
-          <Link to="/words/1" className="text-sm text-primary inline-flex items-center gap-0.5">
-            <span>모두 보기</span>
-            <ChevronRight size={14} aria-hidden />
-          </Link>
-        </div>
-        <div className="grid grid-cols-2 gap-3">
-          {contentMeta.vocab.slice(0, 4).map((g) => (
-            <Link
-              key={g.id}
-              to={`/situations/${g.id}`}
-              className="card flex flex-col items-center text-center hover:shadow-lg transition py-5"
-            >
-              <div className="font-semibold">{g.title}</div>
-              <div className="text-xs text-muted mt-0.5">{g.titleZh}</div>
-              <div className="text-[11px] text-muted mt-1">{g.count}개</div>
-            </Link>
-          ))}
-        </div>
-      </section>
-
-      <section className="mt-6">
-        <div className="flex items-center justify-between mb-2 px-1">
-          <h2 className="font-semibold inline-flex items-center gap-1.5">
-            <ScrollText size={16} aria-hidden className="text-primary" />
-            <span>고사성어</span>
-          </h2>
-          <Link to="/idioms/1" className="text-sm text-primary inline-flex items-center gap-0.5">
-            <span>모두 보기</span>
-            <ChevronRight size={14} aria-hidden />
-          </Link>
-        </div>
-        <div className="grid grid-cols-2 gap-3">
-          {contentMeta.idioms.slice(0, 2).map((g) => (
-            <Link
-              key={g.id}
-              to={`/idiom-group/${g.id}`}
-              className="card flex flex-col items-center text-center hover:shadow-lg transition py-5"
-            >
-              <div className="font-semibold">{g.title}</div>
-              <div className="text-[11px] text-muted mt-1">{g.count}개</div>
-            </Link>
-          ))}
-        </div>
-      </section>
-
-      <section className="mt-6">
-        <div className="flex items-center justify-between mb-2 px-1">
-          <h2 className="font-semibold inline-flex items-center gap-1.5">
-            <Languages size={16} aria-hidden className="text-primary" />
             <span>HSK 급수별</span>
           </h2>
           <Link
-            to="/hsk"
+            to="/vocab"
             className="text-sm text-primary inline-flex items-center gap-0.5"
           >
             <span>모두 보기</span>
@@ -127,41 +58,87 @@ export default function Home() {
           </Link>
         </div>
         <div className="grid grid-cols-3 gap-2">
-          {hskTiers.map((t) => (
-            <Link
-              key={t.id}
-              to={`/hsk/${t.id}`}
-              className="card flex flex-col items-center text-center hover:shadow-lg transition py-4"
-            >
-              <div className="font-semibold text-sm">{t.short}</div>
-              <div className="text-[11px] text-muted mt-0.5">HSK {t.range}</div>
-              <div className="text-[10px] text-muted mt-1 tabular-nums">
-                {t.total.toLocaleString()}개
-              </div>
-            </Link>
-          ))}
+          {hskTiers.map((t) => {
+            const Icon = t.icon;
+            return (
+              <Link
+                key={t.id}
+                to={`/vocab/${t.id}`}
+                className="card flex flex-col items-center text-center hover:shadow-lg transition py-4"
+              >
+                <Icon size={20} aria-hidden className="text-primary mb-1" />
+                <div className="font-semibold text-sm">{t.short}</div>
+                <div className="text-[11px] text-muted mt-0.5">HSK {t.range}</div>
+                <div className="text-[10px] text-muted mt-1 tabular-nums">
+                  {t.total.toLocaleString()}개
+                </div>
+              </Link>
+            );
+          })}
         </div>
         <div className="mt-1 text-[11px] text-muted text-right px-1 tabular-nums">
-          전체 {hskTotal.toLocaleString()}개 (HSK 3.0)
+          전체 {(hskTotal + idiomCount).toLocaleString()}개 (HSK 3.0)
         </div>
       </section>
 
-      <section className="mt-6">
-        <Link to="/flashcards" className="card flex items-center justify-between hover:shadow-lg transition">
-          <div>
-            <div className="font-semibold inline-flex items-center gap-1.5">
-              <GraduationCap size={16} aria-hidden className="text-primary" />
-              <span>오늘의 복습</span>
+      {/* 고사성어 */}
+      <section className="mt-5">
+        <Link
+          to="/vocab/idioms"
+          className="card flex items-center justify-between hover:shadow-lg transition"
+        >
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-lg bg-primary-soft inline-flex items-center justify-center">
+              <ScrollText size={18} aria-hidden className="text-primary" />
             </div>
-            <div className="text-xs text-muted mt-1">
-              {total === 0
-                ? "플래시카드를 추가해 시작하세요"
-                : due === 0
-                ? "복습 없음"
-                : `${due}장 복습 대기`}
+            <div>
+              <span className="font-semibold text-sm">고사성어</span>
+              <div className="text-[11px] text-muted mt-0.5">{idiomCount}개</div>
             </div>
           </div>
-          <div className="text-3xl text-primary font-semibold">{due}</div>
+          <ChevronRight size={16} aria-hidden className="text-muted" />
+        </Link>
+      </section>
+
+      {/* 학습 */}
+      <section className="mt-5">
+        <Link
+          to="/learn"
+          className="card flex items-center justify-between hover:shadow-lg transition"
+        >
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-lg bg-primary-soft inline-flex items-center justify-center">
+              <GraduationCap size={18} aria-hidden className="text-primary" />
+            </div>
+            <div>
+              <span className="font-semibold text-sm">학습</span>
+              <div className="text-[11px] text-muted mt-0.5">
+                이어듣기 · 필순 · 플래시카드
+              </div>
+            </div>
+          </div>
+          <ChevronRight size={16} aria-hidden className="text-muted" />
+        </Link>
+      </section>
+
+      {/* 검색 */}
+      <section className="mt-5">
+        <Link
+          to="/search"
+          className="card flex items-center justify-between hover:shadow-lg transition"
+        >
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-lg bg-primary-soft inline-flex items-center justify-center">
+              <Search size={18} aria-hidden className="text-primary" />
+            </div>
+            <div>
+              <span className="font-semibold text-sm">검색</span>
+              <div className="text-[11px] text-muted mt-0.5">
+                한자 · 병음 · 뜻으로 검색
+              </div>
+            </div>
+          </div>
+          <ChevronRight size={16} aria-hidden className="text-muted" />
         </Link>
       </section>
     </>

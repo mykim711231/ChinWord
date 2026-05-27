@@ -9,6 +9,9 @@ import { createIdbStorage } from "@/lib/persist";
 
 export type FlashcardScope =
   | { kind: "all" }
+  | { kind: "tier"; tier: "basic" | "mid" | "adv" | "idiom" }
+  | { kind: "theme"; groupId: string }
+  // legacy (backward compat with persisted state)
   | { kind: "vol"; vol: 1 | 2 | 3 }
   | { kind: "lesson"; groupId: string };
 

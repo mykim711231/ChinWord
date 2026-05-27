@@ -9,54 +9,68 @@ import {
   X,
   CheckCircle2,
   RotateCcw,
+  Repeat,
+  Shuffle,
 } from "lucide-react";
 import { PageShell } from "@/components/PageShell";
 import { buildListenQueue, lessonTitleFor } from "@/lib/content";
 import { splitPinyin } from "@/lib/pinyin";
-import { cancelSpeak, speakAsync, unlock } from "@/lib/tts";
+import { cancelSpeak, speakAsync, speakKoreanAsync, unlock } from "@/lib/tts";
 import { useListen } from "@/state/listen";
 import { useSettings } from "@/state/settings";
 
 const HANZI_RE = /\p{Script=Han}/u;
 
+/** Fisher-Yates shuffle (immutable). */
+function shuffleArray<T>(arr: T[]): T[] {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
 export default function ListenPlay(): JSX.Element {
   const navigate = useNavigate();
-  const { scope, area, display, intervalSec, repeats, setIntervalSec, setRepeats } =
-    useListen();
+  const {
+    scope, area, display, intervalSec, repeats, loop, shuffle,
+    setIntervalSec, setRepeats, setLoop, setShuffle,
+  } = useListen();
   const ttsRate = useSettings((s) => s.ttsRate);
 
-  const queue = useMemo(
+  const rawQueue = useMemo(
     () => buildListenQueue({ scope, area }),
     [scope, area],
   );
+  const queue = useMemo(
+    () => (shuffle ? shuffleArray(rawQueue) : rawQueue),
+    [rawQueue, shuffle],
+  );
 
   const [index, setIndex] = useState(0);
-  /** Current repetition of the current card (1-based). */
   const [rep, setRep] = useState(1);
   const [playing, setPlaying] = useState(true);
   const [finished, setFinished] = useState(false);
 
-  // settings 라이브 변경 시 현재 카드 재시작을 피하기 위해 ref 로 캡처.
-  // (deps 에 넣으면 슬라이더 드래그 중 매 tick 마다 effect 재실행되어 카드가 끊김)
   const intervalRef = useRef(intervalSec);
   intervalRef.current = intervalSec;
   const repeatsRef = useRef(repeats);
   repeatsRef.current = repeats;
   const rateRef = useRef(ttsRate);
   rateRef.current = ttsRate;
+  const loopRef = useRef(loop);
+  loopRef.current = loop;
+  const displayRef = useRef(display);
+  displayRef.current = display;
 
-  // 현재 effect 가 들고 있는 AC. cleanup 으로 abort → in-flight speakAsync/wait
-  // 가 즉시 풀려 정지/이전/다음/일시정지 가 무조건 즉시 반영된다.
   const acRef = useRef<AbortController | null>(null);
-
   const current = queue[index];
 
-  // Empty queue guard
   useEffect(() => {
     if (queue.length === 0) navigate("/listen", { replace: true });
   }, [queue.length, navigate]);
 
-  /** Abort-aware sleep — resolves on timeout 또는 ac.signal.abort. */
   const wait = useCallback(
     (ms: number, ac: AbortController): Promise<void> =>
       new Promise((resolve) => {
@@ -65,24 +79,22 @@ export default function ListenPlay(): JSX.Element {
           ac.signal.removeEventListener("abort", onAbort);
           resolve();
         }, ms);
-        const onAbort = (): void => {
-          clearTimeout(t);
-          resolve();
-        };
+        const onAbort = (): void => { clearTimeout(t); resolve(); };
         ac.signal.addEventListener("abort", onAbort, { once: true });
       }),
     [],
   );
 
-  // Playback: "한 effect = 한 rep 의 한 카드 1회 재생".
-  // 일시정지/이전/다음/카드끝 → setState → cleanup(ac.abort, cancelSpeak)
-  // → in-flight speakAsync·wait 즉시 풀림 → 새 effect 가 새 카드를 재생.
-  // 이 단순화로 prev/next 무반응 + audio bleed-through 가 모두 해소된다.
   useEffect(() => {
     if (queue.length === 0) return;
     if (!playing) return;
     if (finished) return;
     if (index >= queue.length) {
+      if (loopRef.current) {
+        setRep(1);
+        setIndex(0);
+        return;
+      }
       setFinished(true);
       setPlaying(false);
       return;
@@ -93,25 +105,27 @@ export default function ListenPlay(): JSX.Element {
 
     const run = async (): Promise<void> => {
       const entry = queue[index];
-      // 한자를 보내야 사전녹음 매니페스트가 hit 되고 zh-CN-XiaoxiaoNeural
-      // (표준 보통화) mp3 가 재생된다. 병음(라틴 문자)을 보내면 매니페스트 miss
-      // → Web Speech 가 라틴 알파벳을 zh-CN 으로 읽으려 해서 발음이 엉뚱해진다.
       const phrase = entry.word || entry.pinyin;
+
+      // 1) 중국어 발음
       try {
-        await speakAsync(phrase, {
-          rate: rateRef.current,
-          signal: ac.signal,
-        });
-      } catch {
-        /* ignore */
-      }
+        await speakAsync(phrase, { rate: rateRef.current, signal: ac.signal });
+      } catch { /* ignore */ }
       if (ac.signal.aborted) return;
 
-      // gap before next play
+      // 2) 한국어 뜻 읽기 (korean 표시 활성 시)
+      if (displayRef.current.korean && entry.meaning) {
+        await wait(300, ac);
+        if (ac.signal.aborted) return;
+        try {
+          await speakKoreanAsync(entry.meaning, { rate: 1.0, signal: ac.signal });
+        } catch { /* ignore */ }
+        if (ac.signal.aborted) return;
+      }
+
       await wait(intervalRef.current * 1000, ac);
       if (ac.signal.aborted) return;
 
-      // auto-advance: 같은 카드 반복인지, 다음 카드인지
       if (rep < repeatsRef.current) {
         setRep((r) => r + 1);
       } else {
@@ -121,33 +135,15 @@ export default function ListenPlay(): JSX.Element {
     };
 
     void run();
-
-    return () => {
-      ac.abort();
-      cancelSpeak();
-    };
-    // ttsRate/intervalSec/repeats 는 의도적으로 deps 에서 제외 — ref 로 라이브 반영.
+    return () => { ac.abort(); cancelSpeak(); };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [queue, index, rep, playing, finished, wait]);
 
-  // Cleanup on unmount
-  useEffect(() => {
-    return () => {
-      acRef.current?.abort();
-      cancelSpeak();
-    };
-  }, []);
+  useEffect(() => () => { acRef.current?.abort(); cancelSpeak(); }, []);
 
-  // 모든 핸들러는 단순 setState 만 호출 — useEffect cleanup 이 in-flight
-  // speakAsync·wait 를 abort 시켜 즉시 풀어준다. 그리고 새 state 로 새 effect
-  // 인스턴스가 시작되어 새 카드를 재생.
   function onTogglePlay() {
-    // iOS Safari gesture lock: 첫 speak 호출은 사용자 제스처 동기 스택에서
-    // 시작되어야 한다. setState → useEffect → speakAsync 는 비동기 경로라
-    // 진입점에서 unlock() 으로 무음 utterance 1회 발사해 정책 충족.
     unlock();
     if (finished) {
-      // restart from the beginning
       setFinished(false);
       setRep(1);
       setIndex(0);
@@ -157,9 +153,6 @@ export default function ListenPlay(): JSX.Element {
     setPlaying((p) => !p);
   }
 
-  // Prev/Next: functional setIndex 로 빠른 연타 시 동일 값 합쳐지지 않고
-  // React queue 가 직전 값을 가져와 정확히 ±1 씩 누적. ±2 점프 race 도 없음
-  // (loop 는 자동 advance 가 없어졌으므로 setIndex 호출처가 단일화).
   function onPrev() {
     unlock();
     setRep(1);
@@ -198,9 +191,7 @@ export default function ListenPlay(): JSX.Element {
             <Headphones size={16} aria-hidden />
             <span>이어듣기</span>
             {repeats > 1 ? (
-              <span className="text-xs text-muted">
-                · {rep}/{repeats}회
-              </span>
+              <span className="text-xs text-muted">· {rep}/{repeats}회</span>
             ) : null}
           </div>
           <button
@@ -215,8 +206,6 @@ export default function ListenPlay(): JSX.Element {
         </div>
 
         {finished ? (
-          // 완료 카드 — 작은 자막 한 줄로 묻혀버리는 대신 명시적 종료 화면.
-          // 사용자가 "끝났구나" 를 즉시 인지하고 다시/돌아가기 중 선택할 수 있게.
           <div className="card text-center py-8 min-h-[220px] flex flex-col justify-center items-center gap-2">
             <div className="text-success">
               <CheckCircle2 size={40} aria-hidden />
@@ -258,7 +247,6 @@ export default function ListenPlay(): JSX.Element {
               </span>
             </div>
 
-            {/* progress bar — 위치 인지 + 끝까지 얼마 남았는지 시각화 */}
             <div
               className="h-1 mx-auto mb-3 w-full max-w-xs bg-divider/60 rounded-full overflow-hidden"
               role="progressbar"
@@ -270,11 +258,7 @@ export default function ListenPlay(): JSX.Element {
               <div
                 className="h-full bg-primary transition-all duration-300"
                 style={{
-                  width: `${
-                    queue.length === 0
-                      ? 0
-                      : (Math.min(index + 1, queue.length) / queue.length) * 100
-                  }%`,
+                  width: `${queue.length === 0 ? 0 : (Math.min(index + 1, queue.length) / queue.length) * 100}%`,
                 }}
               />
             </div>
@@ -289,7 +273,7 @@ export default function ListenPlay(): JSX.Element {
             ) : null}
 
             {display.korean && current ? (
-              <div className="mt-3 text-sm text-fg/80">{current.meaning}</div>
+              <div className="mt-3 text-lg text-fg/80">{current.meaning}</div>
             ) : null}
           </div>
         )}
@@ -311,11 +295,7 @@ export default function ListenPlay(): JSX.Element {
             className="w-14 h-14 rounded-full bg-primary text-white inline-flex items-center justify-center shadow-lg active:scale-95 transition"
             aria-label={playing ? "일시정지" : finished ? "처음부터 다시" : "재생"}
           >
-            {playing ? (
-              <Pause size={22} aria-hidden />
-            ) : (
-              <Play size={22} aria-hidden />
-            )}
+            {playing ? <Pause size={22} aria-hidden /> : <Play size={22} aria-hidden />}
           </button>
           <button
             type="button"
@@ -328,8 +308,36 @@ export default function ListenPlay(): JSX.Element {
           </button>
         </div>
 
+        {/* Loop & Shuffle toggles */}
+        <div className="mt-4 flex items-center justify-center gap-3">
+          <button
+            type="button"
+            onClick={() => setLoop(!loop)}
+            aria-pressed={loop}
+            className={
+              "inline-flex items-center gap-1 rounded-chip px-3 py-1 text-sm border " +
+              (loop ? "bg-primary text-white border-primary" : "bg-surface text-fg border-divider")
+            }
+          >
+            <Repeat size={14} aria-hidden />
+            <span>반복</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => setShuffle(!shuffle)}
+            aria-pressed={shuffle}
+            className={
+              "inline-flex items-center gap-1 rounded-chip px-3 py-1 text-sm border " +
+              (shuffle ? "bg-primary text-white border-primary" : "bg-surface text-fg border-divider")
+            }
+          >
+            <Shuffle size={14} aria-hidden />
+            <span>무작위</span>
+          </button>
+        </div>
+
         {/* Inline interval control */}
-        <div className="mt-6 px-2">
+        <div className="mt-5 px-2">
           <div className="flex items-center justify-between mb-1">
             <span className="text-xs text-muted">카드 간격</span>
             <span className="text-sm tabular-nums">{intervalSec.toFixed(1)}s</span>
@@ -377,6 +385,13 @@ export default function ListenPlay(): JSX.Element {
   );
 }
 
+/**
+ * 간체 + 병음 스택.
+ *
+ * 폰트 사이즈 비율:
+ *   - 4글자 기준 간체 크기를 표준으로 사용 (text-5xl = 3rem)
+ *   - 병음·뜻 = 간체의 1/3 (1rem = text-base)
+ */
 function PinyinHanziStack({
   word,
   pinyin,
@@ -394,7 +409,6 @@ function PinyinHanziStack({
     ? splitPinyin(pinyin, hanziCount) ?? null
     : null;
 
-  // Per-char aligned view if syllables resolved
   if (showPinyin && showHanzi && syllables) {
     let pi = 0;
     return (
@@ -404,7 +418,7 @@ function PinyinHanziStack({
           const syl = isHan ? syllables[pi++] : null;
           return (
             <div key={i} className="flex flex-col items-center">
-              <span className="pinyin-text text-sm text-fg/80 min-h-[1.25rem]">
+              <span className="pinyin-text text-base text-fg/80 min-h-[1.25rem]">
                 {syl ?? ""}
               </span>
               <span className="hanzi-text text-5xl leading-none">{c}</span>
@@ -415,11 +429,10 @@ function PinyinHanziStack({
     );
   }
 
-  // Stacked but unaligned (or selective)
   return (
     <div>
       {showPinyin ? (
-        <div className="pinyin-text text-sm text-fg/80">{pinyin}</div>
+        <div className="pinyin-text text-base text-fg/80">{pinyin}</div>
       ) : null}
       {showHanzi ? (
         <div className="hanzi-text text-5xl mt-1">{word}</div>

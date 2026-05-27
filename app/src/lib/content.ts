@@ -1,99 +1,28 @@
-import vocabGroups from "@/data/vocab-groups.json";
-import idiomGroups from "@/data/idiom-groups.json";
-import meta from "@/data/vocab-meta.json";
+/**
+ * 콘텐츠 접근 레이어 — hsk-themes 전용.
+ *
+ * 모든 단어(VocabEntry)와 성어(IdiomEntry)는 hsk-themes 데이터에서 조회한다.
+ * 레거시 vocab-groups.json / idiom-groups.json 의존성 제거됨.
+ */
 import type {
-  ContentMeta, VocabGroup, IdiomGroup, VocabEntry, IdiomEntry, AnyEntry,
-  GroupMeta, Phase,
+  VocabEntry, IdiomEntry, AnyEntry,
 } from "@/types";
+import {
+  hskThemesByTier,
+  findHskThemeGroup,
+  hskThemeIdioms,
+  findHskThemeIdiomGroup,
+  allHskThemeVocab,
+  type HskThemeTier,
+  type HskThemeVocabGroup,
+  type HskThemeIdiomGroup,
+} from "@/lib/hsk-themes";
 
-const VOCAB = vocabGroups as VocabGroup[];
-const IDIOMS = idiomGroups as IdiomGroup[];
-const META = meta as ContentMeta;
-
-export type Volume = 1 | 2 | 3;
-
-export type LessonRow = {
-  vol: Volume;
-  no: number;
-  kind: "vocab" | "idiom";
-  groupId: string;
-  titleKo: string;
-  titleZh: string;
-  titlePinyin: string;
-  count: number;
-};
-
-const PHASE_BY_VOL: Record<Volume, Phase> = {
-  1: "Phase01",
-  2: "Phase02",
-  3: "Phase03",
-};
-
-function toRow(
-  vol: Volume,
-  no: number,
-  kind: "vocab" | "idiom",
-  g: GroupMeta,
-): LessonRow {
-  return {
-    vol,
-    no,
-    kind,
-    groupId: g.id,
-    titleKo: g.title,
-    titleZh: g.titleZh,
-    titlePinyin: g.titlePinyin,
-    count: g.count,
-  };
-}
-
-export function lessonsByVolume(
-  vol: Volume,
-  kind?: "vocab" | "idiom",
-): LessonRow[] {
-  const phase = PHASE_BY_VOL[vol];
-  const v =
-    kind === "idiom"
-      ? []
-      : META.vocab
-          .filter((g) => g.phase === phase)
-          .sort((a, b) => a.id.localeCompare(b.id));
-  const i =
-    kind === "vocab"
-      ? []
-      : META.idioms
-          .filter((g) => g.phase === phase)
-          .sort((a, b) => a.id.localeCompare(b.id));
-  const rows: LessonRow[] = [];
-  let no = 1;
-  for (const g of v) rows.push(toRow(vol, no++, "vocab", g));
-  for (const g of i) rows.push(toRow(vol, no++, "idiom", g));
-  return rows;
-}
-
-export function volumeRangeLabel(
-  vol: Volume,
-  kind?: "vocab" | "idiom",
-): string {
-  const rows = lessonsByVolume(vol, kind);
-  if (rows.length === 0) return "";
-  return `1~${rows.length}과`;
-}
-
-export const contentMeta = META;
-export const vocabGroupsAll = VOCAB;
-export const idiomGroupsAll = IDIOMS;
-
-export function findVocabGroup(id: string): VocabGroup | undefined {
-  return VOCAB.find((g) => g.id === id);
-}
-export function findIdiomGroup(id: string): IdiomGroup | undefined {
-  return IDIOMS.find((g) => g.id === id);
-}
+// ─── 단어 조회 ───
 
 export function findVocabEntry(id: string):
-  | { entry: VocabEntry; group: VocabGroup; index: number } | undefined {
-  for (const g of VOCAB) {
+  | { entry: VocabEntry; group: HskThemeVocabGroup; index: number } | undefined {
+  for (const g of allHskThemeVocab()) {
     const idx = g.entries.findIndex((e) => e.id === id);
     if (idx >= 0) return { entry: g.entries[idx], group: g, index: idx };
   }
@@ -101,8 +30,8 @@ export function findVocabEntry(id: string):
 }
 
 export function findIdiomEntry(id: string):
-  | { entry: IdiomEntry; group: IdiomGroup; index: number } | undefined {
-  for (const g of IDIOMS) {
+  | { entry: IdiomEntry; group: HskThemeIdiomGroup; index: number } | undefined {
+  for (const g of hskThemeIdioms()) {
     const idx = g.entries.findIndex((e) => e.id === id);
     if (idx >= 0) return { entry: g.entries[idx], group: g, index: idx };
   }
@@ -119,21 +48,48 @@ export function getEntryById(id: string): AnyEntry | undefined {
 
 export function allEntries(): AnyEntry[] {
   const out: AnyEntry[] = [];
-  for (const g of VOCAB) for (const e of g.entries)
-    out.push({ kind: "vocab", groupId: g.id, ...e });
-  for (const g of IDIOMS) for (const e of g.entries)
-    out.push({ kind: "idiom", groupId: g.id, ...e });
+  for (const g of allHskThemeVocab())
+    for (const e of g.entries)
+      out.push({ kind: "vocab", groupId: g.id, ...e });
+  for (const g of hskThemeIdioms())
+    for (const e of g.entries)
+      out.push({ kind: "idiom", groupId: g.id, ...e });
   return out;
 }
 
+// ─── 랜덤 ───
+
+export function randomVocab(): { entry: VocabEntry; group: HskThemeVocabGroup } {
+  const groups = allHskThemeVocab().filter((g) => g.entries.length > 0);
+  const g = groups[Math.floor(Math.random() * groups.length)];
+  const e = g.entries[Math.floor(Math.random() * g.entries.length)];
+  return { entry: e, group: g };
+}
+
+export function randomIdiom(): { entry: IdiomEntry; group: HskThemeIdiomGroup } {
+  const groups = hskThemeIdioms().filter((g) => g.entries.length > 0);
+  const g = groups[Math.floor(Math.random() * groups.length)];
+  const e = g.entries[Math.floor(Math.random() * g.entries.length)];
+  return { entry: e, group: g };
+}
+
+// ─── 이어듣기/필순/플래시카드 큐 빌더 ───
+
 /**
- * Build a flat play queue for 이어듣기 based on scope + area filters.
- * Entries are yielded in lesson order (1권.01과 → 1권.09과 → 2권.01과 …),
- * with each lesson's entries in their natural sequence.
+ * Build a flat play queue based on scope + area filters.
+ *
+ * Scope kinds:
+ *   "all"    — hsk-themes 전체 (basic+mid+adv+idiom)
+ *   "tier"   — 특정 HSK 티어 전체 (basic / mid / adv / idiom)
+ *   "theme"  — 개별 hsk-theme 그룹
+ *   "vol"    — 레거시 (무시 → 빈 배열)
+ *   "lesson" — 레거시 (무시 → 빈 배열)
  */
 export function buildListenQueue(opts: {
   scope:
     | { kind: "all" }
+    | { kind: "tier"; tier: "basic" | "mid" | "adv" | "idiom" }
+    | { kind: "theme"; groupId: string }
     | { kind: "vol"; vol: 1 | 2 | 3 }
     | { kind: "lesson"; groupId: string };
   area: { vocab: boolean; idiom: boolean };
@@ -141,61 +97,62 @@ export function buildListenQueue(opts: {
   const { scope, area } = opts;
   const result: AnyEntry[] = [];
 
-  // lesson scope: direct group lookup, no volume scan needed
-  if (scope.kind === "lesson") {
-    const vg = findVocabGroup(scope.groupId);
-    if (vg && area.vocab) {
-      for (const e of vg.entries)
-        result.push({ kind: "vocab", groupId: vg.id, ...e });
-      return result;
+  if (scope.kind === "all") {
+    for (const tier of ["basic", "mid", "adv"] as HskThemeTier[]) {
+      if (!area.vocab) continue;
+      for (const g of hskThemesByTier(tier))
+        for (const e of g.entries)
+          result.push({ kind: "vocab", groupId: g.id, ...e });
     }
-    const ig = findIdiomGroup(scope.groupId);
-    if (ig && area.idiom) {
-      for (const e of ig.entries)
-        result.push({ kind: "idiom", groupId: ig.id, ...e });
+    if (area.idiom) {
+      for (const g of hskThemeIdioms())
+        for (const e of g.entries)
+          result.push({ kind: "idiom", groupId: g.id, ...e });
     }
     return result;
   }
 
-  const volRange: Volume[] = scope.kind === "all" ? [1, 2, 3] : [scope.vol];
-  for (const vol of volRange) {
-    const lessons = lessonsByVolume(vol);
-    for (const l of lessons) {
-      if (l.kind === "vocab" && !area.vocab) continue;
-      if (l.kind === "idiom" && !area.idiom) continue;
-      if (l.kind === "vocab") {
-        const g = findVocabGroup(l.groupId);
-        if (!g) continue;
-        for (const e of g.entries)
-          result.push({ kind: "vocab", groupId: g.id, ...e });
-      } else {
-        const g = findIdiomGroup(l.groupId);
-        if (!g) continue;
+  if (scope.kind === "tier") {
+    if (scope.tier === "idiom") {
+      for (const g of hskThemeIdioms())
         for (const e of g.entries)
           result.push({ kind: "idiom", groupId: g.id, ...e });
-      }
+    } else {
+      for (const g of hskThemesByTier(scope.tier))
+        for (const e of g.entries)
+          result.push({ kind: "vocab", groupId: g.id, ...e });
     }
+    return result;
   }
+
+  if (scope.kind === "theme") {
+    const vg = findHskThemeGroup(scope.groupId);
+    if (vg) {
+      for (const e of vg.entries)
+        result.push({ kind: "vocab", groupId: vg.id, ...e });
+      return result;
+    }
+    const ig = findHskThemeIdiomGroup(scope.groupId);
+    if (ig) {
+      for (const e of ig.entries)
+        result.push({ kind: "idiom", groupId: ig.id, ...e });
+      return result;
+    }
+    return result;
+  }
+
+  // 레거시 vol / lesson — hsk-themes 전환 후 빈 배열 반환
+  // (Zustand persist에 남아 있을 수 있는 이전 설정 호환)
   return result;
 }
 
 /**
- * Resolve the friendly title for an entry's source lesson (e.g. "인사와 소개").
- * Used by the listen player to show "하나님의 사랑 · 1/657" style header.
+ * Resolve the friendly title for an entry's source group.
+ * Used by listen player to show "인사와 가족 · 1/80" style header.
  */
 export function lessonTitleFor(entry: AnyEntry): string {
-  if (entry.kind === "vocab") return findVocabGroup(entry.groupId)?.title ?? "";
-  return findIdiomGroup(entry.groupId)?.title ?? "";
-}
-
-export function randomVocab(): { entry: VocabEntry; group: VocabGroup } {
-  const g = VOCAB[Math.floor(Math.random() * VOCAB.length)];
-  const e = g.entries[Math.floor(Math.random() * g.entries.length)];
-  return { entry: e, group: g };
-}
-
-export function randomIdiom(): { entry: IdiomEntry; group: IdiomGroup } {
-  const g = IDIOMS[Math.floor(Math.random() * IDIOMS.length)];
-  const e = g.entries[Math.floor(Math.random() * g.entries.length)];
-  return { entry: e, group: g };
+  if (entry.kind === "vocab") {
+    return findHskThemeGroup(entry.groupId)?.title ?? "";
+  }
+  return findHskThemeIdiomGroup(entry.groupId)?.title ?? "";
 }

@@ -4,9 +4,8 @@ import { PageShell } from "@/components/PageShell";
 import { findVocabEntry } from "@/lib/content";
 
 /**
- * Legacy single-entry detail route. The new flow shows the entire lesson on
- * one scrollable page; we redirect to that group page with the entry id as
- * the URL hash so the page can scroll-into-view the targeted card.
+ * Single-entry detail route — redirects to the theme group page
+ * with the entry id as hash so the page scrolls to the card.
  */
 export default function VocabDetail() {
   const { id = "" } = useParams<{ id: string }>();
@@ -21,7 +20,7 @@ export default function VocabDetail() {
   }
   return (
     <Navigate
-      to={`/situations/${hit.group.id}#${encodeURIComponent(hit.entry.id)}`}
+      to={`/vocab/theme/${hit.group.id}#${encodeURIComponent(hit.entry.id)}`}
       replace
     />
   );

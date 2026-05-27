@@ -1,6 +1,5 @@
 // build-content.ts
-// Doc/Markdown/{situations,idioms}/Vol0[1-3]/*.md -> app/src/data/*.json
-// (Vol01 → Phase01, Vol02 → Phase02, Vol03 → Phase03 for legacy ID compatibility)
+// Doc/Markdown/hsk-themes/{Basic,Mid,Adv,Idioms}/*.md -> app/src/data/*.json
 import { readFileSync, writeFileSync, readdirSync, mkdirSync, statSync } from "node:fs";
 import { resolve, join, basename } from "node:path";
 import { createHash } from "node:crypto";
@@ -35,11 +34,24 @@ type IdiomEntry = {
   synonyms: string[];
 };
 
-type Phase = "Phase01" | "Phase02" | "Phase03";
+/** hsk-themes 기초 테마 이모지 */
+const THEME_EMOJI: Record<string, string> = {
+  t01: "👋", t02: "🍜", t03: "🕐", t04: "📍", t05: "🛒",
+  t06: "💊", t07: "📚", t08: "🌤️", t09: "🎨", t10: "💗",
+};
 
-type VocabGroup = {
+type HskThemeTier = "basic" | "mid" | "adv";
+
+/** hsk-themes tier 기본 이모지 */
+const TIER_DEFAULT_EMOJI: Record<HskThemeTier, string> = {
+  basic: "📚",
+  mid: "📚",
+  adv: "📊",
+};
+
+type HskThemeVocabGroup = {
   id: string;
-  phase: Phase;
+  tier: HskThemeTier;
   title: string;
   titleZh: string;
   titlePinyin: string;
@@ -47,24 +59,221 @@ type VocabGroup = {
   entries: VocabEntry[];
 };
 
-type IdiomGroup = {
+type HskThemeIdiomGroup = {
   id: string;
-  phase: Phase;
   title: string;
   titleZh: string;
-  titlePinyin: string;
-  emoji: string;
   entries: IdiomEntry[];
 };
 
-/** 그룹 ID → 이모지 매핑 (홈 그리드 표시용) */
-const GROUP_EMOJI: Record<string, string> = {
-  s01: "👋", s02: "👨‍👩‍👧", s03: "🚇", s04: "🍜", s05: "🛍️", s06: "🏨",
-  s07: "🏥", s08: "💼", s09: "🏫", s10: "✈️", s11: "🌤️", s12: "🎨",
-  s13: "📊", s14: "📑", s15: "🏦", s16: "💻", s17: "⚖️", s18: "🏘️",
-  i01: "📖", i02: "🤝", i03: "🧭", i04: "⏳", i05: "💗", i06: "🏆",
-  i07: "👑", i08: "💰", i09: "🌏",
+type HskAdvGroup = {
+  id: string;
+  title: string;
+  count: number;
+  hskIds: string[];
 };
+
+/** hsk-themes 파일에서 <!-- id: hsk_N_NNNN --> 추출 */
+function extractHskId(block: string): string {
+  const m = block.match(/<!--\s*id:\s*(hsk_\d+_\d+)\s*-->/);
+  return m ? m[1] : "";
+}
+
+/** hsk-themes/Basic, Mid 파일 파싱 → HskThemeVocabGroup */
+function parseHskThemeVocabFile(
+  filePath: string,
+  tier: HskThemeTier,
+): HskThemeVocabGroup {
+  const raw = readFileSync(filePath, "utf8");
+  const lines = raw.split(/\r?\n/);
+
+  const titleLine = lines.find((l) => l.startsWith("# ")) ?? "";
+  const title = parseGroupTitle(titleLine);
+
+  const idMatch = basename(filePath).match(/^([a-z]\d{2})/);
+  const fileId = idMatch ? idMatch[1] : basename(filePath, ".md");
+  const id = `ht_${tier}_${fileId}`;
+
+  const entries: VocabEntry[] = [];
+  for (const block of splitEntries(raw)) {
+    const blockLines = block.split(/\r?\n/);
+    const header = parseEntryHeader(blockLines[0]);
+    if (!header) continue;
+
+    const hanja: { char: string; detail: string }[] = [];
+    let hskLevel = 0;
+    let inHanja = false;
+
+    for (let i = 1; i < blockLines.length; i++) {
+      const ln = blockLines[i];
+      if (/^-\s*한자\s*풀이/.test(ln)) { inHanja = true; continue; }
+      if (/^-\s*HSK\s*등급/.test(ln)) {
+        inHanja = false;
+        const m = ln.match(/(\d+)\s*급/);
+        if (m) hskLevel = parseInt(m[1], 10);
+        continue;
+      }
+      if (/^-\s/.test(ln)) { inHanja = false; continue; }
+      if (inHanja && /^\s{2,}-\s/.test(ln)) {
+        const m = ln.match(/^\s{2,}-\s*(.+?):\s*(.+)$/);
+        if (m) hanja.push({ char: m[1].trim(), detail: m[2].trim() });
+      }
+    }
+
+    // hsk-themes 파일은 <!-- id: hsk_N_NNNN --> 을 포함
+    const hskId = extractHskId(block);
+    const entryId = hskId || `${id}_${String(header.num).padStart(2, "0")}`;
+
+    entries.push({
+      id: entryId,
+      word: header.word,
+      pinyin: header.pinyin,
+      pos: header.pos,
+      meaning: header.meaning,
+      hanjaBreakdown: hanja,
+      hskLevel,
+    });
+  }
+
+  return {
+    id,
+    tier,
+    title: title.ko,
+    titleZh: title.zh,
+    titlePinyin: title.pinyin,
+    emoji: THEME_EMOJI[fileId] ?? TIER_DEFAULT_EMOJI[tier] ?? "📚",
+    entries,
+  };
+}
+
+/** hsk-themes/Adv 파일 파싱 → {hskId → hanjaBreakdown} enrichment 맵 */
+function parseHskAdvEnrichment(
+  filePath: string,
+): Array<{ hskId: string; hanjaBreakdown: { char: string; detail: string }[] }> {
+  const raw = readFileSync(filePath, "utf8");
+  const results: Array<{ hskId: string; hanjaBreakdown: { char: string; detail: string }[] }> = [];
+
+  for (const block of splitEntries(raw)) {
+    const blockLines = block.split(/\r?\n/);
+    const header = parseEntryHeader(blockLines[0]);
+    if (!header) continue;
+
+    const hskId = extractHskId(block);
+    if (!hskId) continue;
+
+    const hanja: { char: string; detail: string }[] = [];
+    let inHanja = false;
+
+    for (let i = 1; i < blockLines.length; i++) {
+      const ln = blockLines[i];
+      if (/^-\s*한자\s*풀이/.test(ln)) { inHanja = true; continue; }
+      if (/^-\s/.test(ln)) { inHanja = false; continue; }
+      if (inHanja && /^\s{2,}-\s/.test(ln)) {
+        const m = ln.match(/^\s{2,}-\s*(.+?):\s*(.+)$/);
+        if (m) hanja.push({ char: m[1].trim(), detail: m[2].trim() });
+      }
+    }
+
+    if (hanja.length > 0) {
+      results.push({ hskId, hanjaBreakdown: hanja });
+    }
+  }
+
+  return results;
+}
+
+/** hsk-themes/Adv 파일에서 그룹 메타데이터 (제목 + hskId 목록) 추출 */
+function parseHskAdvGroup(filePath: string): HskAdvGroup {
+  const raw = readFileSync(filePath, "utf8");
+  const lines = raw.split(/\r?\n/);
+
+  // 제목: "# 상위 1–100위 (HSK 6-7급)" 등
+  const titleLine = lines.find((l) => l.startsWith("# ")) ?? "";
+  const title = titleLine.replace(/^#\s*/, "").trim();
+
+  // 파일 ID: d01, d02, ...
+  const idMatch = basename(filePath).match(/^(d\d{2})/);
+  const fileId = idMatch ? idMatch[1] : basename(filePath, ".md");
+  const id = `ht_adv_${fileId}`;
+
+  // hskId 목록 추출
+  const hskIds: string[] = [];
+  for (const block of splitEntries(raw)) {
+    const hskId = extractHskId(block);
+    if (hskId) hskIds.push(hskId);
+  }
+
+  return { id, title, count: hskIds.length, hskIds };
+}
+
+/** hsk-themes/Idioms 파일 파싱 → HskThemeIdiomGroup */
+function parseHskThemeIdiomFile(filePath: string): HskThemeIdiomGroup {
+  const raw = readFileSync(filePath, "utf8");
+  const lines = raw.split(/\r?\n/);
+
+  const titleLine = lines.find((l) => l.startsWith("# ")) ?? "";
+  const title = parseGroupTitle(titleLine);
+
+  const idMatch = basename(filePath).match(/^(i\d{2})/);
+  const fileId = idMatch ? idMatch[1] : basename(filePath, ".md");
+  const id = `ht_idiom_${fileId}`;
+
+  const entries: IdiomEntry[] = [];
+  for (const block of splitEntries(raw)) {
+    const blockLines = block.split(/\r?\n/);
+    const header = parseEntryHeader(blockLines[0]);
+    if (!header) continue;
+
+    let description = "";   // 의미
+    const charBreakdown: CharBreakdown[] = [];
+    const synonyms: string[] = [];
+    let inChar = false;
+    let inSyn = false;
+
+    for (let i = 1; i < blockLines.length; i++) {
+      const ln = blockLines[i];
+      if (/^-\s*의미\s*:/.test(ln)) {
+        description = ln.replace(/^-\s*의미\s*:\s*/, "").trim();
+        inChar = false; inSyn = false; continue;
+      }
+      if (/^-\s*글자별\s*풀이\s*:/.test(ln)) { inChar = true; inSyn = false; continue; }
+      if (/^-\s*유의어\s*:/.test(ln)) { inChar = false; inSyn = true; continue; }
+      if (/^-\s/.test(ln)) { inChar = false; inSyn = false; continue; }
+
+      if (inChar && /^\s{2,}-\s/.test(ln)) {
+        const m = ln.match(/^\s{2,}-\s*(\S+?)\s*\(([^)]+)\)\s*:\s*(.+)$/);
+        if (m) {
+          charBreakdown.push({
+            char: m[1].trim(),
+            pinyin: m[2].trim(),
+            meaning: m[3].trim(),
+          });
+        }
+      } else if (inSyn && /^\s{2,}-\s/.test(ln)) {
+        synonyms.push(ln.replace(/^\s{2,}-\s*/, "").trim());
+      }
+    }
+
+    entries.push({
+      id: `${id}_${String(header.num).padStart(2, "0")}`,
+      word: header.word,
+      pinyin: header.pinyin,
+      pos: header.pos,
+      meaning: header.meaning,
+      sourceText: "",      // hsk-themes idioms 는 "원문" 없음
+      origin: description, // "의미" → origin 필드에 저장 (UI에서 "의미"로 표시)
+      charBreakdown,
+      synonyms,
+    });
+  }
+
+  return {
+    id,
+    title: title.ko || `4자성어 ${fileId.replace("i", "")}`,
+    titleZh: title.zh,
+    entries,
+  };
+}
 
 function listFiles(dir: string): string[] {
   const out: string[] = [];
@@ -122,205 +331,110 @@ function splitEntries(content: string): string[] {
     .filter((s) => /^###\s*\d+\./m.test(s));
 }
 
-function parseVocabFile(filePath: string, phase: Phase): VocabGroup {
-  const raw = readFileSync(filePath, "utf8");
-  const lines = raw.split(/\r?\n/);
-
-  const titleLine = lines.find((l) => l.startsWith("# ")) ?? "";
-  const title = parseGroupTitle(titleLine);
-
-  // Group id from filename like "s01_인사와_소개.md"
-  const idMatch = basename(filePath).match(/^(s\d{2})/);
-  const id = idMatch ? idMatch[1] : basename(filePath, ".md");
-
-  const entries: VocabEntry[] = [];
-  for (const block of splitEntries(raw)) {
-    const blockLines = block.split(/\r?\n/);
-    const header = parseEntryHeader(blockLines[0]);
-    if (!header) continue;
-
-    const hanja: { char: string; detail: string }[] = [];
-    let hskLevel = 0;
-    let inHanja = false;
-
-    for (let i = 1; i < blockLines.length; i++) {
-      const ln = blockLines[i];
-      if (/^-\s*한자\s*풀이/.test(ln)) { inHanja = true; continue; }
-      if (/^-\s*HSK\s*등급/.test(ln)) {
-        inHanja = false;
-        const m = ln.match(/(\d+)\s*급/);
-        if (m) hskLevel = parseInt(m[1], 10);
-        continue;
-      }
-      if (/^-\s/.test(ln)) { inHanja = false; continue; }
-      if (inHanja && /^\s{2,}-\s/.test(ln)) {
-        const m = ln.match(/^\s{2,}-\s*(.+?):\s*(.+)$/);
-        if (m) hanja.push({ char: m[1].trim(), detail: m[2].trim() });
-      }
-    }
-
-    entries.push({
-      id: `${id}_${String(header.num).padStart(2, "0")}`,
-      word: header.word,
-      pinyin: header.pinyin,
-      pos: header.pos,
-      meaning: header.meaning,
-      hanjaBreakdown: hanja,
-      hskLevel,
-    });
-  }
-
-  return {
-    id,
-    phase,
-    title: title.ko,
-    titleZh: title.zh,
-    titlePinyin: title.pinyin,
-    emoji: GROUP_EMOJI[id] ?? "📚",
-    entries,
-  };
+function safeListFiles(dir: string): string[] {
+  try { return listFiles(dir); } catch { return []; }
 }
-
-function parseIdiomFile(filePath: string, phase: Phase): IdiomGroup {
-  const raw = readFileSync(filePath, "utf8");
-  const lines = raw.split(/\r?\n/);
-
-  const titleLine = lines.find((l) => l.startsWith("# ")) ?? "";
-  const title = parseGroupTitle(titleLine);
-
-  const idMatch = basename(filePath).match(/^(i\d{2})/);
-  const id = idMatch ? idMatch[1] : basename(filePath, ".md");
-
-  const entries: IdiomEntry[] = [];
-  for (const block of splitEntries(raw)) {
-    const blockLines = block.split(/\r?\n/);
-    const header = parseEntryHeader(blockLines[0]);
-    if (!header) continue;
-
-    let sourceText = "";
-    let origin = "";
-    const charBreakdown: CharBreakdown[] = [];
-    const synonyms: string[] = [];
-    let inChar = false;
-    let inSyn = false;
-
-    for (let i = 1; i < blockLines.length; i++) {
-      const ln = blockLines[i];
-      if (/^-\s*원문\s*:/.test(ln)) {
-        sourceText = ln.replace(/^-\s*원문\s*:\s*/, "").trim();
-        inChar = false; inSyn = false; continue;
-      }
-      if (/^-\s*유래\s*:/.test(ln)) {
-        origin = ln.replace(/^-\s*유래\s*:\s*/, "").trim();
-        inChar = false; inSyn = false; continue;
-      }
-      if (/^-\s*글자별\s*풀이\s*:/.test(ln)) { inChar = true; inSyn = false; continue; }
-      if (/^-\s*유의어\s*:/.test(ln)) { inChar = false; inSyn = true; continue; }
-      if (/^-\s/.test(ln)) { inChar = false; inSyn = false; continue; }
-
-      if (inChar && /^\s{2,}-\s/.test(ln)) {
-        // 温 (wēn): 따뜻할 온 — 데우다
-        const m = ln.match(/^\s{2,}-\s*(\S+?)\s*\(([^)]+)\)\s*:\s*(.+)$/);
-        if (m) {
-          charBreakdown.push({
-            char: m[1].trim(),
-            pinyin: m[2].trim(),
-            meaning: m[3].trim(),
-          });
-        }
-      } else if (inSyn && /^\s{2,}-\s/.test(ln)) {
-        synonyms.push(ln.replace(/^\s{2,}-\s*/, "").trim());
-      }
-    }
-
-    entries.push({
-      id: `${id}_${String(header.num).padStart(2, "0")}`,
-      word: header.word,
-      pinyin: header.pinyin,
-      pos: header.pos,
-      meaning: header.meaning,
-      sourceText,
-      origin,
-      charBreakdown,
-      synonyms,
-    });
-  }
-
-  return {
-    id,
-    phase,
-    title: title.ko,
-    titleZh: title.zh,
-    titlePinyin: title.pinyin,
-    emoji: GROUP_EMOJI[id] ?? "📜",
-    entries,
-  };
-}
-
-/**
- * New layout: Doc/Markdown/{situations,idioms}/Vol0X/*.md
- * Vol01 ↔ Phase01, Vol02 ↔ Phase02, Vol03 ↔ Phase03 — `phase` is kept as the
- * internal ID so existing JSON consumers (vocab-meta `phase`, lessonsByVolume
- * mapping) need no changes.
- */
-const VOL_TO_PHASE: Record<string, Phase> = {
-  Vol01: "Phase01",
-  Vol02: "Phase02",
-  Vol03: "Phase03",
-};
 
 function main() {
   mkdirSync(OUT_DIR, { recursive: true });
 
-  const vocabGroups: VocabGroup[] = [];
-  const idiomGroups: IdiomGroup[] = [];
+  // ─── 1) hsk-themes 파싱 (Basic / Mid / Adv / Idioms) ───
+  const hskThemeRoot = join(SRC_DIR, "hsk-themes");
 
-  const sitRoot = join(SRC_DIR, "situations");
-  const idiomRoot = join(SRC_DIR, "idioms");
-
-  for (const vol of ["Vol01", "Vol02", "Vol03"] as const) {
-    const phase = VOL_TO_PHASE[vol];
-    const sitDir = join(sitRoot, vol);
-    const idiomDir = join(idiomRoot, vol);
-
-    for (const f of listFiles(sitDir)) vocabGroups.push(parseVocabFile(f, phase));
-    for (const f of listFiles(idiomDir)) idiomGroups.push(parseIdiomFile(f, phase));
+  // 2-a) Basic + Mid → HskThemeVocabGroup[]
+  const hskThemeVocab: HskThemeVocabGroup[] = [];
+  for (const f of safeListFiles(join(hskThemeRoot, "Basic"))) {
+    hskThemeVocab.push(parseHskThemeVocabFile(f, "basic"));
   }
+  for (const f of safeListFiles(join(hskThemeRoot, "Mid"))) {
+    hskThemeVocab.push(parseHskThemeVocabFile(f, "mid"));
+  }
+  hskThemeVocab.sort((a, b) => a.id.localeCompare(b.id));
 
-  vocabGroups.sort((a, b) => a.id.localeCompare(b.id));
-  idiomGroups.sort((a, b) => a.id.localeCompare(b.id));
+  // 2-b) Adv → enrichment map + group metadata + VocabEntry format
+  const hskEnrichment: Record<string, { char: string; detail: string }[]> = {};
+  const hskAdvGroups: HskAdvGroup[] = [];
+  for (const f of safeListFiles(join(hskThemeRoot, "Adv"))) {
+    // enrichment (한자풀이 맵) — "전체 보기" HskRow 에서 계속 사용
+    for (const item of parseHskAdvEnrichment(f)) {
+      hskEnrichment[item.hskId] = item.hanjaBreakdown;
+    }
+    // group metadata (hskIds) — "전체 보기" 에서 HskEntry 필터 용
+    const group = parseHskAdvGroup(f);
+    if (group.count > 0) hskAdvGroups.push(group);
+    // VocabEntry format — 그룹 상세 VocabEntrySection 뷰용
+    hskThemeVocab.push(parseHskThemeVocabFile(f, "adv"));
+  }
+  hskAdvGroups.sort((a, b) => a.id.localeCompare(b.id));
 
+  // 2-c) Idioms → HskThemeIdiomGroup[]
+  const hskThemeIdioms: HskThemeIdiomGroup[] = [];
+  for (const f of safeListFiles(join(hskThemeRoot, "Idioms"))) {
+    hskThemeIdioms.push(parseHskThemeIdiomFile(f));
+  }
+  hskThemeIdioms.sort((a, b) => a.id.localeCompare(b.id));
+
+  // ─── 3) JSON 출력 ───
   const buildHash = createHash("sha256")
-    .update(JSON.stringify({ vocabGroups, idiomGroups }))
+    .update(JSON.stringify({ hskThemeVocab, hskThemeIdioms, hskEnrichment, hskAdvGroups }))
     .digest("hex")
     .slice(0, 12);
 
+  // hsk-themes 출력
   writeFileSync(
-    join(OUT_DIR, "vocab-groups.json"),
-    JSON.stringify(vocabGroups, null, 0),
+    join(OUT_DIR, "hsk-theme-vocab.json"),
+    JSON.stringify(hskThemeVocab, null, 0),
     "utf8",
   );
   writeFileSync(
-    join(OUT_DIR, "idiom-groups.json"),
-    JSON.stringify(idiomGroups, null, 0),
+    join(OUT_DIR, "hsk-theme-idioms.json"),
+    JSON.stringify(hskThemeIdioms, null, 0),
+    "utf8",
+  );
+  writeFileSync(
+    join(OUT_DIR, "hsk-enrichment.json"),
+    JSON.stringify(hskEnrichment, null, 0),
+    "utf8",
+  );
+  writeFileSync(
+    join(OUT_DIR, "hsk-adv-groups.json"),
+    JSON.stringify(hskAdvGroups, null, 0),
     "utf8",
   );
 
-  // vocab-meta.json — lightweight catalog for home/list rendering
+  // vocab-meta.json — hsk-themes 메타
   const meta = {
     buildHash,
-    vocab: vocabGroups.map((g) => ({
-      id: g.id, phase: g.phase, title: g.title, titleZh: g.titleZh,
-      titlePinyin: g.titlePinyin, emoji: g.emoji, count: g.entries.length,
-    })),
-    idioms: idiomGroups.map((g) => ({
-      id: g.id, phase: g.phase, title: g.title, titleZh: g.titleZh,
-      titlePinyin: g.titlePinyin, emoji: g.emoji, count: g.entries.length,
-    })),
+    hskThemes: {
+      basic: hskThemeVocab
+        .filter((g) => g.tier === "basic")
+        .map((g) => ({
+          id: g.id, tier: g.tier, title: g.title, titleZh: g.titleZh,
+          emoji: g.emoji, count: g.entries.length,
+        })),
+      mid: hskThemeVocab
+        .filter((g) => g.tier === "mid")
+        .map((g) => ({
+          id: g.id, tier: g.tier, title: g.title, titleZh: g.titleZh,
+          emoji: g.emoji, count: g.entries.length,
+        })),
+      adv: hskThemeVocab
+        .filter((g) => g.tier === "adv")
+        .map((g) => ({
+          id: g.id, tier: g.tier, title: g.title, count: g.entries.length,
+        })),
+      advEnrichmentCount: Object.keys(hskEnrichment).length,
+      advGroups: hskAdvGroups.map((g) => ({
+        id: g.id, title: g.title, count: g.count,
+      })),
+      idioms: hskThemeIdioms.map((g) => ({
+        id: g.id, title: g.title, count: g.entries.length,
+      })),
+    },
   };
   writeFileSync(join(OUT_DIR, "vocab-meta.json"), JSON.stringify(meta, null, 0), "utf8");
 
-  // Search index
+  // Search index — 기존 + hsk-themes 통합
   const ms = new MiniSearch({
     fields: ["word", "pinyin", "meaning"],
     storeFields: ["id", "kind", "word", "pinyin", "meaning", "groupId", "groupTitle"],
@@ -331,16 +445,22 @@ function main() {
     id: string; kind: "vocab" | "idiom"; word: string; pinyin: string;
     meaning: string; groupId: string; groupTitle: string;
   }> = [];
-  for (const g of vocabGroups) {
+  const seenIds = new Set<string>();
+  for (const g of hskThemeVocab) {
     for (const e of g.entries) {
+      const docId = e.id.startsWith("hsk_") ? `ht_${e.id}` : e.id;
+      if (seenIds.has(docId)) continue;
+      seenIds.add(docId);
       docs.push({
-        id: e.id, kind: "vocab", word: e.word, pinyin: e.pinyin,
+        id: docId, kind: "vocab", word: e.word, pinyin: e.pinyin,
         meaning: e.meaning, groupId: g.id, groupTitle: g.title,
       });
     }
   }
-  for (const g of idiomGroups) {
+  for (const g of hskThemeIdioms) {
     for (const e of g.entries) {
+      if (seenIds.has(e.id)) continue;
+      seenIds.add(e.id);
       docs.push({
         id: e.id, kind: "idiom", word: e.word, pinyin: e.pinyin,
         meaning: e.meaning, groupId: g.id, groupTitle: g.title,
@@ -351,12 +471,16 @@ function main() {
   writeFileSync(join(OUT_DIR, "search-index.json"), JSON.stringify(ms.toJSON()), "utf8");
 
   // Summary
-  const vocabCount = vocabGroups.reduce((s, g) => s + g.entries.length, 0);
-  const idiomCount = idiomGroups.reduce((s, g) => s + g.entries.length, 0);
+  const htVocabCount = hskThemeVocab.reduce((s, g) => s + g.entries.length, 0);
+  const htIdiomCount = hskThemeIdioms.reduce((s, g) => s + g.entries.length, 0);
+  const enrichCount = Object.keys(hskEnrichment).length;
   // eslint-disable-next-line no-console
   console.log(
-    `[build-content] hash=${buildHash} · vocab ${vocabGroups.length} groups / ${vocabCount} entries · ` +
-    `idiom ${idiomGroups.length} groups / ${idiomCount} entries`,
+    `[build-content] hash=${buildHash}\n` +
+    `  hsk-themes Vocab (Basic+Mid+Adv): ${hskThemeVocab.length} groups / ${htVocabCount} entries\n` +
+    `  hsk-themes Idioms: ${hskThemeIdioms.length} groups / ${htIdiomCount} entries\n` +
+    `  hsk-themes Adv enrichment: ${hskAdvGroups.length} groups / ${enrichCount} entries with 한자풀이\n` +
+    `  search index: ${docs.length} documents`,
   );
 }
 

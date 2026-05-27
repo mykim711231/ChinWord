@@ -56,7 +56,9 @@ export default function StrokeStudy(): JSX.Element {
 
   const sourceLabel = target.kind === "idiom" ? "성어" : "단어";
   const sourcePath =
-    target.kind === "idiom" ? `/idiom/${target.id}` : `/vocab/${target.id}`;
+    target.kind === "idiom"
+      ? `/vocab/idioms/${target.groupId}#${encodeURIComponent(target.id)}`
+      : `/vocab/theme/${target.groupId}#${encodeURIComponent(target.id)}`;
 
   return (
     <PageShell>
