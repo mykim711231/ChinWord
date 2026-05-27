@@ -428,7 +428,7 @@ export default function ListenPlay(): JSX.Element {
  *
  * 폰트 사이즈 비율:
  *   - 4글자 기준 간체 크기를 표준으로 사용 (text-5xl = 3rem)
- *   - 병음·뜻 = 간체의 1/3 (1rem = text-base)
+ *   - 병음·뜻 = text-lg (1.125rem)
  */
 function PinyinHanziStack({
   word,
@@ -456,7 +456,7 @@ function PinyinHanziStack({
           const syl = isHan ? syllables[pi++] : null;
           return (
             <div key={i} className="flex flex-col items-center">
-              <span className="pinyin-text text-base text-fg/80 min-h-[1.25rem]">
+              <span className="pinyin-text text-lg text-fg/80 min-h-[1.25rem]">
                 {syl ?? ""}
               </span>
               <span className="hanzi-text text-5xl leading-none">{c}</span>
@@ -470,7 +470,7 @@ function PinyinHanziStack({
   return (
     <div>
       {showPinyin ? (
-        <div className="pinyin-text text-base text-fg/80">{pinyin}</div>
+        <div className="pinyin-text text-lg text-fg/80">{pinyin}</div>
       ) : null}
       {showHanzi ? (
         <div className="hanzi-text text-5xl mt-1">{word}</div>
