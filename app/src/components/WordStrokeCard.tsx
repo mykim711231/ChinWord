@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import HanziWriter from "hanzi-writer";
-import { Play, RotateCw, Square, Volume2, VolumeX } from "lucide-react";
+import { RotateCw, Volume2, VolumeX } from "lucide-react";
 import { cancelSpeak, speakAsync, unlock } from "@/lib/tts";
 import { useSettings } from "@/state/settings";
 
@@ -111,6 +111,9 @@ export function WordStrokeCard({
       return slot;
     });
 
+    // 카드 전환 시에도 사용자가 켜 둔 looping 상태 유지
+    loopRef.current = looping;
+
     try {
       writersRef.current = slots.map((slot, i) =>
         HanziWriter.create(slot, hanziChars[i], {
@@ -154,7 +157,7 @@ export function WordStrokeCard({
     return () => {
       mounted = false;
       cancelledRef.current = true;
-      loopRef.current = false;
+      // loopRef 는 리셋하지 않음 — 카드 전환 후에도 사용자 설정 유지
       audioCtrlRef.current?.abort();
       audioCtrlRef.current = null;
       cancelSpeak();
@@ -169,9 +172,10 @@ export function WordStrokeCard({
       }
       writersRef.current = [];
     };
-    // playSequence captured fresh each effect run via closure over refs
+    // playSequence captured fresh each effect run via closure over refs.
+    // looping 은 deps 에 넣지 않음 — loopRef 로 실시간 반영, effect 재실행 불필요.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [hanziChars.join(""), charSize]); // charSize change → re-mount canvases
+  }, [hanziChars.join(""), charSize]);
 
   // abort signal 을 받아 진행 중 stroke animation 을 중단 가능하도록 한다.
   // hanzi-writer 의 animateCharacter 는 cancel API 가 없으므로 hideCharacter() 로
@@ -264,21 +268,6 @@ export function WordStrokeCard({
     setPlaying(false);
   }
 
-  function onPlay() {
-    // iOS Safari gesture lock — TTS 가 사용자 제스처 동기 호출 스택 안에서 시작
-    // 되어야 하므로 진입점에서 즉시 unlock().
-    unlock();
-    if (playing) {
-      cancelledRef.current = true;
-      loopRef.current = false;
-      setLooping(false);
-      audioCtrlRef.current?.abort();
-      cancelSpeak();
-      return;
-    }
-    void playSequence();
-  }
-
   function onLoop() {
     unlock();
     const next = !looping;
@@ -315,24 +304,6 @@ export function WordStrokeCard({
         <div className="flex gap-2 mt-1">
           <button
             type="button"
-            onClick={onPlay}
-            aria-pressed={playing}
-            className="inline-flex items-center gap-1 px-2.5 py-1 text-xs rounded border border-divider hover:bg-primary-soft"
-          >
-            {playing ? (
-              <>
-                <Square size={12} aria-hidden />
-                <span>정지</span>
-              </>
-            ) : (
-              <>
-                <Play size={12} aria-hidden />
-                <span>쓰기</span>
-              </>
-            )}
-          </button>
-          <button
-            type="button"
             onClick={onLoop}
             aria-pressed={looping}
             className={
@@ -343,7 +314,7 @@ export function WordStrokeCard({
             }
           >
             <RotateCw size={12} aria-hidden />
-            <span>반복</span>
+            <span>카드 반복</span>
           </button>
           <button
             type="button"
