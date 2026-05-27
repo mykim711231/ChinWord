@@ -147,8 +147,8 @@ export default function Strokes(): JSX.Element {
       <section className="card mt-3">
         <span className="block text-xs text-muted mb-1">표시</span>
         <div className="flex flex-wrap gap-2">
-          {(["hanzi", "pinyin", "korean"] as const).map((k) => {
-            const label = k === "hanzi" ? "한자" : k === "pinyin" ? "병음" : "한국어";
+          {(["pinyin", "korean"] as const).map((k) => {
+            const label = k === "pinyin" ? "병음" : "한국어";
             const on = display[k];
             return (
               <button
@@ -169,7 +169,7 @@ export default function Strokes(): JSX.Element {
           })}
         </div>
         <p className="text-[11px] text-muted mt-1">
-          한자는 캔버스로 그려지며, 병음·한국어는 보조 자막으로 표시됩니다.
+          병음·한국어는 보조 자막으로 표시됩니다.
         </p>
       </section>
 
