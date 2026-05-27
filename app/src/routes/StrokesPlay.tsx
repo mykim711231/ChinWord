@@ -511,14 +511,14 @@ export default function StrokesPlay(): JSX.Element {
               <div className="text-xs text-muted mt-2">{error}</div>
             ) : null}
 
-            {/* 병음·뜻 — 간체의 1/3 크기 (text-base = 1rem) */}
+            {/* 병음·뜻 — text-2xl (1.5rem) */}
             {display.pinyin && current ? (
-              <div className="pinyin-text text-base text-fg/80 mt-3">
+              <div className="pinyin-text text-2xl text-fg/80 mt-3">
                 {current.pinyin}
               </div>
             ) : null}
             {display.korean && current ? (
-              <div className="mt-1 text-base text-fg/80">{current.meaning}</div>
+              <div className="mt-1 text-2xl text-fg/80">{current.meaning}</div>
             ) : null}
           </div>
         )}
