@@ -128,11 +128,11 @@ function CharProgress({
     // 폴백: 데이터를 못 받으면 그냥 완성 글자를 한 칸 보여 줘 흐름 유지.
     return (
       <span className="inline-flex flex-col items-center">
-        <span className="hanzi-text" style={{ fontSize: size }}>
+        <span lang="zh-Hans" className="hanzi-text" style={{ fontSize: size }}>
           {char}
         </span>
         {pinyin ? (
-          <span className="pinyin-text text-xs">{pinyin}</span>
+          <span lang="zh-Latn-pinyin" className="pinyin-text text-xs">{pinyin}</span>
         ) : null}
       </span>
     );
@@ -146,7 +146,7 @@ function CharProgress({
           aria-hidden
         />
         {pinyin ? (
-          <span className="pinyin-text text-xs">{pinyin}</span>
+          <span lang="zh-Latn-pinyin" className="pinyin-text text-xs">{pinyin}</span>
         ) : null}
       </span>
     );
@@ -165,7 +165,7 @@ function CharProgress({
         ))}
       </span>
       {pinyin ? (
-        <span className="pinyin-text text-xs leading-none">{pinyin}</span>
+        <span lang="zh-Latn-pinyin" className="pinyin-text text-xs leading-none">{pinyin}</span>
       ) : null}
     </span>
   );

@@ -117,12 +117,16 @@ export default function IdiomList() {
       <PageShell>
         <TopBar title={group.title} subtitle={group.titleZh} back />
 
-        <div className="-mx-4 px-4 overflow-x-auto whitespace-nowrap py-2 border-b border-divider sticky top-14 bg-bg/95 backdrop-blur z-20">
+        <nav
+          aria-label="성어 그룹 목록"
+          className="-mx-4 px-4 overflow-x-auto whitespace-nowrap py-2 border-b border-divider sticky top-14 bg-bg/95 backdrop-blur z-20"
+        >
           <div className="flex gap-2">
             {htGroups.map((g) => (
               <Link
                 key={g.id}
                 to={`/vocab/idioms/${g.id}`}
+                aria-current={g.id === groupId ? "page" : undefined}
                 className={
                   "rounded-chip px-3 py-1 text-sm border " +
                   (g.id === groupId
@@ -134,7 +138,7 @@ export default function IdiomList() {
               </Link>
             ))}
           </div>
-        </div>
+        </nav>
 
         <button
           type="button"
@@ -289,8 +293,8 @@ function IdiomEntrySection({
         <SpeakerButton text={entry.word} pinyin={entry.pinyin} />
         <div className="flex-1 min-w-0">
           <div className="flex items-baseline flex-wrap gap-x-2 gap-y-1">
-            <span className="hanzi-text text-xl leading-tight">{entry.word}</span>
-            <span className="pinyin-text text-sm">({entry.pinyin})</span>
+            <span lang="zh-Hans" className="hanzi-text text-xl leading-tight">{entry.word}</span>
+            <span lang="zh-Latn-pinyin" className="pinyin-text text-sm">({entry.pinyin})</span>
             {entry.pos ? (
               <span className="text-xs text-muted">[{entry.pos}]</span>
             ) : null}
@@ -396,8 +400,8 @@ function IdiomFlatRow({
         <SpeakerButton text={entry.word} pinyin={entry.pinyin} />
         <div className="min-w-0 flex-1">
           <div className="flex items-baseline flex-wrap gap-x-2 gap-y-0.5">
-            <span className="hanzi-text text-xl leading-tight">{entry.word}</span>
-            <span className="pinyin-text text-xs">({entry.pinyin})</span>
+            <span lang="zh-Hans" className="hanzi-text text-xl leading-tight">{entry.word}</span>
+            <span lang="zh-Latn-pinyin" className="pinyin-text text-xs">({entry.pinyin})</span>
             {entry.pos ? (
               <span className="text-[11px] text-muted">[{entry.pos}]</span>
             ) : null}

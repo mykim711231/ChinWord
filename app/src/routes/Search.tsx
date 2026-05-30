@@ -84,8 +84,8 @@ export default function Search() {
               </span>
               <div className="flex-1 min-w-0">
                 <div className="flex items-baseline gap-2">
-                  <span className="hanzi-text text-xl">{r.word}</span>
-                  <span className="pinyin-text text-sm truncate">{r.pinyin}</span>
+                  <span lang="zh-Hans" className="hanzi-text text-xl">{r.word}</span>
+                  <span lang="zh-Latn-pinyin" className="pinyin-text text-sm truncate">{r.pinyin}</span>
                 </div>
                 <div className="text-sm text-muted truncate">
                   {r.meaning} · <span className="text-xs">{r.groupTitle}</span>

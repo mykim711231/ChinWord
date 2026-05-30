@@ -18,6 +18,7 @@ import { splitPinyin } from "@/lib/pinyin";
 import { cancelSpeak, speakAsync, speakKoreanAsync, unlock } from "@/lib/tts";
 import { useListen } from "@/state/listen";
 import { useSettings } from "@/state/settings";
+import { useStoreHydrated } from "@/lib/useHydrated";
 
 const HANZI_RE = /\p{Script=Han}/u;
 
@@ -73,9 +74,13 @@ export default function ListenPlay(): JSX.Element {
   const acRef = useRef<AbortController | null>(null);
   const current = queue[index];
 
+  // 영속 scope 가 IDB 에서 복원되기 전 기본값으로 잘못 리다이렉트되는 레이스 방지.
+  const hydrated = useStoreHydrated(useListen);
+
   useEffect(() => {
+    if (!hydrated) return;
     if (queue.length === 0) navigate("/listen", { replace: true });
-  }, [queue.length, navigate]);
+  }, [hydrated, queue.length, navigate]);
 
   const wait = useCallback(
     (ms: number, ac: AbortController): Promise<void> =>
@@ -92,6 +97,7 @@ export default function ListenPlay(): JSX.Element {
   );
 
   useEffect(() => {
+    if (!hydrated) return;
     if (queue.length === 0) return;
     if (!playing) return;
     if (finished) return;
@@ -143,7 +149,7 @@ export default function ListenPlay(): JSX.Element {
     void run();
     return () => { ac.abort(); cancelSpeak(); };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [queue, index, rep, playing, finished, wait]);
+  }, [hydrated, queue, index, rep, playing, finished, wait]);
 
   useEffect(() => () => { acRef.current?.abort(); cancelSpeak(); }, []);
 
@@ -191,6 +197,16 @@ export default function ListenPlay(): JSX.Element {
     acRef.current?.abort();
     cancelSpeak();
     navigate("/listen");
+  }
+
+  if (!hydrated) {
+    return (
+      <PageShell>
+        <div className="py-20 text-center text-sm text-muted" aria-live="polite">
+          불러오는 중…
+        </div>
+      </PageShell>
+    );
   }
 
   if (queue.length === 0) {
@@ -456,10 +472,10 @@ function PinyinHanziStack({
           const syl = isHan ? syllables[pi++] : null;
           return (
             <div key={i} className="flex flex-col items-center">
-              <span className="pinyin-text text-lg text-fg/80 min-h-[1.25rem]">
+              <span lang="zh-Latn-pinyin" className="pinyin-text text-lg text-fg/80 min-h-[1.25rem]">
                 {syl ?? ""}
               </span>
-              <span className="hanzi-text text-5xl leading-none">{c}</span>
+              <span lang="zh-Hans" className="hanzi-text text-5xl leading-none">{c}</span>
             </div>
           );
         })}
@@ -470,10 +486,10 @@ function PinyinHanziStack({
   return (
     <div>
       {showPinyin ? (
-        <div className="pinyin-text text-lg text-fg/80">{pinyin}</div>
+        <div lang="zh-Latn-pinyin" className="pinyin-text text-lg text-fg/80">{pinyin}</div>
       ) : null}
       {showHanzi ? (
-        <div className="hanzi-text text-5xl mt-1">{word}</div>
+        <div lang="zh-Hans" className="hanzi-text text-5xl mt-1">{word}</div>
       ) : null}
     </div>
   );

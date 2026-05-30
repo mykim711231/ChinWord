@@ -20,13 +20,27 @@ import { speakAsync, unlock } from "@/lib/tts";
 import { useSettings } from "@/state/settings";
 import { buildListenQueue, lessonTitleFor } from "@/lib/content";
 import { useFlashcards } from "@/state/flashcards";
+import { useStoreHydrated } from "@/lib/useHydrated";
 
 type AreaKind = "vocab" | "idiom";
 
 export default function FlashcardsPlay(): JSX.Element {
   const { area } = useParams<{ area?: string }>();
+  // 영속 scope 가 IDB 에서 복원된 뒤에 Player 를 마운트해야 한다.
+  // Player 는 useState(baseQueue) 로 큐를 1회만 초기화하므로, 하이드레이션 전
+  // 기본 scope 로 큐가 굳으면 사용자가 고른 범위가 반영되지 않는다.
+  const hydrated = useStoreHydrated(useFlashcards);
   if (area !== "vocab" && area !== "idiom") {
     return <Navigate to="/flashcards/vocab" replace />;
+  }
+  if (!hydrated) {
+    return (
+      <PageShell>
+        <div className="py-20 text-center text-sm text-muted" aria-live="polite">
+          불러오는 중…
+        </div>
+      </PageShell>
+    );
   }
   return <Player area={area} />;
 }
@@ -242,10 +256,10 @@ function Player({ area }: { area: AreaKind }): JSX.Element {
           {hanziFront ? (
             // 한자 → 뜻
             <>
-              <div className="hanzi-text text-5xl">{entry.word}</div>
+              <div lang="zh-Hans" className="hanzi-text text-5xl">{entry.word}</div>
               {revealed ? (
                 <>
-                  <div className="pinyin-text text-base">{entry.pinyin}</div>
+                  <div lang="zh-Latn-pinyin" className="pinyin-text text-base">{entry.pinyin}</div>
                   <div className="text-base mt-1">{entry.meaning}</div>
                   <div className="text-xs text-muted">[{entry.pos}]</div>
                 </>
@@ -259,8 +273,8 @@ function Player({ area }: { area: AreaKind }): JSX.Element {
               <div className="text-xs text-muted">[{entry.pos}]</div>
               {revealed ? (
                 <>
-                  <div className="pinyin-text mt-2">{entry.pinyin}</div>
-                  <div className="hanzi-text text-5xl">{entry.word}</div>
+                  <div lang="zh-Latn-pinyin" className="pinyin-text mt-2">{entry.pinyin}</div>
+                  <div lang="zh-Hans" className="hanzi-text text-5xl">{entry.word}</div>
                   <SpeakerButton text={entry.word} pinyin={entry.pinyin} />
                 </>
               ) : null}

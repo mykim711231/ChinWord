@@ -64,6 +64,8 @@ export default function App(): JSX.Element {
               <Route path="/vocab/theme/:groupId" element={<HskThemeList />} />
               {/* 단어/성어 단건 디테일 (리다이렉트) */}
               <Route path="/vocab/:id" element={<VocabDetail />} />
+              {/* 성어 단건 — 검색 결과(kind:idiom) 진입점 → 그룹 페이지로 리다이렉트 */}
+              <Route path="/idiom/:id" element={<IdiomDetail />} />
 
               {/* ─── 학습 허브 ─── */}
               <Route path="/learn" element={<Learn />} />

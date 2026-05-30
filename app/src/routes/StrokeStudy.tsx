@@ -81,7 +81,7 @@ export default function StrokeStudy(): JSX.Element {
 
       <section className="mt-4 card">
         <div className="text-center">
-          <div className="pinyin-text">{target.pinyin}</div>
+          <div lang="zh-Latn-pinyin" className="pinyin-text">{target.pinyin}</div>
           <div className="mt-1 text-base">{target.meaning}</div>
         </div>
         <div className="flex justify-center gap-2 mt-3">

@@ -111,6 +111,9 @@ export default function HskThemeList() {
             onClick={playAll}
             className="btn-ghost text-sm inline-flex items-center gap-1"
             aria-pressed={playing}
+            aria-label={
+              playing ? "전체 듣기 정지" : `${group?.title ?? "테마"} 전체 듣기`
+            }
           >
             {playing ? (
               <>
@@ -128,12 +131,16 @@ export default function HskThemeList() {
       />
 
       {/* Chip nav — 같은 tier 의 다른 테마들 */}
-      <div className="-mx-4 px-4 overflow-x-auto whitespace-nowrap py-2 border-b border-divider sticky top-14 bg-bg/95 backdrop-blur z-20">
+      <nav
+        aria-label={`${tierLabel} 테마 목록`}
+        className="-mx-4 px-4 overflow-x-auto whitespace-nowrap py-2 border-b border-divider sticky top-14 bg-bg/95 backdrop-blur z-20"
+      >
         <div className="flex gap-2">
           {siblings.map((g) => (
             <Link
               key={g.id}
               to={`/vocab/theme/${g.id}`}
+              aria-current={g.id === groupId ? "page" : undefined}
               className={
                 "rounded-chip px-3 py-1 text-sm border " +
                 (g.id === groupId
@@ -145,7 +152,7 @@ export default function HskThemeList() {
             </Link>
           ))}
         </div>
-      </div>
+      </nav>
 
       {!group ? (
         <div className="text-center text-muted mt-12">
@@ -220,8 +227,8 @@ function VocabEntrySection({
         <SpeakerButton text={entry.word} pinyin={entry.pinyin} />
         <div className="flex-1 min-w-0">
           <div className="flex items-baseline flex-wrap gap-x-2 gap-y-1">
-            <span className="hanzi-text text-xl leading-tight">{entry.word}</span>
-            <span className="pinyin-text text-sm">({entry.pinyin})</span>
+            <span lang="zh-Hans" className="hanzi-text text-xl leading-tight">{entry.word}</span>
+            <span lang="zh-Latn-pinyin" className="pinyin-text text-sm">({entry.pinyin})</span>
             {entry.pos ? (
               <span className="text-xs text-muted">[{entry.pos}]</span>
             ) : null}

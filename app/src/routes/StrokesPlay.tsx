@@ -22,6 +22,7 @@ import { cancelSpeak, speakAsync, speakKoreanAsync, unlock } from "@/lib/tts";
 import { getStrokeDataFromCache, saveStrokeDataToCache, isOnline } from "@/lib/stroke-cache";
 import { useListen } from "@/state/listen";
 import { useSettings } from "@/state/settings";
+import { useStoreHydrated } from "@/lib/useHydrated";
 
 const HANZI_RE = /\p{Script=Han}/u;
 
@@ -34,6 +35,9 @@ const STD_CHARS = 4;
 const MAX_CHAR_SIZE = 120;
 const MIN_CHAR_SIZE = 56;
 const CHAR_GAP = 8;
+// animateOne 워치독 — 정상 애니메이션(많은 획 포함)보다 충분히 길고, 데이터 로드
+// 실패로 onComplete 가 안 오는 경우를 끊어줄 만큼은 짧게.
+const ANIM_WATCHDOG_MS = 20000;
 
 function hasHanzi(s: string): boolean {
   return Array.from(s).some((c) => HANZI_RE.test(c));
@@ -128,30 +132,38 @@ export default function StrokesPlay(): JSX.Element {
     return () => window.removeEventListener("resize", update);
   }, []);
 
+  // 영속 scope 가 IDB 에서 복원되기 전 기본값으로 잘못 리다이렉트되는 레이스 방지.
+  const hydrated = useStoreHydrated(useListen);
+
   useEffect(() => {
+    if (!hydrated) return;
     if (queue.length === 0) navigate("/strokes", { replace: true });
-  }, [queue.length, navigate]);
+  }, [hydrated, queue.length, navigate]);
 
   const animateOne = useCallback(
     (w: HanziWriter, signal: AbortSignal): Promise<void> =>
       new Promise((resolve) => {
         if (signal.aborted) return resolve();
         let resolved = false;
-        const onAbort = () => {
+        let watchdog: ReturnType<typeof setTimeout> | undefined;
+        const done = () => {
           if (resolved) return;
           resolved = true;
-          try { w.hideCharacter(); } catch { /* ignore */ }
+          if (watchdog) clearTimeout(watchdog);
+          signal.removeEventListener("abort", onAbort);
           resolve();
         };
+        const onAbort = () => {
+          if (resolved) return;
+          try { w.hideCharacter(); } catch { /* ignore */ }
+          done();
+        };
         signal.addEventListener("abort", onAbort, { once: true });
-        w.animateCharacter({
-          onComplete: () => {
-            if (resolved) return;
-            resolved = true;
-            signal.removeEventListener("abort", onAbort);
-            resolve();
-          },
-        });
+        // 워치독 — charDataLoader 가 실패(오프라인+무캐시)하면 hanzi-writer 의
+        // animateCharacter onComplete 가 끝내 발화하지 않아 재생 루프가 그 카드에서
+        // 영구 대기한다. 일정 시간 뒤 강제 resolve 해 다음 카드로 진행시킨다.
+        watchdog = setTimeout(done, ANIM_WATCHDOG_MS);
+        w.animateCharacter({ onComplete: done });
       }),
     [],
   );
@@ -266,6 +278,7 @@ export default function StrokesPlay(): JSX.Element {
 
   // Playback effect
   useEffect(() => {
+    if (!hydrated) return;
     if (queue.length === 0) return;
     if (!playing) return;
     if (finished) return;
@@ -356,7 +369,7 @@ export default function StrokesPlay(): JSX.Element {
     return () => { ac.abort(); cancelSpeak(); };
     // buildId: writer 재빌드 시 새 인스턴스로 재생을 다시 시작(옛 writer 애니메이션 방지).
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [queue, index, rep, playing, finished, ready, buildId, animateOne, wait]);
+  }, [hydrated, queue, index, rep, playing, finished, ready, buildId, animateOne, wait]);
 
   useEffect(() => () => { acRef.current?.abort(); cancelSpeak(); }, []);
 
@@ -404,6 +417,16 @@ export default function StrokesPlay(): JSX.Element {
     acRef.current?.abort();
     cancelSpeak();
     navigate("/strokes");
+  }
+
+  if (!hydrated) {
+    return (
+      <PageShell>
+        <div className="py-20 text-center text-sm text-muted" aria-live="polite">
+          불러오는 중…
+        </div>
+      </PageShell>
+    );
   }
 
   if (queue.length === 0) {
@@ -566,7 +589,7 @@ export default function StrokesPlay(): JSX.Element {
 
             {/* 병음·뜻 — text-2xl (1.5rem) */}
             {display.pinyin && current ? (
-              <div className="pinyin-text text-2xl text-fg/80 mt-3">
+              <div lang="zh-Latn-pinyin" className="pinyin-text text-2xl text-fg/80 mt-3">
                 {current.pinyin}
               </div>
             ) : null}
