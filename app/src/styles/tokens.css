@@ -49,16 +49,16 @@ html.dark {
    대신, 채도는 낮게(중성 웜) 유지하고 밝기만 한 단계 낮춘 오프화이트로
    둔다. 글자는 어둡게 유지해 대비를 확보(저대비는 중장년 피로 가중). */
 html.sepia {
-  --rgb-bg: 237 235 229;
-  --rgb-surface: 247 246 242;
-  --rgb-fg: 54 51 46;
-  --rgb-muted: 116 112 105;
+  --rgb-bg: 234 227 211;
+  --rgb-surface: 244 239 226;
+  --rgb-fg: 54 49 42;
+  --rgb-muted: 116 108 96;
   --rgb-primary: 188 86 58;
-  --rgb-primary-soft: 236 224 216;
+  --rgb-primary-soft: 235 222 206;
   --rgb-accent: 162 120 36;
   --rgb-success: 84 121 74;
-  --rgb-divider: 225 222 214;
-  --rgb-pinyin: 102 98 92;
+  --rgb-divider: 222 214 197;
+  --rgb-pinyin: 102 95 84;
 }
 
 /* 웜다크 — 다크 계열에서 청색광을 빼고 따뜻한 갈색 톤을 입힌 야간용.
