@@ -75,6 +75,8 @@ export default function StrokesPlay(): JSX.Element {
   const [finished, setFinished] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [ready, setReady] = useState(false);
+  // writer 가 (재)빌드될 때마다 증가 — 재생 effect 가 새 writer 로 다시 시작하도록.
+  const [buildId, setBuildId] = useState(0);
 
   const intervalRef = useRef(intervalSec);
   intervalRef.current = intervalSec;
@@ -101,9 +103,12 @@ export default function StrokesPlay(): JSX.Element {
     [current],
   );
 
-  // 4글자 기준 사이즈 계산 — 실제 글자 수와 관계없이 동일 크기 유지
+  // 4글자 기준 사이즈 계산 — 실제 글자 수와 관계없이 동일 크기 유지.
+  // 컨테이너 폭 측정 전(0)에는 0 을 반환해 빌드를 보류한다 — 임시 크기(120)로
+  // writer 를 만들었다가 측정 직후 재빌드되면, 진행 중인 재생 effect 가 떨어져
+  // 나간(detached) 옛 writer 를 계속 애니메이션해 첫 카드만 동작하지 않는다.
   const charSize = useMemo(() => {
-    if (containerW === 0) return MAX_CHAR_SIZE;
+    if (containerW === 0) return 0;
     const avail = containerW - CHAR_GAP * (STD_CHARS - 1);
     const size = Math.floor(avail / STD_CHARS);
     return Math.max(MIN_CHAR_SIZE, Math.min(MAX_CHAR_SIZE, size));
@@ -247,6 +252,7 @@ export default function StrokesPlay(): JSX.Element {
         }),
       );
       setReady(true);
+      setBuildId((n) => n + 1);
     } catch (e) {
       setError(String((e as Error).message || e));
       setReady(false);
@@ -342,8 +348,9 @@ export default function StrokesPlay(): JSX.Element {
 
     void run();
     return () => { ac.abort(); cancelSpeak(); };
+    // buildId: writer 재빌드 시 새 인스턴스로 재생을 다시 시작(옛 writer 애니메이션 방지).
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [queue, index, rep, playing, finished, animateOne, wait]);
+  }, [queue, index, rep, playing, finished, buildId, animateOne, wait]);
 
   useEffect(() => () => { acRef.current?.abort(); cancelSpeak(); }, []);
 
