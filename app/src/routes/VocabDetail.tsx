@@ -9,7 +9,8 @@ import { findVocabEntry } from "@/lib/content";
  */
 export default function VocabDetail() {
   const { id = "" } = useParams<{ id: string }>();
-  const hit = findVocabEntry(id);
+  // 구버전 검색 인덱스(ht_ 접두) 캐시 호환 — 직접 조회 실패 시 접두 제거 후 재시도.
+  const hit = findVocabEntry(id) ?? (id.startsWith("ht_") ? findVocabEntry(id.slice(3)) : undefined);
   if (!hit) {
     return (
       <PageShell>

@@ -541,11 +541,12 @@ function main() {
   const seenIds = new Set<string>();
   for (const g of hskThemeVocab) {
     for (const e of g.entries) {
-      const docId = e.id.startsWith("hsk_") ? `ht_${e.id}` : e.id;
-      if (seenIds.has(docId)) continue;
-      seenIds.add(docId);
+      // 검색 docId 는 반드시 실제 엔트리 id 와 동일해야 한다.
+      // (검색 결과 → /vocab/:id → findVocabEntry(id) 가 같은 id 로 조회)
+      if (seenIds.has(e.id)) continue;
+      seenIds.add(e.id);
       docs.push({
-        id: docId, kind: "vocab", word: e.word, pinyin: e.pinyin,
+        id: e.id, kind: "vocab", word: e.word, pinyin: e.pinyin,
         meaning: e.meaning, groupId: g.id, groupTitle: g.title,
       });
     }
