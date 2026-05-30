@@ -19,6 +19,7 @@ import {
 import { PageShell } from "@/components/PageShell";
 import { buildListenQueue, lessonTitleFor } from "@/lib/content";
 import { cancelSpeak, speakAsync, speakKoreanAsync, unlock } from "@/lib/tts";
+import { getStrokeDataFromCache, saveStrokeDataToCache, isOnline } from "@/lib/stroke-cache";
 import { useListen } from "@/state/listen";
 import { useSettings } from "@/state/settings";
 
@@ -204,14 +205,38 @@ export default function StrokesPlay(): JSX.Element {
             const url =
               `https://cdn.jsdelivr.net/npm/hanzi-writer-data@latest/` +
               `${encodeURIComponent(charToLoad)}.json`;
-            fetch(url)
-              .then((r) => {
-                if (!r.ok) throw new Error(`HTTP ${r.status}`);
-                return r.json();
-              })
-              .then((data) => {
+            // 1) IndexedDB 캐시 우선 — 오프라인에서도 이전에 본 글자는 즉시 표시.
+            getStrokeDataFromCache(charToLoad)
+              .then((cached) => {
                 if (!mounted) return;
-                onComplete(data);
+                if (cached) {
+                  onComplete(cached as Parameters<typeof onComplete>[0]);
+                  return;
+                }
+                // 2) 캐시 미스 + 오프라인 → 명확한 안내.
+                if (!isOnline()) {
+                  setError(
+                    "오프라인 상태입니다 — 온라인일 때 본 글자만 필순을 볼 수 있어요",
+                  );
+                  onError?.(new Error("offline, no cached stroke data"));
+                  return;
+                }
+                // 3) 온라인 → CDN 다운로드 후 캐시에 저장.
+                fetch(url)
+                  .then((r) => {
+                    if (!r.ok) throw new Error(`HTTP ${r.status}`);
+                    return r.json();
+                  })
+                  .then((data) => {
+                    if (!mounted) return;
+                    void saveStrokeDataToCache(charToLoad, data);
+                    onComplete(data);
+                  })
+                  .catch((e) => {
+                    if (!mounted) return;
+                    setError("필순 데이터를 불러오지 못했습니다");
+                    onError?.(e);
+                  });
               })
               .catch((e) => {
                 if (!mounted) return;

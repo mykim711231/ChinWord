@@ -59,15 +59,20 @@ export default defineConfig({
             },
           },
           {
+            // 필순 데이터(hanzi-writer-data CDN). 앱은 IndexedDB(stroke-cache)에도
+            // 별도 저장하므로 dev/prod·SW 유무 무관하게 본 글자는 오프라인 가능.
+            // 여기 SW 캐시는 prod 보조 계층 — 200 은 너무 작아(어휘 9,500+자)
+            // 금세 evict 되므로 상향. 각 JSON ~2-10KB → 5,000자도 수십 MB 수준.
             urlPattern: /hanzi-writer-data/,
             handler: "CacheFirst",
             options: {
               cacheName: "hanzi-data",
               expiration: {
-                maxEntries: 200,
-                maxAgeSeconds: 60 * 60 * 24 * 30,
+                maxEntries: 5000,
+                maxAgeSeconds: 60 * 60 * 24 * 365,
                 purgeOnQuotaError: true,
               },
+              cacheableResponse: { statuses: [0, 200] },
             },
           },
         ],

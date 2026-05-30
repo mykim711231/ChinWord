@@ -1,4 +1,9 @@
 import { useEffect, useState } from "react";
+import {
+  getStrokeDataFromCache,
+  saveStrokeDataToCache,
+  isOnline,
+} from "@/lib/stroke-cache";
 
 /**
  * 단어를 구성하는 각 한자를 1획 → 2획 → … → 완성 형태로 본문 글자 크기에 가깝게
@@ -6,8 +11,8 @@ import { useEffect, useState } from "react";
  * 한자도 각 단계 SVG 를 나열해 빠르게 필순을 훑을 수 있게 한다.
  *
  * - 데이터: hanzi-writer-data (makemeahanzi 호환, 1024x1024 좌표계, Y-up).
- * - SW 가 hanzi-data CacheFirst 로 캐시 → 첫 방문 후 오프라인 가능.
- * - 한 화면당 수십 자 발생 가능하므로 모듈 단위 in-memory 캐시(Map)로 동일 자 재요청 방지.
+ * - 3계층 캐시: 모듈 in-memory Map → IndexedDB(stroke-cache) → CDN.
+ *   IndexedDB 덕분에 SW 유무·dev/prod 무관하게 본 글자는 오프라인 표시 가능.
  *
  * 색상: 완성 획은 primary, 미완 획은 divider (다크 모드 자동 대응 Tailwind 토큰).
  */
@@ -24,22 +29,34 @@ function loadChar(ch: string): Promise<CharData> {
   const hit = cache.get(ch);
   if (hit && !(hit instanceof Promise)) return Promise.resolve(hit);
   if (hit instanceof Promise) return hit;
-  const p = fetch(
-    `https://cdn.jsdelivr.net/npm/hanzi-writer-data@latest/` +
-      `${encodeURIComponent(ch)}.json`,
-  )
-    .then((r) => {
-      if (!r.ok) throw new Error(`HTTP ${r.status}`);
-      return r.json() as Promise<CharData>;
-    })
-    .then((data) => {
-      cache.set(ch, data);
-      return data;
-    })
-    .catch((e) => {
+
+  const p = (async (): Promise<CharData> => {
+    // 1) IndexedDB 캐시 우선 — 오프라인에서도 본 글자는 즉시.
+    const cached = (await getStrokeDataFromCache(ch)) as CharData | null;
+    if (cached) {
+      cache.set(ch, cached);
+      return cached;
+    }
+    // 2) 캐시 미스 + 오프라인 → 실패 (폴백으로 완성 글자만 표시).
+    if (!isOnline()) {
       cache.delete(ch);
-      throw e;
-    });
+      throw new Error("offline, no cached stroke data");
+    }
+    // 3) 온라인 → CDN 다운로드 후 IndexedDB 저장.
+    const r = await fetch(
+      `https://cdn.jsdelivr.net/npm/hanzi-writer-data@latest/` +
+        `${encodeURIComponent(ch)}.json`,
+    );
+    if (!r.ok) {
+      cache.delete(ch);
+      throw new Error(`HTTP ${r.status}`);
+    }
+    const data = (await r.json()) as CharData;
+    cache.set(ch, data);
+    void saveStrokeDataToCache(ch, data);
+    return data;
+  })();
+
   cache.set(ch, p);
   return p;
 }
