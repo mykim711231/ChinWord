@@ -12,7 +12,7 @@ import {
   ArrowRight,
 } from "lucide-react";
 import { hskLevelSummaries, hskTotalAll } from "@/lib/hsk-meta";
-import { hskThemeIdioms } from "@/lib/hsk-themes";
+import { idiomTotalCount } from "@/lib/vocab-meta";
 
 type GridCard = {
   to: string;
@@ -22,10 +22,7 @@ type GridCard = {
 };
 
 export default function Home() {
-  const idiomCount = useMemo(
-    () => hskThemeIdioms().reduce((s, g) => s + g.entries.length, 0),
-    [],
-  );
+  const idiomCount = useMemo(() => idiomTotalCount(), []);
   const hskTotal = useMemo(() => hskTotalAll(), []);
   const ls = useMemo(() => hskLevelSummaries(), []);
   const sum = (lvs: number[]) =>
