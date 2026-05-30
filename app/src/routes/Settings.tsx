@@ -59,12 +59,12 @@ function Row({
   hint?: string;
 }) {
   return (
-    <div className="card flex items-center justify-between gap-3">
-      <div>
+    <div className="card flex flex-wrap items-center justify-between gap-x-3 gap-y-2">
+      <div className="min-w-0">
         <div className="font-medium">{label}</div>
         {hint ? <div className="text-xs text-muted mt-0.5">{hint}</div> : null}
       </div>
-      <div className="flex items-center gap-2">{children}</div>
+      <div className="flex items-center gap-2 shrink-0">{children}</div>
     </div>
   );
 }
@@ -92,7 +92,7 @@ function SegmentedButtons<T extends string>({
             onClick={() => onChange(o.value)}
             aria-pressed={selected}
             className={
-              "px-3 py-1 text-sm " +
+              "px-3 py-1 text-sm whitespace-nowrap " +
               (selected ? "bg-primary text-white" : "bg-surface text-fg")
             }
           >
