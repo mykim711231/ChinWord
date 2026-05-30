@@ -43,37 +43,37 @@ html.dark {
   --rgb-pinyin: 203 213 225;
 }
 
-/* 세피아 — 눈 편한 따뜻한 종이색(라이트 계열).
-   연구 근거: 흰 배경 대비 눈 피로 감소의 핵심은 '노란 색조'가 아니라
-   '휘도(밝기) 낮추기'(흰색 대비 유효휘도 ~25%↓). 따라서 노랑을 더하는
-   대신, 채도는 낮게(중성 웜) 유지하고 밝기만 한 단계 낮춘 오프화이트로
-   둔다. 글자는 어둡게 유지해 대비를 확보(저대비는 중장년 피로 가중). */
+/* 세피아 — 따뜻한 종이(크림)톤 라이트 테마(SMCB 동일 팔레트).
+   Claude Desktop의 본/오트(bone/oat)톤 — 노란기를 뺀 따뜻한 오프화이트로
+   실제 종이에 가깝게 중성 웜그레이까지 맞춘다. (SMCB html.theme-sepia 이식,
+   --rgb-text→--rgb-fg, --rgb-text-muted→--rgb-muted 로 매핑) */
 html.sepia {
-  --rgb-bg: 234 227 211;
-  --rgb-surface: 244 239 226;
-  --rgb-fg: 54 49 42;
-  --rgb-muted: 116 108 96;
-  --rgb-primary: 188 86 58;
-  --rgb-primary-soft: 235 222 206;
-  --rgb-accent: 162 120 36;
-  --rgb-success: 84 121 74;
-  --rgb-divider: 222 214 197;
-  --rgb-pinyin: 102 95 84;
+  --rgb-bg: 246 245 242;        /* #F6F5F2 */
+  --rgb-surface: 250 249 245;   /* #FAF9F5 */
+  --rgb-fg: 51 49 45;
+  --rgb-muted: 120 116 108;
+  --rgb-primary: 29 78 180;
+  --rgb-primary-soft: 224 224 216;
+  --rgb-accent: 180 83 9;
+  --rgb-success: 21 128 61;
+  --rgb-divider: 222 220 211;
+  --rgb-pinyin: 118 114 106;
 }
 
-/* 웜다크 — 다크 계열에서 청색광을 빼고 따뜻한 갈색 톤을 입힌 야간용.
-   반드시 html.dark 규칙보다 뒤에 둬야 색 토큰을 덮어쓴다(동일 특이성). */
+/* 웜다크 — 따뜻한 갈색 기운의 다크 테마(SMCB 동일 팔레트).
+   .dark 베이스 위에 웜톤으로 오버라이드하므로 반드시 html.dark 규칙보다
+   뒤에 둬야 다크 변수를 덮어쓴다. (SMCB html.theme-warmdark 이식) */
 html.warm {
-  --rgb-bg: 33 27 22;
-  --rgb-surface: 46 38 31;
-  --rgb-fg: 236 226 211;
-  --rgb-muted: 181 167 148;
-  --rgb-primary: 242 149 109;
-  --rgb-primary-soft: 74 53 38;
-  --rgb-accent: 245 192 107;
-  --rgb-success: 127 183 132;
-  --rgb-divider: 67 56 46;
-  --rgb-pinyin: 205 191 170;
+  --rgb-bg: 28 24 20;
+  --rgb-surface: 41 35 28;
+  --rgb-fg: 237 230 218;
+  --rgb-muted: 178 165 148;
+  --rgb-primary: 129 164 246;
+  --rgb-primary-soft: 60 50 38;
+  --rgb-accent: 251 146 60;
+  --rgb-success: 74 222 128;
+  --rgb-divider: 64 56 46;
+  --rgb-pinyin: 178 165 148;
 }
 
 /* Large-font mode (큰글씨) — scales rem base. */
