@@ -46,16 +46,16 @@ html.dark {
 /* 세피아 — 눈 편한 따뜻한 종이색(라이트 계열).
    순백 대비와 청색광을 줄여 장시간 독서 피로를 완화한다. */
 html.sepia {
-  --rgb-bg: 240 238 230;
-  --rgb-surface: 250 249 245;
-  --rgb-fg: 60 56 48;
-  --rgb-muted: 124 118 105;
-  --rgb-primary: 193 90 60;
-  --rgb-primary-soft: 240 226 216;
-  --rgb-accent: 168 122 20;
+  --rgb-bg: 246 245 242;
+  --rgb-surface: 252 252 250;
+  --rgb-fg: 56 54 50;
+  --rgb-muted: 120 116 111;
+  --rgb-primary: 193 92 64;
+  --rgb-primary-soft: 241 230 224;
+  --rgb-accent: 166 124 40;
   --rgb-success: 86 124 76;
-  --rgb-divider: 226 222 210;
-  --rgb-pinyin: 110 103 92;
+  --rgb-divider: 232 230 225;
+  --rgb-pinyin: 106 102 97;
 }
 
 /* 웜다크 — 다크 계열에서 청색광을 빼고 따뜻한 갈색 톤을 입힌 야간용.
