@@ -282,6 +282,12 @@ export default function StrokesPlay(): JSX.Element {
       return;
     }
 
+    // writer 가 빌드되기 전(컨테이너 폭 측정 전·재빌드 중)에는 재생을 시작하지
+    // 않는다 — 첫 마운트에서 빈 writersRef 로 run() 이 돌다 타임아웃으로 카드를
+    // 건너뛰거나, 빌드 완료(buildId 증가) 직후 재시작되며 첫 카드가 깜빡이는 것 방지.
+    // 빌드 완료 시 ready/buildId 가 바뀌며 effect 가 다시 돌아 재생이 시작된다.
+    if (!ready) return;
+
     const ac = new AbortController();
     acRef.current = ac;
 
@@ -350,7 +356,7 @@ export default function StrokesPlay(): JSX.Element {
     return () => { ac.abort(); cancelSpeak(); };
     // buildId: writer 재빌드 시 새 인스턴스로 재생을 다시 시작(옛 writer 애니메이션 방지).
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [queue, index, rep, playing, finished, buildId, animateOne, wait]);
+  }, [queue, index, rep, playing, finished, ready, buildId, animateOne, wait]);
 
   useEffect(() => () => { acRef.current?.abort(); cancelSpeak(); }, []);
 
@@ -540,7 +546,7 @@ export default function StrokesPlay(): JSX.Element {
               <div
                 ref={rowRef}
                 className="flex items-center justify-center gap-2 flex-nowrap"
-                style={{ minHeight: charSize }}
+                style={{ minHeight: charSize || MIN_CHAR_SIZE }}
               />
               {!ready && !error ? (
                 <div
