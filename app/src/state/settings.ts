@@ -51,6 +51,17 @@ function defaultTtsBulkTiers(): Record<TtsTier, TtsTierState> {
   };
 }
 
+/**
+ * 청색광 차단 필터 강도(테마와 독립). 화면 전체에 따뜻한 앰버 곱연산
+ * 오버레이를 덧씌워 청색 성분을 줄인다. 0=끔, 1=약, 2=중, 3=강.
+ */
+export type BlueLightLevel = 0 | 1 | 2 | 3;
+
+/** 단계별 오버레이 불투명도(곱연산). 0 단계는 오버레이 자체를 끈다. */
+export const BLUE_LIGHT_OPACITY: Record<BlueLightLevel, number> = {
+  0: 0, 1: 0.1, 2: 0.2, 3: 0.32,
+};
+
 type State = {
   fontScale: FontScale;
   themeMode: ThemeMode;
@@ -59,6 +70,7 @@ type State = {
   ttsGapMs: number;         // 500 ~ 3000
   voiceMode: VoiceMode;     // 'recorded'(기본) | 'device'
   ttsBulkTiers: Record<TtsTier, TtsTierState>;
+  blueLight: BlueLightLevel; // 청색광 차단 필터 강도(0=끔)
   installPromptDismissedAt: number | null;
 };
 
@@ -70,6 +82,7 @@ type Actions = {
   setTtsGapMs: (v: number) => void;
   setVoiceMode: (v: VoiceMode) => void;
   setTtsBulkTier: (tier: TtsTier, patch: Partial<TtsTierState>) => void;
+  setBlueLight: (v: BlueLightLevel) => void;
   dismissInstallPrompt: () => void;
 };
 
@@ -83,6 +96,7 @@ export const useSettings = create<State & Actions>()(
       ttsGapMs: 1000,
       voiceMode: "recorded",
       ttsBulkTiers: defaultTtsBulkTiers(),
+      blueLight: 0,
       installPromptDismissedAt: null,
       setFontScale: (v) => set({ fontScale: v }),
       setThemeMode: (v) => set({ themeMode: v }),
@@ -104,6 +118,7 @@ export const useSettings = create<State & Actions>()(
             [tier]: { ...st.ttsBulkTiers[tier], ...patch },
           },
         })),
+      setBlueLight: (v) => set({ blueLight: v }),
       dismissInstallPrompt: () => set({ installPromptDismissedAt: Date.now() }),
     }),
     {
@@ -172,4 +187,11 @@ export function applySettingsToDom() {
   root.classList.toggle("dark", useDark);
   root.classList.toggle("sepia", s.themeMode === "sepia");
   root.classList.toggle("warm", s.themeMode === "warm");
+
+  // 청색광 차단 필터 — body::after 곱연산 오버레이 불투명도(tokens.css).
+  // 테마와 독립적으로 어느 배경 위에도 따뜻한 앰버 톤을 덧씌운다.
+  root.style.setProperty(
+    "--blue-filter-opacity",
+    String(BLUE_LIGHT_OPACITY[s.blueLight] ?? 0),
+  );
 }

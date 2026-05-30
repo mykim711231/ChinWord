@@ -107,6 +107,22 @@ html, body, #root {
   min-height: 100%;
 }
 
+/* 청색광 차단 필터 — 화면 전체에 따뜻한 앰버 톤을 곱연산으로 덧씌운다.
+   곱연산(multiply)이라 흰색은 앰버로 물들되 어두운 색은 그대로 유지돼
+   다크/웜다크 위에서도 자연스럽다. pointer-events:none 으로 탭 차단 X.
+   강도는 settings.applySettingsToDom 가 --blue-filter-opacity 로 제어. */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 2147483646;
+  pointer-events: none;
+  background: rgb(255, 147, 41);
+  mix-blend-mode: multiply;
+  opacity: var(--blue-filter-opacity, 0);
+  transition: opacity 0.2s ease;
+}
+
 .font-pinyin { font-family: var(--font-pinyin); }
 
 /* Focus ring (a11y) */

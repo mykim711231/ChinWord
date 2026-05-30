@@ -23,6 +23,7 @@ import {
   type FontScale,
   type ThemeMode,
   type DisplayMode,
+  type BlueLightLevel,
 } from "@/state/settings";
 import type { VoiceMode } from "@/lib/tts";
 import {
@@ -77,6 +78,13 @@ const THEME_OPTIONS: { value: ThemeMode; label: string }[] = [
   { value: "dark", label: "다크" },
   { value: "sepia", label: "세피아" },
   { value: "warm", label: "웜다크" },
+];
+
+const BLUE_LIGHT_OPTIONS: { value: BlueLightLevel; label: string }[] = [
+  { value: 0, label: "끔" },
+  { value: 1, label: "약" },
+  { value: 2, label: "중" },
+  { value: 3, label: "강" },
 ];
 
 function SegmentedButtons<T extends string>({
@@ -177,6 +185,43 @@ export default function Settings() {
                   aria-pressed={selected}
                   onClick={() => {
                     s.setThemeMode(o.value);
+                    applySettingsToDom();
+                  }}
+                  className={
+                    "rounded-btn border px-2 py-2 text-sm transition " +
+                    (selected
+                      ? "border-primary bg-primary-soft text-primary font-medium"
+                      : "border-divider text-fg")
+                  }
+                >
+                  {o.label}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* 청색광 차단 필터 — 테마와 독립. 화면 전체에 따뜻한 앰버 톤을
+            덧씌워 청색 성분을 줄인다(야간/장시간 사용 시 눈 피로 완화). */}
+        <div className="card">
+          <div className="font-medium">청색광 차단 필터</div>
+          <div className="text-xs text-muted mt-0.5">
+            화면에 따뜻한 톤을 덧씌워 청색광을 줄입니다. 밤이나 오래 볼 때 강하게.
+          </div>
+          <div
+            className="mt-3 grid grid-cols-4 gap-2"
+            role="group"
+            aria-label="청색광 차단 필터 강도"
+          >
+            {BLUE_LIGHT_OPTIONS.map((o) => {
+              const selected = s.blueLight === o.value;
+              return (
+                <button
+                  key={o.value}
+                  type="button"
+                  aria-pressed={selected}
+                  onClick={() => {
+                    s.setBlueLight(o.value);
                     applySettingsToDom();
                   }}
                   className={
