@@ -80,7 +80,7 @@ function SegmentedButtons<T extends string>({
 }) {
   return (
     <div
-      className="inline-flex rounded-full border border-divider overflow-hidden"
+      className="inline-flex items-center gap-1 rounded-full bg-divider/50 p-1"
       role="group"
     >
       {options.map((o) => {
@@ -92,8 +92,10 @@ function SegmentedButtons<T extends string>({
             onClick={() => onChange(o.value)}
             aria-pressed={selected}
             className={
-              "px-3 py-1 text-sm whitespace-nowrap " +
-              (selected ? "bg-primary text-white" : "bg-surface text-fg")
+              "px-3 py-1 text-sm rounded-full whitespace-nowrap transition " +
+              (selected
+                ? "bg-primary text-white font-medium shadow-sm"
+                : "text-muted")
             }
           >
             {o.label}
