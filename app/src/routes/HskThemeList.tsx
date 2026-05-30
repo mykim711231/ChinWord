@@ -7,7 +7,7 @@ import { FavStar } from "@/components/FavStar";
 import { SpeakerButton } from "@/components/SpeakerButton";
 import { InlineStrokes } from "@/components/InlineStrokes";
 import { splitPinyin } from "@/lib/pinyin";
-import { speakSequence, cancelSpeak } from "@/lib/tts";
+import { speakSequenceWithKorean, cancelSpeak } from "@/lib/tts";
 import { useSettings } from "@/state/settings";
 import {
   findHskThemeGroup,
@@ -82,8 +82,9 @@ export default function HskThemeList() {
     const ac = new AbortController();
     abortRef.current = ac;
     setPlaying(true);
-    await speakSequence(
-      group.entries.map((e) => e.word || e.pinyin),
+    // 단어(중국어) 재생 후 한국어 뜻까지 읽어 주어 듣기만으로 의미 학습 가능.
+    await speakSequenceWithKorean(
+      group.entries.map((e) => ({ zh: e.word || e.pinyin, ko: e.meaning })),
       { rate: ttsRate, gapMs: gap, signal: ac.signal },
     );
     setPlaying(false);

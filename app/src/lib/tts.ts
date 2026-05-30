@@ -565,3 +565,43 @@ export async function speakSequence(
     if (opts.signal?.aborted) return;
   }
 }
+
+/**
+ * (중국어, 한국어 뜻) 쌍을 순차 재생.
+ *   중국어 발화 → (betweenMs 짧은 멈춤) → 한국어 뜻 발화 → (gapMs) → 다음.
+ * `korean=false` 면 한국어를 건너뛰어 speakSequence 와 동일하게 동작.
+ * 단어 목록의 "듣기" 처럼 뜻까지 들려주는 학습 흐름에 사용.
+ */
+export async function speakSequenceWithKorean(
+  items: { zh: string; ko?: string }[],
+  opts: {
+    rate?: number;
+    koRate?: number;
+    gapMs?: number;
+    betweenMs?: number;
+    korean?: boolean;
+    signal?: AbortSignal;
+  } = {},
+): Promise<void> {
+  if (!isTtsAvailable()) return;
+  if (!ensureVoice()) await awaitVoices();
+  const gap = opts.gapMs ?? 1000;
+  const between = opts.betweenMs ?? 300;
+  const withKo = opts.korean ?? true;
+  for (const item of items) {
+    if (opts.signal?.aborted) return;
+    await speakAsync(item.zh, { rate: opts.rate, signal: opts.signal });
+    if (opts.signal?.aborted) return;
+    if (withKo && item.ko) {
+      await abortableSleep(between, opts.signal);
+      if (opts.signal?.aborted) return;
+      await speakKoreanAsync(item.ko, {
+        rate: opts.koRate ?? 1.0,
+        signal: opts.signal,
+      });
+      if (opts.signal?.aborted) return;
+    }
+    await abortableSleep(gap, opts.signal);
+    if (opts.signal?.aborted) return;
+  }
+}
