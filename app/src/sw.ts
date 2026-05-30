@@ -29,9 +29,17 @@ declare const self: ServiceWorkerGlobalScope & {
 };
 // vite define 에서 주입 — iOS 중복 waiting worker 무한 루프 방지용 빌드 식별자.
 declare const __BUILD_HASH__: string;
+// vite define 에서 주입 — tts-mp3 캐시 maxEntries (매니페스트 크기 기반).
+declare const __TTS_CACHE_MAX_ENTRIES__: number;
 
 const BUILD_HASH: string =
   typeof __BUILD_HASH__ !== "undefined" ? __BUILD_HASH__ : "dev";
+
+// 일괄 다운로드가 매니페스트 전체를 받아도 LRU evict 되지 않도록 충분히 큰 cap.
+const TTS_CACHE_MAX_ENTRIES: number =
+  typeof __TTS_CACHE_MAX_ENTRIES__ !== "undefined"
+    ? __TTS_CACHE_MAX_ENTRIES__
+    : 2000;
 
 // ────────────────────────────────────────────────────────────────────────────
 // 캐시 이름
@@ -302,10 +310,13 @@ async function handlePrecache(cacheKey: string, req: Request): Promise<Response>
 // 런타임 캐시 — 기존 generateSW workbox.runtimeCaching 과 1:1 이전
 // ────────────────────────────────────────────────────────────────────────────
 
-// 사전 녹음 zh TTS mp3 (public/tts/*.mp3). 평균 학습자는 들은 단어만 받는다.
+// 사전 녹음 zh TTS mp3 (public/tts/*.mp3). 온디맨드로는 들은 단어만 캐시되고,
+// 설정 → "중국어 음성 미리 받기"로 매니페스트 전체를 한 번에 받을 수도 있다.
 // Workbox range-requests 권장 패턴 — 첫 200 응답을 캐시, 후속 Range 요청은
 // 캐시본을 슬라이스해 206 으로 응답(206 자체는 캐시하지 않음).
-// iOS Cache Storage 한도(~50MB) 초과 시 purgeOnQuotaError 로 LRU evict.
+// maxEntries 는 매니페스트 크기 기반(__TTS_CACHE_MAX_ENTRIES__) — 일괄 다운로드
+// 직후 LRU evict 를 막는다. iOS Cache Storage 바이트 한도 초과 시엔
+// purgeOnQuotaError 가 LRU evict 로 안전하게 방어한다.
 registerRoute(
   ({ url }) => url.pathname.includes("/tts/") && url.pathname.endsWith(".mp3"),
   new CacheFirst({
@@ -314,7 +325,7 @@ registerRoute(
     plugins: [
       new CacheableResponsePlugin({ statuses: [0, 200] }),
       new ExpirationPlugin({
-        maxEntries: 2000,
+        maxEntries: TTS_CACHE_MAX_ENTRIES,
         maxAgeSeconds: 60 * 60 * 24 * 365,
         purgeOnQuotaError: true,
       }),

@@ -35,6 +35,33 @@ let cachedZhVoice: SpeechSynthesisVoice | null = null;
 let currentAudio: HTMLAudioElement | null = null;
 let unlocked = false;
 
+// ────────────────────────────────────────────────────────────────────────────
+// 재생 방식(VoiceMode)
+//   - 'recorded' : 사전녹음 mp3 우선, miss/실패 시 Web Speech 폴백 (현행 기본).
+//   - 'device'   : 기기 음성(Web Speech)만 사용 — mp3 매니페스트 lookup 우회.
+//                  데이터·저장 공간을 아끼거나 기기 음성팩 음색을 선호할 때.
+//
+// settings 스토어가 setVoiceModeProvider() 로 현재 사용자 설정을 늦은 바인딩한다.
+// 호출자가 opts.voiceMode 를 넘기지 않아도 speak()/speakAsync() 가 provider 값으로
+// 정책을 강제한다. provider 미등록/null 이면 'recorded' 로 동작(안전 경로).
+// ────────────────────────────────────────────────────────────────────────────
+export type VoiceMode = "device" | "recorded";
+
+let voiceModeProvider: (() => VoiceMode | null) | null = null;
+
+export function setVoiceModeProvider(
+  fn: (() => VoiceMode | null) | null,
+): void {
+  voiceModeProvider = fn;
+}
+
+function resolveVoiceMode(explicit: VoiceMode | undefined): VoiceMode {
+  if (explicit === "device" || explicit === "recorded") return explicit;
+  const v = voiceModeProvider?.();
+  if (v === "device" || v === "recorded") return v;
+  return "recorded";
+}
+
 /**
  * iOS Safari / PWA 의 audio gesture 정책 — 첫 SpeechSynthesisUtterance 는 사용자
  * 제스처(click/touchend)와 동일 동기 호출 스택 안에서 시작되어야 한다. 이후엔
@@ -143,9 +170,12 @@ export function hasChineseVoice(): boolean {
 }
 
 export function currentVoiceName(): string | null {
-  // mp3 매니페스트가 채워져 있으면 "녹음 음성"으로 알린다 — 사용자 진단 UI 가
-  // "현재 음성"을 표시할 때 기기 음성 대신 사전녹음을 쓴다는 사실을 명시.
-  if (Object.keys(TTS_MANIFEST).length > 0) {
+  // 녹음 모드 + mp3 매니페스트가 채워져 있으면 "녹음 음성"으로 알린다 — 진단 UI 가
+  // 기기 음성 대신 사전녹음을 쓴다는 사실을 명시. device 모드면 실제 기기 음성명.
+  if (
+    resolveVoiceMode(undefined) === "recorded" &&
+    Object.keys(TTS_MANIFEST).length > 0
+  ) {
     return "사전녹음 음성 (Microsoft Edge Neural)";
   }
   return ensureVoice()?.name ?? null;
@@ -390,12 +420,17 @@ function speakSynth(
 
 export function speak(
   text: string,
-  opts: { rate?: number; lang?: string } = {},
+  opts: { rate?: number; lang?: string; voiceMode?: VoiceMode } = {},
 ): void {
   if (!isTtsAvailable() || !text) return;
   const epoch = ++speakEpoch;
   stopAudio();
   safeCancelSynth();
+  // device 모드 — 매니페스트 우회, 기기 음성만 사용.
+  if (resolveVoiceMode(opts.voiceMode) === "device") {
+    speakSynth(text, opts, epoch);
+    return;
+  }
   const url = lookupPrerecorded(text);
   if (url) {
     playPrerecorded(
@@ -418,7 +453,12 @@ export function speak(
  */
 export function speakAsync(
   text: string,
-  opts: { rate?: number; lang?: string; signal?: AbortSignal } = {},
+  opts: {
+    rate?: number;
+    lang?: string;
+    voiceMode?: VoiceMode;
+    signal?: AbortSignal;
+  } = {},
 ): Promise<void> {
   if (!isTtsAvailable() || !text) return Promise.resolve();
   if (opts.signal?.aborted) return Promise.resolve();
@@ -438,6 +478,11 @@ export function speakAsync(
     };
     opts.signal?.addEventListener("abort", onAbort, { once: true });
 
+    // device 모드 — 매니페스트 우회, 기기 음성만 사용.
+    if (resolveVoiceMode(opts.voiceMode) === "device") {
+      speakSynth(text, opts, epoch, finish);
+      return;
+    }
     const url = lookupPrerecorded(text);
     if (url) {
       playPrerecorded(

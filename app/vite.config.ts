@@ -23,11 +23,32 @@ const GIT_HASH = (() => {
 })();
 const BUILD_HASH = `${pkg.version}-${GIT_HASH}`;
 
+// 사전녹음 zh-tts mp3 캐시 용량(maxEntries). "중국어 음성 미리 받기"(일괄
+// 다운로드)가 매니페스트 전체를 받으므로, cap 이 파일 수보다 작으면 받자마자
+// LRU evict 돼 무의미하다. 매니페스트 고유 파일 수 + 10% 마진으로 동적 설정.
+// (바이트 한도 초과는 sw.ts 의 purgeOnQuotaError 가 별도로 처리.)
+const TTS_UNIQUE_FILES = (() => {
+  try {
+    const m = JSON.parse(
+      readFileSync(
+        path.resolve(__dirname, "src/data/zh-tts-manifest.json"),
+        "utf-8",
+      ),
+    ) as Record<string, string>;
+    return new Set(Object.values(m)).size;
+  } catch {
+    return 2000;
+  }
+})();
+const TTS_CACHE_MAX_ENTRIES = Math.max(2000, Math.ceil(TTS_UNIQUE_FILES * 1.1));
+
 export default defineConfig({
   base,
   define: {
     // main.tsx, sw.ts 양쪽에서 사용 (injectManifest 빌드에도 적용됨).
     __BUILD_HASH__: JSON.stringify(BUILD_HASH),
+    // sw.ts tts-mp3 ExpirationPlugin.maxEntries — 매니페스트 크기 기반.
+    __TTS_CACHE_MAX_ENTRIES__: JSON.stringify(TTS_CACHE_MAX_ENTRIES),
   },
   plugins: [
     react(),

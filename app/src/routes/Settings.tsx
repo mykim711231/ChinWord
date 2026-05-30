@@ -2,9 +2,12 @@ import { Link } from "react-router-dom";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { clear as idbClear } from "idb-keyval";
 import {
+  CheckCircle2,
   ChevronRight,
   Download,
   HardDrive,
+  Loader2,
+  Trash2,
   Upload,
   Volume2,
 } from "lucide-react";
@@ -17,6 +20,7 @@ import {
   type ThemeMode,
   type DisplayMode,
 } from "@/state/settings";
+import type { VoiceMode } from "@/lib/tts";
 import {
   currentVoiceName,
   hasChineseVoice,
@@ -27,10 +31,16 @@ import {
 import {
   clearAllCaches,
   clearContentCaches,
+  clearTtsCache,
   getStorageInfo,
   type StorageInfo,
 } from "@/lib/storage";
 import { exportBackup, importBackup, type ChinWordBackup } from "@/lib/backup";
+import {
+  bulkDownloadAll,
+  getManifestFileCount,
+  type BulkProgress,
+} from "@/lib/ttsBulkDownload";
 
 function Row({
   label,
@@ -177,7 +187,23 @@ export default function Settings() {
           />
         </Row>
 
-        <VoiceDiagnostic rate={s.ttsRate} />
+        <Row
+          label="재생 방식"
+          hint="녹음 음성은 음질이 일정하고 오프라인에 강해요. 기기 음성은 데이터·용량을 아낍니다."
+        >
+          <SegmentedButtons<VoiceMode>
+            value={s.voiceMode}
+            options={[
+              { value: "recorded", label: "녹음 음성" },
+              { value: "device", label: "기기 음성" },
+            ]}
+            onChange={(v) => s.setVoiceMode(v)}
+          />
+        </Row>
+
+        {s.voiceMode === "recorded" ? <TtsBulkCard onToast={setToast} /> : null}
+
+        <VoiceDiagnostic rate={s.ttsRate} voiceMode={s.voiceMode} />
 
         <StoragePanel onToast={setToast} />
 
@@ -385,7 +411,195 @@ function BackupPanel({ onToast }: { onToast: (m: string) => void }) {
   );
 }
 
-function VoiceDiagnostic({ rate }: { rate: number }) {
+/**
+ * "중국어 음성 미리 받기" 카드 — 사전녹음 mp3 전체를 SW 캐시에 워밍한다.
+ * 녹음 음성 모드일 때만 노출(기기 음성 모드는 mp3 를 쓰지 않으므로 무의미).
+ *
+ * 진행률은 settings 스토어에 보존해 세션 간 상태(완료/일부 실패)를 기억한다.
+ */
+const BULK_BADGE: Record<string, { label: string; cls: string }> = {
+  idle: { label: "시작 전", cls: "bg-divider text-muted" },
+  downloading: { label: "받는 중", cls: "bg-primary text-white" },
+  done: { label: "완료", cls: "bg-success text-white" },
+  partial: { label: "일부 실패", cls: "bg-accent text-white" },
+  skipped: { label: "중지됨", cls: "bg-divider text-muted" },
+};
+
+function TtsBulkCard({ onToast }: { onToast: (m: string) => void }) {
+  const status = useSettings((st) => st.ttsBulkStatus);
+  const stored = useSettings((st) => st.ttsBulkProgress);
+  const setStatus = useSettings((st) => st.setTtsBulkStatus);
+  const setProgress = useSettings((st) => st.setTtsBulkProgress);
+
+  const fileCount = getManifestFileCount();
+  const total = stored.total || fileCount;
+  const [running, setRunning] = useState(false);
+  const [removing, setRemoving] = useState(false);
+  const [live, setLive] = useState<BulkProgress>({
+    done: stored.done,
+    failed: 0,
+    total,
+  });
+  const abortRef = useRef<AbortController | null>(null);
+
+  useEffect(() => {
+    return () => abortRef.current?.abort();
+  }, []);
+
+  async function start() {
+    if (running) return;
+    abortRef.current?.abort();
+    const ac = new AbortController();
+    abortRef.current = ac;
+    setRunning(true);
+    setStatus("downloading");
+    setLive({ done: 0, failed: 0, total: fileCount });
+    setProgress({ done: 0, total: fileCount });
+    const result = await bulkDownloadAll({
+      signal: ac.signal,
+      onProgress: (p) => {
+        setLive(p);
+        setProgress({ done: p.done, total: p.total });
+      },
+    });
+    setRunning(false);
+    if (result.aborted) setStatus("skipped");
+    else if (result.failed === 0) setStatus("done");
+    else setStatus("partial");
+    setProgress({ done: result.done, total: result.total });
+  }
+
+  async function remove() {
+    if (
+      !confirm(
+        "받아둔 중국어 음성을 삭제할까요?\n오프라인 재생이 불가해지며, 들을 때 다시 받습니다.",
+      )
+    )
+      return;
+    setRemoving(true);
+    try {
+      await clearTtsCache();
+      setStatus("idle");
+      setProgress({ done: 0, total: 0 });
+      setLive({ done: 0, failed: 0, total: fileCount });
+      onToast("받아둔 음성을 삭제했습니다");
+    } finally {
+      setRemoving(false);
+    }
+  }
+
+  const doneCount = running ? live.done : stored.done;
+  const failedCount = live.failed;
+  const pct = total ? Math.floor((doneCount / total) * 100) : 0;
+  const badge = BULK_BADGE[running ? "downloading" : status];
+
+  return (
+    <div className="card space-y-2">
+      <div className="flex items-center justify-between gap-2">
+        <div className="font-medium inline-flex items-center gap-1.5">
+          <Download size={16} aria-hidden /> 중국어 음성 미리 받기
+        </div>
+        {badge ? (
+          <span
+            className={
+              "rounded-full px-2 py-0.5 text-xs font-semibold " + badge.cls
+            }
+          >
+            {badge.label}
+          </span>
+        ) : null}
+      </div>
+      <p className="text-sm text-muted">
+        약 <b>{total.toLocaleString()}</b>개 파일(≈140MB). 한 번 받아두면 인터넷
+        없이도 음성이 재생됩니다.
+      </p>
+
+      {running || doneCount > 0 ? (
+        <>
+          <div
+            role="progressbar"
+            aria-valuemin={0}
+            aria-valuemax={total}
+            aria-valuenow={doneCount}
+            className="h-2 w-full rounded-full bg-divider overflow-hidden"
+          >
+            <div
+              className={
+                "h-full transition-[width] duration-300 " +
+                (status === "done" ? "bg-success" : "bg-primary")
+              }
+              style={{ width: `${pct}%` }}
+            />
+          </div>
+          <p className="text-xs text-muted inline-flex items-center gap-1.5">
+            {running ? (
+              <>
+                <Loader2 size={14} aria-hidden className="animate-spin" />
+                받는 중… {doneCount.toLocaleString()}/{total.toLocaleString()}
+                {failedCount > 0 ? ` (실패 ${failedCount})` : ""}
+              </>
+            ) : status === "done" ? (
+              <>
+                <CheckCircle2 size={14} aria-hidden className="text-success" />
+                완료: {doneCount.toLocaleString()}/{total.toLocaleString()}
+              </>
+            ) : (
+              <>
+                {doneCount.toLocaleString()}/{total.toLocaleString()}
+                {status === "partial" ? " · 일부 실패 (재시도 가능)" : ""}
+              </>
+            )}
+          </p>
+        </>
+      ) : null}
+
+      <div className="flex flex-wrap gap-2 pt-1">
+        {running ? (
+          <button
+            type="button"
+            onClick={() => abortRef.current?.abort()}
+            className="btn-ghost text-sm border border-divider"
+          >
+            중지
+          </button>
+        ) : (
+          <button
+            type="button"
+            onClick={() => void start()}
+            disabled={removing}
+            className="btn-ghost text-sm border border-primary text-primary inline-flex items-center gap-1.5 disabled:opacity-50"
+          >
+            <Download size={14} aria-hidden />
+            {status === "done"
+              ? "다시 받기"
+              : status === "partial"
+                ? "재시도"
+                : "지금 받기"}
+          </button>
+        )}
+        {!running && (status === "done" || status === "partial") ? (
+          <button
+            type="button"
+            onClick={() => void remove()}
+            disabled={removing}
+            className="btn-ghost text-sm border border-divider inline-flex items-center gap-1.5 disabled:opacity-50"
+            aria-label="받아둔 중국어 음성 삭제"
+          >
+            <Trash2 size={14} aria-hidden /> {removing ? "삭제 중…" : "삭제"}
+          </button>
+        ) : null}
+      </div>
+    </div>
+  );
+}
+
+function VoiceDiagnostic({
+  rate,
+  voiceMode,
+}: {
+  rate: number;
+  voiceMode: VoiceMode;
+}) {
   const [voiceName, setVoiceName] = useState<string | null>(null);
   const [hasZh, setHasZh] = useState(false);
   const [voices, setVoices] = useState<{ name: string; lang: string; default: boolean }[]>([]);
@@ -409,7 +623,8 @@ function VoiceDiagnostic({ rate }: { rate: number }) {
         window.clearTimeout(t);
       };
     }
-  }, []);
+    // voiceMode 변경 시에도 현재 음성 라벨을 다시 계산.
+  }, [voiceMode]);
 
   if (!isTtsAvailable()) {
     return (
@@ -419,9 +634,14 @@ function VoiceDiagnostic({ rate }: { rate: number }) {
     );
   }
 
-  const status = hasZh
-    ? voiceName ?? "(이름 없음)"
-    : "(중국어 음성 없음 — OS 기본 음성으로 zh-CN 시도)";
+  // 녹음 모드는 mp3 우선이라 기기 음성팩 유무와 무관하게 음질이 일정하다.
+  const status =
+    voiceMode === "recorded"
+      ? "사전녹음 음성 (Microsoft Edge Neural)"
+      : hasZh
+        ? voiceName ?? "(이름 없음)"
+        : "(중국어 음성 없음 — OS 기본 음성으로 zh-CN 시도)";
+  const statusOk = voiceMode === "recorded" || hasZh;
 
   const zhVoices = voices.filter((v) => /^(zh|cmn)/i.test(v.lang));
 
@@ -433,7 +653,7 @@ function VoiceDiagnostic({ rate }: { rate: number }) {
             <Volume2 size={14} aria-hidden /> 음성 진단
           </div>
           <div className="text-xs text-muted mt-0.5 truncate">
-            현재: <span className={hasZh ? "text-fg" : "text-amber-500"}>{status}</span>
+            현재: <span className={statusOk ? "text-fg" : "text-amber-500"}>{status}</span>
           </div>
         </div>
         <button

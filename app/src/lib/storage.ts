@@ -85,3 +85,16 @@ export async function clearContentCaches(): Promise<number> {
   await Promise.all(targets.map((n) => caches.delete(n)));
   return targets.length;
 }
+
+/**
+ * 사전녹음 tts mp3 캐시만 삭제 — "중국어 음성 미리 받기"로 받아둔 음성을
+ * 비운다. 온라인이면 재생 시점에 다시 받아지므로 용량 확보용으로 안전하다.
+ * @returns 삭제했으면 true
+ */
+export async function clearTtsCache(): Promise<boolean> {
+  if (typeof caches === "undefined") return false;
+  const names = await caches.keys();
+  const targets = names.filter((n) => n.includes("tts-mp3"));
+  await Promise.all(targets.map((n) => caches.delete(n)));
+  return targets.length > 0;
+}
