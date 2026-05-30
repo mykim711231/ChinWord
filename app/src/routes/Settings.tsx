@@ -73,19 +73,15 @@ function Row({
 }
 
 const THEME_OPTIONS: { value: ThemeMode; label: string }[] = [
-  { value: "system", label: "시스템" },
   { value: "light", label: "라이트" },
   { value: "dark", label: "다크" },
   { value: "sepia", label: "세피아" },
   { value: "warm", label: "웜다크" },
+  { value: "system", label: "시스템" },
 ];
 
-const BLUE_LIGHT_OPTIONS: { value: BlueLightLevel; label: string }[] = [
-  { value: 0, label: "끔" },
-  { value: 1, label: "약" },
-  { value: 2, label: "중" },
-  { value: 3, label: "강" },
-];
+// 청색광 차단은 on/off 토글로 노출 — 켜면 '중'(0.2) 강도로 따뜻하게 덧씌운다.
+const BLUE_LIGHT_ON: BlueLightLevel = 2;
 
 function SegmentedButtons<T extends string>({
   value,
@@ -121,6 +117,38 @@ function SegmentedButtons<T extends string>({
         );
       })}
     </div>
+  );
+}
+
+/** iOS 스타일 on/off 토글 스위치. role=switch + aria-checked 로 접근성 확보. */
+function Toggle({
+  checked,
+  onChange,
+  label,
+}: {
+  checked: boolean;
+  onChange: (v: boolean) => void;
+  label: string;
+}) {
+  return (
+    <button
+      type="button"
+      role="switch"
+      aria-checked={checked}
+      aria-label={label}
+      onClick={() => onChange(!checked)}
+      className={
+        "relative inline-flex h-7 w-12 min-h-0 shrink-0 items-center rounded-full transition-colors " +
+        (checked ? "bg-primary" : "bg-divider")
+      }
+    >
+      <span
+        className={
+          "inline-block h-5 w-5 transform rounded-full bg-white shadow transition-transform " +
+          (checked ? "translate-x-6" : "translate-x-1")
+        }
+      />
+    </button>
   );
 }
 
@@ -163,16 +191,16 @@ export default function Settings() {
           />
         </Row>
 
-        {/* 화면 테마 — 5종(시스템/라이트/다크/세피아/웜다크).
-            세피아·웜다크는 청색광·고대비를 줄여 장시간 사용 시 눈 피로를 덜어준다.
-            5개는 한 줄 세그먼트에 안 들어가므로 줄바꿈 그리드로 표시. */}
+        {/* 화면 테마 — 5종을 한 줄 세그먼트로(SMCB 동일 유형). flex-1 로 균등
+            분배해 좁은 화면에서도 가로 오버플로 없이 들어간다. */}
         <div className="card">
-          <div className="font-medium">화면 테마</div>
+          <div className="font-medium">테마</div>
           <div className="text-xs text-muted mt-0.5">
-            눈이 피로하면 세피아(따뜻한 종이색)나 웜다크를 사용해 보세요.
+            라이트는 흰 배경, 다크는 검은 배경, 세피아는 따뜻한 종이색, 웜다크는
+            포근한 어두운 색, 시스템은 단말기 설정을 따라요.
           </div>
           <div
-            className="mt-3 grid grid-cols-3 gap-2"
+            className="mt-3 flex items-center gap-1 rounded-full bg-divider/50 p-1"
             role="group"
             aria-label="화면 테마"
           >
@@ -188,10 +216,10 @@ export default function Settings() {
                     applySettingsToDom();
                   }}
                   className={
-                    "rounded-btn border px-2 py-2 text-sm transition " +
+                    "flex-1 rounded-full px-2 py-1.5 text-sm text-center whitespace-nowrap transition " +
                     (selected
-                      ? "border-primary bg-primary-soft text-primary font-medium"
-                      : "border-divider text-fg")
+                      ? "bg-primary text-white font-medium shadow-sm"
+                      : "text-muted")
                   }
                 >
                   {o.label}
@@ -201,41 +229,29 @@ export default function Settings() {
           </div>
         </div>
 
-        {/* 청색광 차단 필터 — 테마와 독립. 화면 전체에 따뜻한 앰버 톤을
-            덧씌워 청색 성분을 줄인다(야간/장시간 사용 시 눈 피로 완화). */}
-        <div className="card">
-          <div className="font-medium">청색광 차단 필터</div>
-          <div className="text-xs text-muted mt-0.5">
-            화면에 따뜻한 톤을 덧씌워 청색광을 줄입니다. 밤이나 오래 볼 때 강하게.
+        {/* 청색광 차단 — 테마와 독립. on/off 토글(SMCB 동일 유형). 켜면 화면
+            전체에 따뜻한 앰버 톤을 덧씌워 청색 성분을 줄인다. */}
+        <div className="card flex items-center justify-between gap-x-3">
+          <div className="min-w-0">
+            <div className="font-medium">청색광 차단</div>
+            <div className="text-xs text-muted mt-0.5">
+              화면 전체에 따뜻한 색을 살짝 덧입혀 파란빛을 줄여요. 밤이나 오래 볼
+              때 눈이 덜 피곤해요. 모든 테마에 적용돼요.
+            </div>
           </div>
-          <div
-            className="mt-3 grid grid-cols-4 gap-2"
-            role="group"
-            aria-label="청색광 차단 필터 강도"
-          >
-            {BLUE_LIGHT_OPTIONS.map((o) => {
-              const selected = s.blueLight === o.value;
-              return (
-                <button
-                  key={o.value}
-                  type="button"
-                  aria-pressed={selected}
-                  onClick={() => {
-                    s.setBlueLight(o.value);
-                    applySettingsToDom();
-                  }}
-                  className={
-                    "rounded-btn border px-2 py-2 text-sm transition " +
-                    (selected
-                      ? "border-primary bg-primary-soft text-primary font-medium"
-                      : "border-divider text-fg")
-                  }
-                >
-                  {o.label}
-                </button>
+          <Toggle
+            label="청색광 차단"
+            checked={s.blueLight > 0}
+            onChange={(on) => {
+              s.setBlueLight(on ? BLUE_LIGHT_ON : 0);
+              applySettingsToDom();
+              setToast(
+                on
+                  ? "청색광 차단을 켰어요. 화면이 조금 따뜻해져요."
+                  : "청색광 차단을 껐어요.",
               );
-            })}
-          </div>
+            }}
+          />
         </div>
 
         <Row label="표시 모드">
