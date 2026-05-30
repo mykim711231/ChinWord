@@ -178,15 +178,19 @@ export function applySettingsToDom() {
 
   // 테마 클래스 적용. 웜다크(warm)는 다크 계열이므로 `dark` 클래스도 함께 켜서
   // Tailwind dark: 변형(예: 한자 캔버스 배경)과 토큰 다크 의도를 그대로 쓰되,
-  // 색 토큰은 tokens.css 에서 `html.warm` 규칙(=html.dark 보다 뒤)이 덮어쓴다.
+  // 색 토큰은 tokens.css 에서 `html.theme-warmdark` 규칙(=html.dark 보다 뒤)이 덮어쓴다.
   const sysDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
   const useDark =
     s.themeMode === "dark" ||
     s.themeMode === "warm" ||
     (s.themeMode === "system" && sysDark);
+  // 테마 클래스명은 Tailwind 내장 유틸과의 충돌을 피하려 `theme-` 접두사를 쓴다.
+  // (Tailwind 가 `.sepia { filter: sepia(100%) }` 유틸을 생성하므로 클래스명을
+  //  그냥 `sepia` 로 두면 페이지 전체에 사진용 sepia() 필터가 입혀져 파랑이 올리브로
+  //  변색된다. SMCB 와 동일하게 theme-sepia / theme-warmdark 로 분리.)
   root.classList.toggle("dark", useDark);
-  root.classList.toggle("sepia", s.themeMode === "sepia");
-  root.classList.toggle("warm", s.themeMode === "warm");
+  root.classList.toggle("theme-sepia", s.themeMode === "sepia");
+  root.classList.toggle("theme-warmdark", s.themeMode === "warm");
 
   // 청색광 차단 필터 — body::after 곱연산 오버레이 불투명도(tokens.css).
   // 테마와 독립적으로 어느 배경 위에도 따뜻한 앰버 톤을 덧씌운다.

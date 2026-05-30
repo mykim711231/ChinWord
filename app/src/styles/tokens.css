@@ -47,7 +47,7 @@ html.dark {
    Claude Desktop의 본/오트(bone/oat)톤 — 노란기를 뺀 따뜻한 오프화이트로
    실제 종이에 가깝게 중성 웜그레이까지 맞춘다. (SMCB html.theme-sepia 이식,
    --rgb-text→--rgb-fg, --rgb-text-muted→--rgb-muted 로 매핑) */
-html.sepia {
+html.theme-sepia {
   --rgb-bg: 246 245 242;        /* #F6F5F2 */
   --rgb-surface: 250 249 245;   /* #FAF9F5 */
   --rgb-fg: 51 49 45;
@@ -63,7 +63,7 @@ html.sepia {
 /* 웜다크 — 따뜻한 갈색 기운의 다크 테마(SMCB 동일 팔레트).
    .dark 베이스 위에 웜톤으로 오버라이드하므로 반드시 html.dark 규칙보다
    뒤에 둬야 다크 변수를 덮어쓴다. (SMCB html.theme-warmdark 이식) */
-html.warm {
+html.theme-warmdark {
   --rgb-bg: 28 24 20;
   --rgb-surface: 41 35 28;
   --rgb-fg: 237 230 218;
