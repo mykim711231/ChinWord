@@ -80,8 +80,12 @@ const THEME_OPTIONS: { value: ThemeMode; label: string }[] = [
   { value: "system", label: "시스템" },
 ];
 
-// 청색광 차단은 on/off 토글로 노출 — 켜면 '중'(0.2) 강도로 따뜻하게 덧씌운다.
-const BLUE_LIGHT_ON: BlueLightLevel = 2;
+const BLUE_LIGHT_OPTIONS: { value: BlueLightLevel; label: string }[] = [
+  { value: 0, label: "끔" },
+  { value: 1, label: "약" },
+  { value: 2, label: "중" },
+  { value: 3, label: "강" },
+];
 
 function SegmentedButtons<T extends string>({
   value,
@@ -117,38 +121,6 @@ function SegmentedButtons<T extends string>({
         );
       })}
     </div>
-  );
-}
-
-/** iOS 스타일 on/off 토글 스위치. role=switch + aria-checked 로 접근성 확보. */
-function Toggle({
-  checked,
-  onChange,
-  label,
-}: {
-  checked: boolean;
-  onChange: (v: boolean) => void;
-  label: string;
-}) {
-  return (
-    <button
-      type="button"
-      role="switch"
-      aria-checked={checked}
-      aria-label={label}
-      onClick={() => onChange(!checked)}
-      className={
-        "relative inline-flex h-7 w-12 min-h-0 shrink-0 items-center rounded-full transition-colors " +
-        (checked ? "bg-primary" : "bg-divider")
-      }
-    >
-      <span
-        className={
-          "inline-block h-5 w-5 transform rounded-full bg-white shadow transition-transform " +
-          (checked ? "translate-x-6" : "translate-x-1")
-        }
-      />
-    </button>
   );
 }
 
@@ -229,29 +201,42 @@ export default function Settings() {
           </div>
         </div>
 
-        {/* 청색광 차단 — 테마와 독립. on/off 토글(SMCB 동일 유형). 켜면 화면
+        {/* 청색광 차단 — 테마와 독립. 끔/약/중/강 4단계 세그먼트. 켜면 화면
             전체에 따뜻한 앰버 톤을 덧씌워 청색 성분을 줄인다. */}
-        <div className="card flex items-center justify-between gap-x-3">
-          <div className="min-w-0">
-            <div className="font-medium">청색광 차단</div>
-            <div className="text-xs text-muted mt-0.5">
-              화면 전체에 따뜻한 색을 살짝 덧입혀 파란빛을 줄여요. 밤이나 오래 볼
-              때 눈이 덜 피곤해요. 모든 테마에 적용돼요.
-            </div>
+        <div className="card">
+          <div className="font-medium">청색광 차단</div>
+          <div className="text-xs text-muted mt-0.5">
+            화면 전체에 따뜻한 색을 덧입혀 파란빛을 줄여요. 밤이나 오래 볼 때
+            강하게. 모든 테마에 적용돼요.
           </div>
-          <Toggle
-            label="청색광 차단"
-            checked={s.blueLight > 0}
-            onChange={(on) => {
-              s.setBlueLight(on ? BLUE_LIGHT_ON : 0);
-              applySettingsToDom();
-              setToast(
-                on
-                  ? "청색광 차단을 켰어요. 화면이 조금 따뜻해져요."
-                  : "청색광 차단을 껐어요.",
+          <div
+            className="mt-3 flex items-center gap-1 rounded-full bg-divider/50 p-1"
+            role="group"
+            aria-label="청색광 차단 강도"
+          >
+            {BLUE_LIGHT_OPTIONS.map((o) => {
+              const selected = s.blueLight === o.value;
+              return (
+                <button
+                  key={o.value}
+                  type="button"
+                  aria-pressed={selected}
+                  onClick={() => {
+                    s.setBlueLight(o.value);
+                    applySettingsToDom();
+                  }}
+                  className={
+                    "flex-1 rounded-full px-2 py-1.5 text-sm text-center whitespace-nowrap transition " +
+                    (selected
+                      ? "bg-primary text-white font-medium shadow-sm"
+                      : "text-muted")
+                  }
+                >
+                  {o.label}
+                </button>
               );
-            }}
-          />
+            })}
+          </div>
         </div>
 
         <Row label="표시 모드">
