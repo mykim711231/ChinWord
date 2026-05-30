@@ -1,7 +1,13 @@
 import { Link } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { clear as idbClear } from "idb-keyval";
-import { ChevronRight, Volume2 } from "lucide-react";
+import {
+  ChevronRight,
+  Download,
+  HardDrive,
+  Upload,
+  Volume2,
+} from "lucide-react";
 import { TopBar } from "@/components/TopBar";
 import { PageShell } from "@/components/PageShell";
 import {
@@ -18,6 +24,13 @@ import {
   listVoices,
   speak,
 } from "@/lib/tts";
+import {
+  clearAllCaches,
+  clearContentCaches,
+  getStorageInfo,
+  type StorageInfo,
+} from "@/lib/storage";
+import { exportBackup, importBackup, type ChinWordBackup } from "@/lib/backup";
 
 function Row({
   label,
@@ -86,22 +99,9 @@ export default function Settings() {
     return () => window.clearTimeout(t);
   }, [toast]);
 
-  async function clearCacheStorage() {
-    if (!("caches" in window)) {
-      setToast("캐시 API 를 지원하지 않습니다");
-      return;
-    }
-    const keys = await caches.keys();
-    await Promise.all(keys.map((k) => caches.delete(k)));
-    setToast("캐시 정리 완료");
-  }
-
   async function fullReset() {
     if (!confirm("학습 기록을 포함한 모든 데이터를 삭제할까요?")) return;
-    if ("caches" in window) {
-      const keys = await caches.keys();
-      await Promise.all(keys.map((k) => caches.delete(k)));
-    }
+    await clearAllCaches();
     await idbClear();
     location.reload();
   }
@@ -179,11 +179,9 @@ export default function Settings() {
 
         <VoiceDiagnostic rate={s.ttsRate} />
 
-        <Row label="캐시 정리" hint="앱 셸/콘텐츠 캐시 비움 (학습 기록 보존)">
-          <button type="button" className="btn-ghost text-sm border border-divider" onClick={clearCacheStorage}>
-            정리
-          </button>
-        </Row>
+        <StoragePanel onToast={setToast} />
+
+        <BackupPanel onToast={setToast} />
 
         <Row label="전체 초기화" hint="설정 + 즐겨찾기 + SRS 카드 + 캐시 모두 삭제">
           <button type="button" className="btn-ghost text-sm border border-primary text-primary" onClick={fullReset}>
@@ -211,6 +209,179 @@ export default function Settings() {
         </div>
       ) : null}
     </PageShell>
+  );
+}
+
+/**
+ * 저장 공간 패널 — 사용량/할당량 막대 + 콘텐츠 캐시 비우기.
+ *
+ * "콘텐츠 캐시 비우기"는 다시 받을 수 있는 tts mp3·필순 데이터만 삭제하고
+ * 앱 셸은 보존하므로 오프라인 동작이 깨지지 않는다. 학습 기록도 그대로다.
+ */
+function StoragePanel({ onToast }: { onToast: (m: string) => void }) {
+  const [info, setInfo] = useState<StorageInfo | null>(null);
+  const [busy, setBusy] = useState(false);
+
+  const refresh = useCallback(() => {
+    void getStorageInfo().then(setInfo);
+  }, []);
+
+  useEffect(() => {
+    refresh();
+  }, [refresh]);
+
+  async function clearContent() {
+    setBusy(true);
+    try {
+      const n = await clearContentCaches();
+      onToast(
+        n > 0 ? "콘텐츠 캐시를 비웠습니다" : "비울 콘텐츠 캐시가 없습니다",
+      );
+      refresh();
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  return (
+    <div className="card space-y-2">
+      <div className="flex items-center justify-between gap-3">
+        <div className="min-w-0">
+          <div className="font-medium inline-flex items-center gap-1.5">
+            <HardDrive size={14} aria-hidden /> 저장 공간
+          </div>
+          <div className="text-xs text-muted mt-0.5">
+            {info?.supported
+              ? `${info.usageMB} MB / ${info.quotaMB} MB 사용 (${info.percent}%)`
+              : "이 브라우저는 사용량 정보를 제공하지 않습니다"}
+          </div>
+        </div>
+        <button
+          type="button"
+          className="btn-ghost text-sm border border-divider disabled:opacity-50"
+          onClick={clearContent}
+          disabled={busy}
+        >
+          캐시 비우기
+        </button>
+      </div>
+      {info?.supported && info.quotaBytes > 0 ? (
+        <div
+          className="h-2 w-full rounded-full bg-divider overflow-hidden"
+          role="progressbar"
+          aria-valuenow={info.percent}
+          aria-valuemin={0}
+          aria-valuemax={100}
+        >
+          <div
+            className="h-full bg-primary"
+            style={{ width: `${Math.min(100, info.percent)}%` }}
+          />
+        </div>
+      ) : null}
+      <div className="text-xs text-muted">
+        발음·필순 데이터만 비우며 학습 기록과 앱 화면은 보존됩니다. 온라인이면
+        다시 받습니다.
+      </div>
+    </div>
+  );
+}
+
+/**
+ * 백업/복원 패널 — 학습 기록을 JSON 파일로 내보내고, 새 기기에서 가져온다.
+ *
+ * iOS Safari 7일 미사용 자동 정리·재설치·기기 변경 시 학습 진도를 잃지 않도록
+ * 사용자가 직접 파일로 보관할 수 있게 한다. 복원 후에는 스토어 재하이드레이트를
+ * 위해 페이지를 새로고침한다.
+ */
+function BackupPanel({ onToast }: { onToast: (m: string) => void }) {
+  const fileRef = useRef<HTMLInputElement>(null);
+  const [busy, setBusy] = useState(false);
+
+  async function doExport() {
+    setBusy(true);
+    try {
+      const backup = await exportBackup();
+      const blob = new Blob([JSON.stringify(backup, null, 2)], {
+        type: "application/json",
+      });
+      const url = URL.createObjectURL(blob);
+      const date = new Date().toISOString().slice(0, 10);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `chinword-backup-${date}.json`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+      onToast("백업 파일을 저장했습니다");
+    } catch {
+      onToast("백업에 실패했습니다");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function onFile(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    e.target.value = ""; // 같은 파일 재선택 허용
+    if (!file) return;
+    if (
+      !confirm(
+        "백업을 복원하면 같은 항목은 덮어쓰입니다. 계속할까요?\n복원 후 앱이 새로고침됩니다.",
+      )
+    )
+      return;
+    setBusy(true);
+    try {
+      const text = await file.text();
+      const parsed = JSON.parse(text) as ChinWordBackup;
+      const n = await importBackup(parsed);
+      onToast(`${n}개 항목을 복원했습니다 — 새로고침합니다`);
+      setTimeout(() => location.reload(), 1200);
+    } catch (err) {
+      onToast(
+        err instanceof Error && err.message.includes("백업 파일")
+          ? "ChinWord 백업 파일이 아닙니다"
+          : "복원에 실패했습니다 (파일 손상?)",
+      );
+      setBusy(false);
+    }
+  }
+
+  return (
+    <div className="card space-y-2">
+      <div className="font-medium">학습 기록 백업</div>
+      <div className="text-xs text-muted">
+        설정·즐겨찾기·플래시카드(SRS)·이어듣기 진도를 파일로 저장하고 새 기기나
+        재설치 후 복원합니다.
+      </div>
+      <div className="flex gap-2 pt-1">
+        <button
+          type="button"
+          className="btn-ghost text-sm border border-divider inline-flex items-center gap-1.5 disabled:opacity-50"
+          onClick={doExport}
+          disabled={busy}
+        >
+          <Download size={14} aria-hidden /> 백업 저장
+        </button>
+        <button
+          type="button"
+          className="btn-ghost text-sm border border-divider inline-flex items-center gap-1.5 disabled:opacity-50"
+          onClick={() => fileRef.current?.click()}
+          disabled={busy}
+        >
+          <Upload size={14} aria-hidden /> 복원
+        </button>
+        <input
+          ref={fileRef}
+          type="file"
+          accept="application/json,.json"
+          className="hidden"
+          onChange={onFile}
+        />
+      </div>
+    </div>
   );
 }
 

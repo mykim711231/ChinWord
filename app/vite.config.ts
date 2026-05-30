@@ -2,80 +2,78 @@ import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import { VitePWA } from "vite-plugin-pwa";
 import path from "node:path";
+import { readFileSync } from "node:fs";
+import { execSync } from "node:child_process";
 
 // 듀얼 배포 타깃: 기본은 GitHub Pages(/ChinWord/), DEPLOY_TARGET=cf 면 루트(/).
 const isCloudflare = process.env.DEPLOY_TARGET === "cf";
 const base = isCloudflare ? "/" : "/ChinWord/";
 
+// 빌드 식별자 — version + git 단축 해시. sw.ts 가 iOS 중복 waiting worker
+// (WebKit #75981032) 무한 루프 방지에 사용한다(동일 해시면 skipWaiting 거부).
+const pkg = JSON.parse(
+  readFileSync(path.resolve(__dirname, "package.json"), "utf-8"),
+) as { version: string };
+const GIT_HASH = (() => {
+  try {
+    return execSync("git rev-parse --short HEAD", { encoding: "utf8" }).trim();
+  } catch {
+    return Date.now().toString(36);
+  }
+})();
+const BUILD_HASH = `${pkg.version}-${GIT_HASH}`;
+
 export default defineConfig({
   base,
+  define: {
+    // main.tsx, sw.ts 양쪽에서 사용 (injectManifest 빌드에도 적용됨).
+    __BUILD_HASH__: JSON.stringify(BUILD_HASH),
+  },
   plugins: [
     react(),
     VitePWA({
-      registerType: "autoUpdate",
+      // prompt: 새 SW 를 자동 적용하지 않고 페이지(main.tsx)가 제어한다.
+      registerType: "prompt",
+      // injectManifest 모드 — sw.ts 를 직접 작성한다.
+      // generateSW 와 달리 precache install 단계에서 fetch 한 건씩 진행률을
+      // postMessage 로 보고할 수 있어 실제 다운로드 진행 바를 그릴 수 있다.
+      strategies: "injectManifest",
+      srcDir: "src",
+      filename: "sw.ts",
       includeAssets: ["favicon.svg", "logo.svg"],
       manifest: {
+        // id/start_url/scope 를 base 로 고정 — 미지정 시 홈 추가 당시 경로
+        // (#/learn 등)에서 부팅돼 흰 화면이 날 수 있다. 항상 홈에서 시작.
+        id: base,
         name: "ChinWord 中国语",
         short_name: "ChinWord",
-        description: "중국어 어휘 학습 PWA — 상황별 단어 · 고사성어 · 필순 · TTS · SRS",
+        description:
+          "중국어 어휘 학습 PWA — 상황별 단어 · 고사성어 · 필순 · TTS · SRS",
         theme_color: "#DC2626",
         background_color: "#FAFAFA",
         display: "standalone",
         start_url: base,
         scope: base,
         icons: [
-          { src: "logo.svg", sizes: "any", type: "image/svg+xml", purpose: "any maskable" }
+          {
+            src: "logo.svg",
+            sizes: "any",
+            type: "image/svg+xml",
+            purpose: "any maskable",
+          },
         ],
       },
-      workbox: {
-        // tts mp3 까지 precache 하면 초기 설치 페이로드가 10MB+ 로 폭증한다.
-        // 정적 자산(public/tts/*.mp3)이 dist 에 함께 배포되므로 런타임 CacheFirst 로
-        // 처음 재생 시점에만 캐시한다 — 평균 학습자는 사용한 단어만 받게 된다.
-        globPatterns: ["**/*.{js,css,html,svg,ico,woff2}"],
-        // mp3 한 파일이 평균 20~50KB → 1,300개 합쳐도 30MB 미만.
-        // 단일 PWA 캐시 한도 기본 2MB 를 넘으므로 maximumFileSizeToCacheInBytes 도 상향.
-        maximumFileSizeToCacheInBytes: 5 * 1024 * 1024,
-        runtimeCaching: [
-          {
-            urlPattern: /\/data\/.*\.json$/,
-            handler: "StaleWhileRevalidate",
-            options: { cacheName: "content-json" },
-          },
-          {
-            urlPattern: /\/tts\/.*\.mp3$/,
-            handler: "CacheFirst",
-            options: {
-              cacheName: "tts-mp3",
-              // 매니페스트 ~1,300 항목 + 안전 마진.
-              // iOS Safari Cache Storage 한도(~50MB) 초과 시 Workbox 가 자동으로
-              // 오래된 항목부터 제거하도록 purgeOnQuotaError 활성화 — 미설정 시
-              // quota 초과 후 모든 캐시 쓰기가 silent fail 되어 오프라인 재생 무음 실패.
-              expiration: {
-                maxEntries: 2000,
-                maxAgeSeconds: 60 * 60 * 24 * 365,
-                purgeOnQuotaError: true,
-              },
-              cacheableResponse: { statuses: [0, 200] },
-            },
-          },
-          {
-            // 필순 데이터(hanzi-writer-data CDN). 앱은 IndexedDB(stroke-cache)에도
-            // 별도 저장하므로 dev/prod·SW 유무 무관하게 본 글자는 오프라인 가능.
-            // 여기 SW 캐시는 prod 보조 계층 — 200 은 너무 작아(어휘 9,500+자)
-            // 금세 evict 되므로 상향. 각 JSON ~2-10KB → 5,000자도 수십 MB 수준.
-            urlPattern: /hanzi-writer-data/,
-            handler: "CacheFirst",
-            options: {
-              cacheName: "hanzi-data",
-              expiration: {
-                maxEntries: 5000,
-                maxAgeSeconds: 60 * 60 * 24 * 365,
-                purgeOnQuotaError: true,
-              },
-              cacheableResponse: { statuses: [0, 200] },
-            },
-          },
+      injectManifest: {
+        // App shell + route 청크 + 번들된 콘텐츠 데이터를 precache.
+        // tts mp3(public/tts/*.mp3, 16k+ 파일)는 제외 — sw.ts 가 런타임
+        // CacheFirst 로 처음 재생 시점에만 캐시한다.
+        globPatterns: [
+          "**/*.{css,html,svg,ico,woff2,webmanifest}",
+          "assets/*.js",
         ],
+        globIgnores: ["sw.js", "workbox-*.js"],
+        // 콘텐츠 JSON 이 번들된 청크가 커질 수 있어 안전 마진 5 MiB.
+        maximumFileSizeToCacheInBytes: 5 * 1024 * 1024,
       },
     }),
   ],

@@ -3,6 +3,7 @@ import { HashRouter, Navigate, Route, Routes, useParams, useLocation } from "rea
 import Layout from "@/components/Layout";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { InstallPrompt } from "@/components/InstallPrompt";
+import { UpdateToast } from "@/components/UpdateToast";
 import { applySettingsToDom } from "@/state/settings";
 
 const Home = lazy(() => import("@/routes/Home"));
@@ -107,6 +108,7 @@ export default function App(): JSX.Element {
           </Suspense>
         </Layout>
         <InstallPrompt />
+        <UpdateToast />
       </HashRouter>
     </ErrorBoundary>
   );
