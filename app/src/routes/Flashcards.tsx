@@ -61,7 +61,7 @@ function FlashcardSetup({ area }: { area: AreaKind }): JSX.Element {
 
   return (
     <PageShell>
-      <TopBar title={title} back />
+      <TopBar title={title} />
 
       <p className="text-xs text-muted mt-1 mb-3 px-1">
         범위와 방향을 정한 뒤 시작하세요. 답을 확인하고 맞음/틀림을 선택하면 다음 카드로 넘어갑니다.

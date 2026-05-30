@@ -104,7 +104,6 @@ export default function HskThemeList() {
       <TopBar
         title={group ? group.title : "테마 단어"}
         subtitle={group?.titleZh}
-        back
         right={
           <button
             type="button"

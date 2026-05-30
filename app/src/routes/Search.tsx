@@ -30,7 +30,7 @@ export default function Search() {
 
   return (
     <PageShell>
-      <TopBar title="검색" back />
+      <TopBar title="검색" />
 
       <input
         autoFocus

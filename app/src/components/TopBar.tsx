@@ -3,8 +3,7 @@ import type { ReactNode } from "react";
 /**
  * Per-page subheader (title + optional right slot).
  * Global navigation lives in <Header />; this only renders the in-page title row.
- * `back` prop is retained for API compatibility but no longer renders a button
- * — the global Header already shows a back chevron on non-home routes.
+ * 뒤로가기는 전역 Header 의 chevron 이 담당하므로 여기엔 별도 prop 이 없다.
  */
 export function TopBar({
   title,
@@ -13,7 +12,6 @@ export function TopBar({
 }: {
   title?: ReactNode;
   subtitle?: ReactNode;
-  back?: boolean;
   right?: ReactNode;
 }): JSX.Element | null {
   if (!title && !subtitle && !right) return null;

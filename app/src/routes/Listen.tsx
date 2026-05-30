@@ -33,7 +33,7 @@ export default function Listen() {
 
   return (
     <PageShell>
-      <TopBar title="이어듣기" back />
+      <TopBar title="이어듣기" />
 
       <p className="text-xs text-muted mt-1 mb-3 px-1">
         선택한 범위의 카드를 순서대로 읽어줍니다.

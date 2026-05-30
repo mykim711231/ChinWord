@@ -43,7 +43,7 @@ export default function StrokeStudy(): JSX.Element {
   if (!target) {
     return (
       <PageShell>
-        <TopBar title="필순 학습" back />
+        <TopBar title="필순 학습" />
         <p className="text-muted mt-8 text-center">단어 ID: {id}</p>
         <div className="text-center mt-4">
           <Link to="/strokes" className="text-primary text-sm">
@@ -62,7 +62,7 @@ export default function StrokeStudy(): JSX.Element {
 
   return (
     <PageShell>
-      <TopBar title={target.word} subtitle={target.pinyin} back />
+      <TopBar title={target.word} subtitle={target.pinyin} />
 
       {hasHanzi(target.word) ? (
         <section className="mt-2">

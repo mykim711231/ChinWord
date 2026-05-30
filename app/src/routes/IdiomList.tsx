@@ -77,7 +77,7 @@ export default function IdiomList() {
         );
     return (
       <PageShell>
-        <TopBar title="고사성어 · 전체" subtitle={`${allEntries.length}개`} back />
+        <TopBar title="고사성어 · 전체" subtitle={`${allEntries.length}개`} />
 
         <div className="mt-3">
           <input
@@ -115,7 +115,7 @@ export default function IdiomList() {
         );
     return (
       <PageShell>
-        <TopBar title={group.title} subtitle={group.titleZh} back />
+        <TopBar title={group.title} subtitle={group.titleZh} />
 
         <nav
           aria-label="성어 그룹 목록"

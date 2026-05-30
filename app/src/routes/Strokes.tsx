@@ -41,7 +41,7 @@ export default function Strokes(): JSX.Element {
 
   return (
     <PageShell>
-      <TopBar title="필순" back />
+      <TopBar title="필순" />
 
       <p className="text-xs text-muted mt-1 mb-3 px-1">
         선택한 범위의 한자를 순서대로 그립니다. 카드당 반복 횟수만큼 그린

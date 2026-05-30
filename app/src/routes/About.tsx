@@ -4,7 +4,7 @@ import { PageShell } from "@/components/PageShell";
 export default function About() {
   return (
     <PageShell>
-      <TopBar title="정보" back />
+      <TopBar title="정보" />
 
       <div className="card mt-2 text-center">
         <img src={`${import.meta.env.BASE_URL}logo.svg`} alt="ChinWord" className="w-20 h-20 mx-auto" />

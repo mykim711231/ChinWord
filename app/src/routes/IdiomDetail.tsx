@@ -13,7 +13,7 @@ export default function IdiomDetail() {
   if (!hit) {
     return (
       <PageShell>
-        <TopBar title="성어를 찾을 수 없음" back />
+        <TopBar title="성어를 찾을 수 없음" />
         <p className="text-muted mt-8 text-center">성어 ID: {id}</p>
       </PageShell>
     );
