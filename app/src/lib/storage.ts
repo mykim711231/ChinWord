@@ -87,6 +87,33 @@ export async function clearContentCaches(): Promise<number> {
 }
 
 /**
+ * tts-mp3 캐시에 실제 적재된 mp3 파일명(마지막 경로 세그먼트) 집합을 만든다.
+ *
+ * "미리 받기" 완료 상태는 settings 스토어에 영속되지만, 브라우저 용량 압박 시
+ * Cache Storage 는 앱과 무관하게 일부/전체가 비워질 수 있다. 이 집합으로
+ * 영속된 "완료" 플래그를 실제 캐시와 대조해 거짓 완료를 바로잡는다.
+ */
+export async function getCachedTtsFileSet(): Promise<Set<string>> {
+  const set = new Set<string>();
+  if (typeof caches === "undefined") return set;
+  try {
+    const names = await caches.keys();
+    for (const n of names.filter((x) => x.includes("tts-mp3"))) {
+      const cache = await caches.open(n);
+      const reqs = await cache.keys();
+      for (const req of reqs) {
+        const url = req.url;
+        const i = url.lastIndexOf("/");
+        set.add(i >= 0 ? url.slice(i + 1) : url);
+      }
+    }
+  } catch {
+    /* ignore — 검증 실패 시 영속 상태를 그대로 둔다 */
+  }
+  return set;
+}
+
+/**
  * 사전녹음 tts mp3 캐시만 삭제 — "중국어 음성 미리 받기"로 받아둔 음성을
  * 비운다. 온라인이면 재생 시점에 다시 받아지므로 용량 확보용으로 안전하다.
  * @returns 삭제했으면 true

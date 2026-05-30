@@ -36,6 +36,7 @@ import {
   clearAllCaches,
   clearContentCaches,
   clearTtsCache,
+  getCachedTtsFileSet,
   getStorageInfo,
   type StorageInfo,
 } from "@/lib/storage";
@@ -43,6 +44,7 @@ import { exportBackup, importBackup, type ChinWordBackup } from "@/lib/backup";
 import {
   bulkDownloadTier,
   getTtsTierMetas,
+  tierFiles,
   type BulkProgress,
   type TtsTier,
   type TtsTierMeta,
@@ -456,6 +458,51 @@ function TtsBulkCard({ onToast }: { onToast: (m: string) => void }) {
 
   useEffect(() => {
     return () => abortRef.current?.abort();
+  }, []);
+
+  // 진입 시 영속 "완료/일부" 상태를 실제 tts 캐시와 대조해 거짓 완료를 바로잡는다.
+  // (브라우저 용량 압박으로 Cache Storage 가 앱과 무관하게 비워질 수 있음)
+  // 한 번만 검증; 다운로드 진행 중에는 건너뛴다.
+  const verifiedRef = useRef(false);
+  useEffect(() => {
+    if (verifiedRef.current) return;
+    // 검증 대상이 없으면(모두 idle) 캐시를 열지 않는다.
+    const needsCheck = metas.some((m) => {
+      const t = tiers[m.tier];
+      return t && (t.status === "done" || t.status === "partial");
+    });
+    if (!needsCheck) return;
+    verifiedRef.current = true;
+    let cancelled = false;
+    void (async () => {
+      const cached = await getCachedTtsFileSet();
+      if (cancelled) return;
+      // 캐시 자체가 비어 있고 무언가 완료로 표시돼 있으면 전부 초기화.
+      for (const m of metas) {
+        const st = tiers[m.tier];
+        if (!st || (st.status !== "done" && st.status !== "partial")) continue;
+        const files = tierFiles(m.tier);
+        if (files.length === 0) continue;
+        let have = 0;
+        for (const f of files) if (cached.has(f)) have++;
+        const coverage = have / files.length;
+        // 거의 그대로면(≥98%) 유지. 일부 남았으면 partial, 거의 없으면 idle.
+        if (coverage >= 0.98) continue;
+        if (have === 0) {
+          setTier(m.tier, { status: "idle", done: 0, total: 0 });
+        } else {
+          setTier(m.tier, {
+            status: "partial",
+            done: have,
+            total: files.length,
+          });
+        }
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   async function start(meta: TtsTierMeta) {
