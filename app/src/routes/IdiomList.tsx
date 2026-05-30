@@ -5,13 +5,12 @@ import { TopBar } from "@/components/TopBar";
 import { PageShell } from "@/components/PageShell";
 import { FavStar } from "@/components/FavStar";
 import { SpeakerButton } from "@/components/SpeakerButton";
-import { InlineStrokes } from "@/components/InlineStrokes";
 import { buildListenQueue } from "@/lib/content";
 import {
   hskThemeIdioms,
   findHskThemeIdiomGroup,
 } from "@/lib/hsk-themes";
-import { splitPinyin, extractZhPrefix } from "@/lib/pinyin";
+import { extractZhPrefix } from "@/lib/pinyin";
 import { useListen } from "@/state/listen";
 
 const HANZI_RE = /\p{Script=Han}/u;
@@ -264,24 +263,10 @@ function IdiomEntrySection({
   entry: import("@/types").IdiomEntry;
   ordinal: number;
 }) {
-  const hanziChars = useMemo(
-    () => Array.from(entry.word).filter((c) => HANZI_RE.test(c)),
+  const hasHanzi = useMemo(
+    () => Array.from(entry.word).some((c) => HANZI_RE.test(c)),
     [entry.word],
   );
-  const hasHanzi = hanziChars.length > 0;
-  // 성어는 charBreakdown 안에 음절 병음이 이미 있으므로 가능하면 거기서 가져옴.
-  // 길이가 안 맞으면 단어 병음을 split.
-  const perCharPinyin = useMemo<string[] | undefined>(() => {
-    if (
-      entry.charBreakdown.length === hanziChars.length &&
-      entry.charBreakdown.every((c) => c.pinyin)
-    ) {
-      return entry.charBreakdown.map((c) => c.pinyin);
-    }
-    return hanziChars.length > 0
-      ? splitPinyin(entry.pinyin, hanziChars.length) ?? undefined
-      : undefined;
-  }, [entry.charBreakdown, entry.pinyin, hanziChars.length]);
 
   return (
     <section className="py-5">
@@ -324,37 +309,37 @@ function IdiomEntrySection({
         </div>
       ) : null}
 
-      {/* 2) 글자별 풀이 — 간체(병음) 형식 */}
-      {entry.charBreakdown.length > 0 ? (
+      {/* 2) 글자별 풀이 + 필순 자세히
+          인라인 필순(InlineStrokes)은 전용 페이지(/strokes/:id)와 중복이라 제거,
+          헤더 우측의 "필순 자세히" 링크로만 진입한다. */}
+      {entry.charBreakdown.length > 0 || hasHanzi ? (
         <div className="mt-4 text-sm">
-          <div className="font-semibold mb-1">글자별 풀이</div>
-          <ul className="ml-5 list-disc list-outside marker:text-muted space-y-1">
-            {entry.charBreakdown.map((c, i) => (
-              <li key={i}>
-                <span className="font-medium">{c.char}{c.pinyin ? `(${c.pinyin})` : ""}</span>
-                <span className="text-muted">:</span>{" "}
-                <span>{c.meaning}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
-      ) : null}
-
-      {/* 3) 필순 — 헤더 옆에 "필순 자세히" 진입점 */}
-      {hasHanzi ? (
-        <div className="mt-4 text-sm">
-          <div className="flex items-baseline justify-between mb-2">
-            <div className="font-semibold">필순</div>
-            <Link
-              to={`/strokes/${entry.id}`}
-              className="btn-ghost text-sm inline-flex items-center gap-1"
-              aria-label="필순 자세히"
-            >
-              <PenLine size={14} aria-hidden />
-              <span>필순 자세히</span>
-            </Link>
+          <div className="flex items-baseline justify-between gap-x-2 mb-1">
+            <div className="font-semibold">
+              {entry.charBreakdown.length > 0 ? "글자별 풀이" : ""}
+            </div>
+            {hasHanzi ? (
+              <Link
+                to={`/strokes/${entry.id}`}
+                className="btn-ghost text-sm inline-flex items-center gap-1 shrink-0"
+                aria-label="필순 자세히"
+              >
+                <PenLine size={14} aria-hidden />
+                <span>필순 자세히</span>
+              </Link>
+            ) : null}
           </div>
-          <InlineStrokes word={entry.word} pinyinPerChar={perCharPinyin} />
+          {entry.charBreakdown.length > 0 ? (
+            <ul className="ml-5 list-disc list-outside marker:text-muted space-y-1">
+              {entry.charBreakdown.map((c, i) => (
+                <li key={i}>
+                  <span className="font-medium">{c.char}{c.pinyin ? `(${c.pinyin})` : ""}</span>
+                  <span className="text-muted">:</span>{" "}
+                  <span>{c.meaning}</span>
+                </li>
+              ))}
+            </ul>
+          ) : null}
         </div>
       ) : null}
 

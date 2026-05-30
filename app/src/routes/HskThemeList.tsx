@@ -5,7 +5,6 @@ import { TopBar } from "@/components/TopBar";
 import { PageShell } from "@/components/PageShell";
 import { FavStar } from "@/components/FavStar";
 import { SpeakerButton } from "@/components/SpeakerButton";
-import { InlineStrokes } from "@/components/InlineStrokes";
 import { splitPinyin } from "@/lib/pinyin";
 import { speakSequenceWithKorean, cancelSpeak } from "@/lib/tts";
 import { useSettings } from "@/state/settings";
@@ -237,18 +236,36 @@ function VocabEntrySection({
         <FavStar id={entry.id} />
       </div>
 
-      {/* 한자 풀이 + HSK 등급 */}
-      {entry.hanjaBreakdown.length > 0 || entry.hskLevel > 0 ? (
+      {/* 한자 풀이 + HSK 등급 + 필순 자세히
+          인라인 필순(InlineStrokes)은 전용 페이지(/strokes/:id)와 중복이라 제거,
+          헤더 우측의 "필순 자세히" 링크로만 진입한다. */}
+      {entry.hanjaBreakdown.length > 0 || entry.hskLevel > 0 || hasHanzi ? (
         <div className="mt-4 text-sm">
-          <div className="mb-1 flex items-baseline flex-wrap gap-x-2">
-            <span className="font-semibold">한자 풀이</span>
-            {entry.hskLevel > 0 ? (
-              <>
-                <span className="text-muted">/</span>
-                <span className="text-xs text-muted">
-                  HSK 등급: {entry.hskLevel}급
-                </span>
-              </>
+          <div className="mb-1 flex items-baseline justify-between gap-x-2">
+            <div className="flex items-baseline flex-wrap gap-x-2">
+              {entry.hanjaBreakdown.length > 0 || entry.hskLevel > 0 ? (
+                <>
+                  <span className="font-semibold">한자 풀이</span>
+                  {entry.hskLevel > 0 ? (
+                    <>
+                      <span className="text-muted">/</span>
+                      <span className="text-xs text-muted">
+                        HSK 등급: {entry.hskLevel}급
+                      </span>
+                    </>
+                  ) : null}
+                </>
+              ) : null}
+            </div>
+            {hasHanzi ? (
+              <Link
+                to={`/strokes/${entry.id}`}
+                className="btn-ghost text-sm inline-flex items-center gap-1 shrink-0"
+                aria-label="필순 자세히"
+              >
+                <PenLine size={14} aria-hidden />
+                <span>필순 자세히</span>
+              </Link>
             ) : null}
           </div>
           {entry.hanjaBreakdown.length > 0 ? (
@@ -262,24 +279,6 @@ function VocabEntrySection({
               ))}
             </ul>
           ) : null}
-        </div>
-      ) : null}
-
-      {/* 필순 */}
-      {hasHanzi ? (
-        <div className="mt-4 text-sm">
-          <div className="flex items-baseline justify-between mb-2">
-            <div className="font-semibold">필순</div>
-            <Link
-              to={`/strokes/${entry.id}`}
-              className="btn-ghost text-sm inline-flex items-center gap-1"
-              aria-label="필순 자세히"
-            >
-              <PenLine size={14} aria-hidden />
-              <span>필순 자세히</span>
-            </Link>
-          </div>
-          <InlineStrokes word={entry.word} pinyinPerChar={perCharPinyin} />
         </div>
       ) : null}
     </section>
