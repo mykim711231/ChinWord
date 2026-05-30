@@ -51,16 +51,17 @@ const AVG_BYTES_PER_FILE = 7400;
 export type TtsTierMeta = {
   tier: TtsTier;
   label: string;
-  emoji: string;
   fileCount: number;
   estMB: number;
 };
 
-const TIER_LABEL: Record<TtsTier, { label: string; emoji: string }> = {
-  basic: { label: "기초 (HSK 1–4)", emoji: "🌱" },
-  mid: { label: "중급 (HSK 5)", emoji: "🏢" },
-  adv: { label: "고급 (HSK 6–9)", emoji: "⛰️" },
-  idioms: { label: "고사성어", emoji: "📜" },
+// 아이콘은 렌더링 레이어(Settings)가 tier 키로 매핑한다 — 이 모듈은 부팅 차단
+// 번들 영향이 큰 데이터 레이어라 React/아이콘 의존을 들이지 않는다.
+const TIER_LABEL: Record<TtsTier, { label: string }> = {
+  basic: { label: "기초 (HSK 1–4)" },
+  mid: { label: "중급 (HSK 5)" },
+  adv: { label: "고급 (HSK 6–9)" },
+  idioms: { label: "고사성어" },
 };
 
 export const TTS_TIER_ORDER: TtsTier[] = ["basic", "mid", "adv", "idioms"];
@@ -101,7 +102,6 @@ export function getTtsTierMetas(): TtsTierMeta[] {
     return {
       tier,
       label: TIER_LABEL[tier].label,
-      emoji: TIER_LABEL[tier].emoji,
       fileCount,
       estMB: Math.max(
         1,

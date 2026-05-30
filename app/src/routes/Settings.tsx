@@ -2,11 +2,15 @@ import { Link } from "react-router-dom";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { clear as idbClear } from "idb-keyval";
 import {
+  Building2,
   CheckCircle2,
   ChevronRight,
   Download,
   HardDrive,
   Loader2,
+  Mountain,
+  ScrollText,
+  Sprout,
   Trash2,
   Upload,
   Volume2,
@@ -422,6 +426,14 @@ function BackupPanel({ onToast }: { onToast: (m: string) => void }) {
  * 받는다. 각 급수의 진행/상태는 settings 스토어(ttsBulkTiers)에 급수별로 보존해
  * 세션 간 상태(완료/일부 실패)를 기억한다. 한 번에 한 급수만 받는다(회선 보호).
  */
+// 급수 아이콘 — BottomNav 와 같은 lucide 단색 아이콘 체계(currentColor)로 통일.
+const TIER_ICON: Record<TtsTier, typeof Sprout> = {
+  basic: Sprout,
+  mid: Building2,
+  adv: Mountain,
+  idioms: ScrollText,
+};
+
 const BULK_BADGE: Record<string, { label: string; cls: string }> = {
   idle: { label: "시작 전", cls: "bg-divider text-muted" },
   downloading: { label: "받는 중", cls: "bg-primary text-white" },
@@ -567,13 +579,15 @@ function TierRow({
   const pct = total ? Math.floor((done / total) * 100) : 0;
   const badge = BULK_BADGE[status];
   const showBar = running || done > 0;
+  const Icon = TIER_ICON[meta.tier];
 
   return (
     <div className="rounded-btn border border-divider p-2.5 space-y-1.5">
       <div className="flex items-center justify-between gap-2">
         <div className="min-w-0">
-          <div className="font-medium text-sm">
-            <span aria-hidden>{meta.emoji}</span> {meta.label}
+          <div className="font-medium text-sm inline-flex items-center gap-1.5">
+            <Icon size={15} aria-hidden className="text-primary shrink-0" />
+            {meta.label}
           </div>
           <div className="text-xs text-muted">
             약 {meta.estMB}MB · {meta.fileCount.toLocaleString()}개
