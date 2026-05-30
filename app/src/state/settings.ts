@@ -11,7 +11,15 @@ import type { VoiceMode } from "@/lib/tts";
 import type { TtsTier } from "@/lib/ttsBulkDownload";
 
 export type FontScale = "sm" | "md" | "lg" | "xl";
-export type ThemeMode = "system" | "light" | "dark";
+/**
+ * 화면 테마.
+ *  - system : OS 설정 따름(light/dark 자동)
+ *  - light  : 밝은 기본
+ *  - dark   : 어두운 기본
+ *  - sepia  : 눈 편한 따뜻한 종이색(라이트 계열) — 장시간 독서 피로 완화
+ *  - warm   : 웜다크(다크 계열 + 청색광 제거한 따뜻한 톤) — 야간 피로 완화
+ */
+export type ThemeMode = "system" | "light" | "dark" | "sepia" | "warm";
 export type DisplayMode = "all" | "hanzi-pinyin" | "hanzi-only";
 
 export const FONT_SCALE_VALUE: Record<FontScale, number> = {
@@ -153,9 +161,15 @@ export function applySettingsToDom() {
   root.classList.toggle("fontsize-lg", s.fontScale === "lg");
   root.classList.toggle("fontsize-xl", s.fontScale === "xl");
 
+  // 테마 클래스 적용. 웜다크(warm)는 다크 계열이므로 `dark` 클래스도 함께 켜서
+  // Tailwind dark: 변형(예: 한자 캔버스 배경)과 토큰 다크 의도를 그대로 쓰되,
+  // 색 토큰은 tokens.css 에서 `html.warm` 규칙(=html.dark 보다 뒤)이 덮어쓴다.
+  const sysDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
   const useDark =
     s.themeMode === "dark" ||
-    (s.themeMode === "system" &&
-      window.matchMedia("(prefers-color-scheme: dark)").matches);
+    s.themeMode === "warm" ||
+    (s.themeMode === "system" && sysDark);
   root.classList.toggle("dark", useDark);
+  root.classList.toggle("sepia", s.themeMode === "sepia");
+  root.classList.toggle("warm", s.themeMode === "warm");
 }

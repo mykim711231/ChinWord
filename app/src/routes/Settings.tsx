@@ -71,6 +71,14 @@ function Row({
   );
 }
 
+const THEME_OPTIONS: { value: ThemeMode; label: string }[] = [
+  { value: "system", label: "시스템" },
+  { value: "light", label: "라이트" },
+  { value: "dark", label: "다크" },
+  { value: "sepia", label: "세피아" },
+  { value: "warm", label: "웜다크" },
+];
+
 function SegmentedButtons<T extends string>({
   value,
   options,
@@ -147,20 +155,43 @@ export default function Settings() {
           />
         </Row>
 
-        <Row label="다크 모드">
-          <SegmentedButtons<ThemeMode>
-            value={s.themeMode}
-            options={[
-              { value: "system", label: "시스템" },
-              { value: "light", label: "라이트" },
-              { value: "dark", label: "다크" },
-            ]}
-            onChange={(v) => {
-              s.setThemeMode(v);
-              applySettingsToDom();
-            }}
-          />
-        </Row>
+        {/* 화면 테마 — 5종(시스템/라이트/다크/세피아/웜다크).
+            세피아·웜다크는 청색광·고대비를 줄여 장시간 사용 시 눈 피로를 덜어준다.
+            5개는 한 줄 세그먼트에 안 들어가므로 줄바꿈 그리드로 표시. */}
+        <div className="card">
+          <div className="font-medium">화면 테마</div>
+          <div className="text-xs text-muted mt-0.5">
+            눈이 피로하면 세피아(따뜻한 종이색)나 웜다크를 사용해 보세요.
+          </div>
+          <div
+            className="mt-3 grid grid-cols-3 gap-2"
+            role="group"
+            aria-label="화면 테마"
+          >
+            {THEME_OPTIONS.map((o) => {
+              const selected = s.themeMode === o.value;
+              return (
+                <button
+                  key={o.value}
+                  type="button"
+                  aria-pressed={selected}
+                  onClick={() => {
+                    s.setThemeMode(o.value);
+                    applySettingsToDom();
+                  }}
+                  className={
+                    "rounded-btn border px-2 py-2 text-sm transition " +
+                    (selected
+                      ? "border-primary bg-primary-soft text-primary font-medium"
+                      : "border-divider text-fg")
+                  }
+                >
+                  {o.label}
+                </button>
+              );
+            })}
+          </div>
+        </div>
 
         <Row label="표시 모드">
           <SegmentedButtons<DisplayMode>

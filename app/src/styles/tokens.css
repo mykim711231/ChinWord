@@ -43,6 +43,36 @@ html.dark {
   --rgb-pinyin: 203 213 225;
 }
 
+/* 세피아 — 눈 편한 따뜻한 종이색(라이트 계열).
+   순백 대비와 청색광을 줄여 장시간 독서 피로를 완화한다. */
+html.sepia {
+  --rgb-bg: 244 236 216;
+  --rgb-surface: 251 245 230;
+  --rgb-fg: 74 57 43;
+  --rgb-muted: 130 113 92;
+  --rgb-primary: 176 60 40;
+  --rgb-primary-soft: 240 222 196;
+  --rgb-accent: 168 122 20;
+  --rgb-success: 90 130 80;
+  --rgb-divider: 222 209 184;
+  --rgb-pinyin: 120 100 78;
+}
+
+/* 웜다크 — 다크 계열에서 청색광을 빼고 따뜻한 갈색 톤을 입힌 야간용.
+   반드시 html.dark 규칙보다 뒤에 둬야 색 토큰을 덮어쓴다(동일 특이성). */
+html.warm {
+  --rgb-bg: 33 27 22;
+  --rgb-surface: 46 38 31;
+  --rgb-fg: 236 226 211;
+  --rgb-muted: 181 167 148;
+  --rgb-primary: 242 149 109;
+  --rgb-primary-soft: 74 53 38;
+  --rgb-accent: 245 192 107;
+  --rgb-success: 127 183 132;
+  --rgb-divider: 67 56 46;
+  --rgb-pinyin: 205 191 170;
+}
+
 /* Large-font mode (큰글씨) — scales rem base. */
 html.fontsize-lg { font-size: 18px; }
 html.fontsize-xl { font-size: 20px; }
