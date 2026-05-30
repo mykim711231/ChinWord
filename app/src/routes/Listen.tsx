@@ -4,85 +4,8 @@ import { Play, Minus, Plus, Repeat, Shuffle } from "lucide-react";
 import { TopBar } from "@/components/TopBar";
 import { PageShell } from "@/components/PageShell";
 import { buildListenQueue } from "@/lib/content";
-import {
-  hskThemesByTier,
-  hskThemeIdioms,
-} from "@/lib/hsk-themes";
-import { useListen, type ListenScope } from "@/state/listen";
-
-type ScopeOption = { value: string; label: string; scope: ListenScope };
-
-function buildScopeOptions(): ScopeOption[] {
-  const out: ScopeOption[] = [
-    { value: "all", label: "전체", scope: { kind: "all" } },
-  ];
-
-  // 기초 (HSK 1-4)
-  const basic = hskThemesByTier("basic");
-  out.push({
-    value: "tier-basic",
-    label: `── 기초 (HSK 1-4) 전체 · ${basic.reduce((s, g) => s + g.entries.length, 0)}개`,
-    scope: { kind: "tier", tier: "basic" },
-  });
-  for (const g of basic)
-    out.push({
-      value: `theme-${g.id}`,
-      label: `    ${g.title} · ${g.entries.length}개`,
-      scope: { kind: "theme", groupId: g.id },
-    });
-
-  // 중급 (HSK 5)
-  const mid = hskThemesByTier("mid");
-  out.push({
-    value: "tier-mid",
-    label: `── 중급 (HSK 5) 전체 · ${mid.reduce((s, g) => s + g.entries.length, 0)}개`,
-    scope: { kind: "tier", tier: "mid" },
-  });
-  for (const g of mid)
-    out.push({
-      value: `theme-${g.id}`,
-      label: `    ${g.title} · ${g.entries.length}개`,
-      scope: { kind: "theme", groupId: g.id },
-    });
-
-  // 고급 (HSK 6-9)
-  const adv = hskThemesByTier("adv");
-  out.push({
-    value: "tier-adv",
-    label: `── 고급 (HSK 6-9) 전체 · ${adv.reduce((s, g) => s + g.entries.length, 0)}개`,
-    scope: { kind: "tier", tier: "adv" },
-  });
-  for (const g of adv)
-    out.push({
-      value: `theme-${g.id}`,
-      label: `    ${g.title} · ${g.entries.length}개`,
-      scope: { kind: "theme", groupId: g.id },
-    });
-
-  // 고사성어
-  const idioms = hskThemeIdioms();
-  out.push({
-    value: "tier-idiom",
-    label: `── 고사성어 전체 · ${idioms.reduce((s, g) => s + g.entries.length, 0)}개`,
-    scope: { kind: "tier", tier: "idiom" },
-  });
-  for (const g of idioms)
-    out.push({
-      value: `theme-${g.id}`,
-      label: `    ${g.title} · ${g.entries.length}개`,
-      scope: { kind: "theme", groupId: g.id },
-    });
-
-  return out;
-}
-
-function scopeKey(s: ListenScope): string {
-  if (s.kind === "all") return "all";
-  if (s.kind === "tier") return `tier-${s.tier}`;
-  if (s.kind === "theme") return `theme-${s.groupId}`;
-  if (s.kind === "vol") return `vol-${s.vol}`;
-  return `lesson-${s.groupId}`;
-}
+import { buildScopeOptions, scopeKey } from "@/lib/scope-options";
+import { useListen } from "@/state/listen";
 
 export default function Listen() {
   const navigate = useNavigate();
@@ -101,7 +24,7 @@ export default function Listen() {
     setShuffle,
   } = useListen();
 
-  const scopeOptions = useMemo(buildScopeOptions, []);
+  const scopeOptions = useMemo(() => buildScopeOptions(), []);
   const count = useMemo(
     () => buildListenQueue({ scope, area: { vocab: true, idiom: true } }).length,
     [scope],

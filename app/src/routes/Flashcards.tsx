@@ -5,92 +5,13 @@ import { TopBar } from "@/components/TopBar";
 import { PageShell } from "@/components/PageShell";
 import { buildListenQueue } from "@/lib/content";
 import {
-  hskThemesByTier,
-  hskThemeIdioms,
-} from "@/lib/hsk-themes";
-import {
-  useFlashcards,
-  type FlashcardScope,
-} from "@/state/flashcards";
+  buildScopeOptions,
+  buildIdiomScopeOptions,
+  scopeKey,
+} from "@/lib/scope-options";
+import { useFlashcards } from "@/state/flashcards";
 
 type AreaKind = "vocab" | "idiom";
-
-type ScopeOption = { value: string; label: string; scope: FlashcardScope };
-
-/** 단어 영역: 기초/중급/고급 티어 + 개별 그룹 */
-function buildVocabScopeOptions(): ScopeOption[] {
-  const out: ScopeOption[] = [
-    { value: "all", label: "전체 (기초+중급+고급)", scope: { kind: "all" } },
-  ];
-
-  const basic = hskThemesByTier("basic");
-  out.push({
-    value: "tier-basic",
-    label: `── 기초 (HSK 1-4) 전체 · ${basic.reduce((s, g) => s + g.entries.length, 0)}개`,
-    scope: { kind: "tier", tier: "basic" },
-  });
-  for (const g of basic)
-    out.push({
-      value: `theme-${g.id}`,
-      label: `    ${g.title} · ${g.entries.length}개`,
-      scope: { kind: "theme", groupId: g.id },
-    });
-
-  const mid = hskThemesByTier("mid");
-  out.push({
-    value: "tier-mid",
-    label: `── 중급 (HSK 5) 전체 · ${mid.reduce((s, g) => s + g.entries.length, 0)}개`,
-    scope: { kind: "tier", tier: "mid" },
-  });
-  for (const g of mid)
-    out.push({
-      value: `theme-${g.id}`,
-      label: `    ${g.title} · ${g.entries.length}개`,
-      scope: { kind: "theme", groupId: g.id },
-    });
-
-  const adv = hskThemesByTier("adv");
-  out.push({
-    value: "tier-adv",
-    label: `── 고급 (HSK 6-9) 전체 · ${adv.reduce((s, g) => s + g.entries.length, 0)}개`,
-    scope: { kind: "tier", tier: "adv" },
-  });
-  for (const g of adv)
-    out.push({
-      value: `theme-${g.id}`,
-      label: `    ${g.title} · ${g.entries.length}개`,
-      scope: { kind: "theme", groupId: g.id },
-    });
-
-  return out;
-}
-
-/** 성어 영역: 성어 티어 전체 + 개별 그룹 */
-function buildIdiomScopeOptions(): ScopeOption[] {
-  const idioms = hskThemeIdioms();
-  const out: ScopeOption[] = [
-    {
-      value: "all",
-      label: `전체 · ${idioms.reduce((s, g) => s + g.entries.length, 0)}개`,
-      scope: { kind: "tier", tier: "idiom" },
-    },
-  ];
-  for (const g of idioms)
-    out.push({
-      value: `theme-${g.id}`,
-      label: `${g.title} · ${g.entries.length}개`,
-      scope: { kind: "theme", groupId: g.id },
-    });
-  return out;
-}
-
-function scopeKey(s: FlashcardScope): string {
-  if (s.kind === "all") return "all";
-  if (s.kind === "tier") return `tier-${s.tier}`;
-  if (s.kind === "theme") return `theme-${s.groupId}`;
-  if (s.kind === "vol") return `vol-${s.vol}`;
-  return `lesson-${s.groupId}`;
-}
 
 export default function Flashcards(): JSX.Element {
   const { area } = useParams<{ area?: string }>();
@@ -115,7 +36,13 @@ function FlashcardSetup({ area }: { area: AreaKind }): JSX.Element {
   const setScope = area === "vocab" ? setVocabScope : setIdiomScope;
 
   const scopeOptions = useMemo(
-    () => (area === "vocab" ? buildVocabScopeOptions() : buildIdiomScopeOptions()),
+    () =>
+      area === "vocab"
+        ? buildScopeOptions({
+            allLabel: "전체 (기초+중급+고급)",
+            includeIdiom: false,
+          })
+        : buildIdiomScopeOptions(),
     [area],
   );
 
