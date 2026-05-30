@@ -1,13 +1,19 @@
 /**
  * 사전녹음 zh mp3 일괄 다운로드 — "중국어 음성 미리 받기".
  *
- * 매니페스트의 모든 mp3 를 fetch 만 하면(응답 body 는 버린다) sw.ts 의 tts-mp3
- * CacheFirst 라우트가 가로채 캐시에 적재한다. 따라서 이 함수는 SW 캐시 워밍
+ * 매니페스트의 mp3 를 fetch 만 하면(응답 body 는 버린다) sw.ts 의 tts-mp3
+ * CacheFirst 라우트가 가로채 캐시에 적재한다. 따라서 이 모듈은 SW 캐시 워밍
  * 트리거다 — 한 번 받아두면 오프라인·비행기 모드에서도 음성이 재생된다.
  *
- * ChinWord 규모: 매니페스트 16,000+ 파일 ≈ 140MB (SMCB 의 ~5배). iOS Cache
- * Storage 한도를 넘으면 sw.ts 의 purgeOnQuotaError 가 LRU evict 하므로,
- * 용량이 빠듯한 기기에서는 들어갈 만큼만 캐시되고 나머지는 온라인 시 재요청된다.
+ * ─── 급수별 분할 (tier split) ───────────────────────────────────────────────
+ * 매니페스트 전체(16,000+ 파일 ≈ 117MB)를 한 번에 받으면 회선·용량 부담이 크다.
+ * 그래서 학습 콘텐츠를 급수 단위(기초 HSK1-4 / 중급 HSK5 / 고급 HSK6-9 / 성어)로
+ * 나눠 받게 한다. 각 묶음은 그 급수의 단어 + 단어를 이루는 단음절 한자만 포함하며,
+ * 급수끼리 공유하는 단음절은 SW 캐시에서 dedupe 돼 두 번째부터는 즉시 hit 한다.
+ *
+ * 통용규범한자 8,105 베이스(어떤 콘텐츠 단어에도 속하지 않는 단음절, ≈41MB)는
+ * 의도적으로 제외한다 — 학습 콘텐츠가 아니고, 필순 단음절은 재생 시점 on-demand
+ * 캐시로 충분하다. (이 on-demand 캐시는 sw.ts 가 maxEntries 한도 안에서 관리.)
  *
  * 동시성:
  *  - 6 worker 병렬 fetch — 모바일 회선에서도 안전. 더 높이면 일부 통신사에서
@@ -17,8 +23,8 @@
  *  - signal 로 중간 중단 — Settings 의 "중지" 버튼이 abort.
  *
  * 네트워크 보호:
- *  - 약 140MB 를 받는 대용량 작업이라, 셀룰러/Low Data Mode 또는 회선 불명(iOS
- *    Safari) 이면 사용자 확인을 받는다. Wi-Fi 면 무음 진행.
+ *  - 셀룰러/Low Data Mode 또는 회선 불명(iOS Safari) 이면 묶음 크기를 알려주고
+ *    사용자 확인을 받는다. Wi-Fi 면 무음 진행.
  *
  * 재시도:
  *  - 첫 fetch 실패 시 800ms 백오프 후 1회 재시도(모바일 단발성 패킷 손실 대비).
@@ -28,13 +34,36 @@
  *    body 는 mp3 가 아니다. 첫 응답 content-type 을 검사해 audio/* 가 아니면
  *    즉시 중단한다(잘못된 응답이 캐시되는 것 방지).
  */
-import ttsManifest from "@/data/zh-tts-manifest.json";
+// 급수별 mp3 파일 목록은 build-content.ts 가 미리 굳혀둔 작은 맵에서 읽는다.
+// (런타임이 1.7MB 테마 JSON·527KB 매니페스트를 Settings 청크로 끌어오지 않도록.)
+import ttsTiers from "@/data/zh-tts-tiers.json";
 
-const TTS_MANIFEST = ttsManifest as Record<string, string>;
+export type TtsTier = "basic" | "mid" | "adv" | "idioms";
+
+const TTS_TIERS = ttsTiers as Record<TtsTier, string[]>;
 const TTS_BASE_URL = `${import.meta.env.BASE_URL}tts/`;
 
 const CONCURRENCY = 6;
 const RETRY_BACKOFF_MS = 800;
+// 단일 mp3 평균 바이트(24kHz 48kbps mono). 실측 ≈ 7.2KB/파일 → 묶음 크기 추정용.
+const AVG_BYTES_PER_FILE = 7400;
+
+export type TtsTierMeta = {
+  tier: TtsTier;
+  label: string;
+  emoji: string;
+  fileCount: number;
+  estMB: number;
+};
+
+const TIER_LABEL: Record<TtsTier, { label: string; emoji: string }> = {
+  basic: { label: "기초 (HSK 1–4)", emoji: "🌱" },
+  mid: { label: "중급 (HSK 5)", emoji: "🏢" },
+  adv: { label: "고급 (HSK 6–9)", emoji: "⛰️" },
+  idioms: { label: "고사성어", emoji: "📜" },
+};
+
+export const TTS_TIER_ORDER: TtsTier[] = ["basic", "mid", "adv", "idioms"];
 
 export type BulkProgress = { done: number; failed: number; total: number };
 
@@ -55,10 +84,35 @@ export type BulkResult = {
   aborted: boolean;
 };
 
-/** 매니페스트의 고유 mp3 파일 수(키 중복 제거 후). */
-export function getManifestFileCount(): number {
-  return new Set(Object.values(TTS_MANIFEST)).size;
+// ─── tier → 파일 목록 ─────────────────────────────────────────────────────
+
+/** tier 의 고유 mp3 파일명 목록 (build-content.ts 가 매니페스트 기반으로 미리 계산). */
+export function tierFiles(tier: TtsTier): string[] {
+  return TTS_TIERS[tier] ?? [];
 }
+
+let _metaCache: TtsTierMeta[] | null = null;
+
+/** 급수별 카드 메타(라벨·파일 수·추정 용량). */
+export function getTtsTierMetas(): TtsTierMeta[] {
+  if (_metaCache) return _metaCache;
+  _metaCache = TTS_TIER_ORDER.map((tier) => {
+    const fileCount = tierFiles(tier).length;
+    return {
+      tier,
+      label: TIER_LABEL[tier].label,
+      emoji: TIER_LABEL[tier].emoji,
+      fileCount,
+      estMB: Math.max(
+        1,
+        Math.round((fileCount * AVG_BYTES_PER_FILE) / (1024 * 1024)),
+      ),
+    };
+  });
+  return _metaCache;
+}
+
+// ─── 다운로드 코어 ────────────────────────────────────────────────────────
 
 type NetCondition = "wifi" | "cellular" | "save-data" | "unknown";
 
@@ -85,22 +139,36 @@ function detectNetworkCondition(): NetCondition {
   return "unknown";
 }
 
-function defaultExpensiveConfirm(condition: NetCondition): boolean {
+function defaultExpensiveConfirm(
+  condition: NetCondition,
+  estMB: number,
+): boolean {
   if (typeof window === "undefined" || typeof window.confirm !== "function")
     return true;
+  const size = `약 ${estMB}MB`;
   const msg =
     condition === "cellular"
-      ? "현재 셀룰러(모바일 데이터)에 연결되어 있어요. 중국어 음성을 한 번에 받으면 약 140MB가 사용됩니다. 계속하시겠어요?"
+      ? `현재 셀룰러(모바일 데이터)에 연결되어 있어요. 이 묶음은 ${size}를 사용합니다. 계속하시겠어요?`
       : condition === "save-data"
-        ? "데이터 절약 모드가 켜져 있어요. 한 번에 약 140MB를 받게 되는데 계속하시겠어요?"
-        : "현재 회선이 Wi-Fi인지 확인할 수 없어요. 중국어 음성을 한 번에 받으면 약 140MB가 사용됩니다. 계속하시겠어요?";
+        ? `데이터 절약 모드가 켜져 있어요. ${size}를 받게 되는데 계속하시겠어요?`
+        : `현재 회선이 Wi-Fi인지 확인할 수 없어요. 이 묶음은 ${size}를 사용합니다. 계속하시겠어요?`;
   return window.confirm(msg);
 }
 
-export async function bulkDownloadAll(
+/** 급수(tier) 묶음을 받는다 — Settings 의 급수별 "받기" 버튼이 호출. */
+export function bulkDownloadTier(
+  tier: TtsTier,
   opts: BulkOptions = {},
 ): Promise<BulkResult> {
-  const files = Array.from(new Set(Object.values(TTS_MANIFEST)));
+  const meta = getTtsTierMetas().find((m) => m.tier === tier);
+  return runBulkDownload(tierFiles(tier), meta?.estMB ?? 0, opts);
+}
+
+async function runBulkDownload(
+  files: string[],
+  estMB: number,
+  opts: BulkOptions,
+): Promise<BulkResult> {
   const total = files.length;
   let done = 0;
   let failed = 0;
@@ -113,7 +181,7 @@ export async function bulkDownloadAll(
     const confirmFn =
       opts.requireExpensiveConfirm ??
       ((): Promise<boolean> =>
-        Promise.resolve(defaultExpensiveConfirm(condition)));
+        Promise.resolve(defaultExpensiveConfirm(condition, estMB)));
     const ok = await confirmFn();
     if (!ok) return { done: 0, failed: 0, total, aborted: true };
   }

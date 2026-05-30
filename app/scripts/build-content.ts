@@ -335,6 +335,99 @@ function safeListFiles(dir: string): string[] {
   try { return listFiles(dir); } catch { return []; }
 }
 
+// ─── TTS 급수별 파일 맵 (zh-tts-tiers.json) ───
+// "중국어 음성 미리 받기" 가 급수(기초/중급/고급/성어)별로 받을 mp3 파일 목록을
+// 미리 계산한다. 런타임(ttsBulkDownload.ts)이 1.7MB 테마 JSON·527KB 매니페스트를
+// Settings 청크로 끌어오지 않도록, 여기서 작은 {tier: filename[]} 맵으로 굳힌다.
+//
+// 규칙은 tts-texts.ts#collectAllTtsTexts 의 tier 별 부분집합과 동일해야 매니페스트
+// 키와 일치한다 — 통용규범한자 8,105 베이스(콘텐츠 밖 단음절)는 제외한다(학습
+// 콘텐츠가 아니고 필순 단음절은 재생 시점 on-demand 캐시로 충분).
+const TTS_HANZI_RE = /[一-鿿]/;
+
+/** sourceText·synonyms 의 표시용 주석 제거, 한자 본문만. tts-texts.ts 와 동일 규칙. */
+function ttsExtractZhPrefix(s: string): string {
+  if (!s) return "";
+  const m = s.match(
+    /^[\s　-〿一-鿿，。、；：！？（）「」『』《》〈〉【】〔〕…]+/u,
+  );
+  const head = m ? m[0].trim() : "";
+  return head || s.trim();
+}
+
+function ttsAddCharsOf(word: string, set: Set<string>): void {
+  for (const ch of word) if (TTS_HANZI_RE.test(ch)) set.add(ch);
+}
+
+function ttsTierTextSet(
+  tier: "basic" | "mid" | "adv" | "idioms",
+  vocab: HskThemeVocabGroup[],
+  idioms: HskThemeIdiomGroup[],
+): Set<string> {
+  const set = new Set<string>();
+  if (tier === "idioms") {
+    for (const g of idioms) {
+      for (const e of g.entries) {
+        const w = e.word?.trim();
+        if (w) { set.add(w); ttsAddCharsOf(w, set); }
+        const src = ttsExtractZhPrefix(e.sourceText ?? "");
+        if (src) { set.add(src); ttsAddCharsOf(src, set); }
+        for (const cb of e.charBreakdown ?? []) {
+          const c = cb.char?.trim();
+          if (c && TTS_HANZI_RE.test(c)) set.add(c);
+        }
+        for (const sy of e.synonyms ?? []) {
+          const s = ttsExtractZhPrefix(sy);
+          if (s) { set.add(s); ttsAddCharsOf(s, set); }
+        }
+      }
+    }
+  } else {
+    for (const g of vocab) {
+      if (g.tier !== tier) continue;
+      for (const e of g.entries) {
+        const w = e.word?.trim();
+        if (!w) continue;
+        set.add(w);
+        ttsAddCharsOf(w, set);
+      }
+    }
+  }
+  set.delete("");
+  return set;
+}
+
+/**
+ * 급수별 고유 mp3 파일명 맵. 매니페스트(zh-tts-manifest.json)가 아직 없으면
+ * (build:tts 미실행) 빈 배열 — build:tts 후 다음 build-content 가 채운다.
+ */
+function buildTtsTierFiles(
+  vocab: HskThemeVocabGroup[],
+  idioms: HskThemeIdiomGroup[],
+): Record<string, string[]> {
+  let manifest: Record<string, string> = {};
+  try {
+    manifest = JSON.parse(
+      readFileSync(join(OUT_DIR, "zh-tts-manifest.json"), "utf8"),
+    ) as Record<string, string>;
+  } catch {
+    // eslint-disable-next-line no-console
+    console.warn(
+      "[build-content] zh-tts-manifest.json 없음 → zh-tts-tiers.json 빈 배열로 출력",
+    );
+  }
+  const out: Record<string, string[]> = {};
+  for (const tier of ["basic", "mid", "adv", "idioms"] as const) {
+    const files = new Set<string>();
+    for (const t of ttsTierTextSet(tier, vocab, idioms)) {
+      const f = manifest[t];
+      if (f) files.add(f);
+    }
+    out[tier] = Array.from(files);
+  }
+  return out;
+}
+
 function main() {
   mkdirSync(OUT_DIR, { recursive: true });
 
@@ -470,6 +563,14 @@ function main() {
   ms.addAll(docs);
   writeFileSync(join(OUT_DIR, "search-index.json"), JSON.stringify(ms.toJSON()), "utf8");
 
+  // TTS 급수별 파일 맵 — "중국어 음성 미리 받기"(급수별 분할 다운로드)용
+  const ttsTierFiles = buildTtsTierFiles(hskThemeVocab, hskThemeIdioms);
+  writeFileSync(
+    join(OUT_DIR, "zh-tts-tiers.json"),
+    JSON.stringify(ttsTierFiles, null, 0),
+    "utf8",
+  );
+
   // Summary
   const htVocabCount = hskThemeVocab.reduce((s, g) => s + g.entries.length, 0);
   const htIdiomCount = hskThemeIdioms.reduce((s, g) => s + g.entries.length, 0);
@@ -480,7 +581,11 @@ function main() {
     `  hsk-themes Vocab (Basic+Mid+Adv): ${hskThemeVocab.length} groups / ${htVocabCount} entries\n` +
     `  hsk-themes Idioms: ${hskThemeIdioms.length} groups / ${htIdiomCount} entries\n` +
     `  hsk-themes Adv enrichment: ${hskAdvGroups.length} groups / ${enrichCount} entries with 한자풀이\n` +
-    `  search index: ${docs.length} documents`,
+    `  search index: ${docs.length} documents\n` +
+    `  tts tiers: ` +
+    (["basic", "mid", "adv", "idioms"] as const)
+      .map((t) => `${t}=${ttsTierFiles[t].length}`)
+      .join(" / "),
   );
 }
 
