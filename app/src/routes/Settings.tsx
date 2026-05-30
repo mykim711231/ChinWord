@@ -80,7 +80,7 @@ function SegmentedButtons<T extends string>({
 }) {
   return (
     <div
-      className="inline-flex rounded-btn border border-divider overflow-hidden"
+      className="inline-flex rounded-full border border-divider overflow-hidden"
       role="group"
     >
       {options.map((o) => {

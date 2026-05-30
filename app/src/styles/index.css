@@ -20,10 +20,10 @@
     @apply rounded-chip px-3 py-1 text-sm bg-primary-soft text-primary;
   }
   .btn-primary {
-    @apply rounded-btn px-4 py-2 bg-primary text-white font-medium active:opacity-80 transition;
+    @apply rounded-full px-4 py-2 bg-primary text-white font-medium active:opacity-80 transition;
   }
   .btn-ghost {
-    @apply rounded-btn px-3 py-2 text-fg active:bg-divider/50 transition;
+    @apply rounded-full px-3 py-2 text-fg active:bg-divider/50 transition;
   }
   .tab-link {
     @apply flex flex-col items-center justify-center gap-0.5 py-2 text-xs text-muted aria-[current=page]:text-primary;
