@@ -75,8 +75,8 @@ function Player({ area }: { area: AreaKind }): JSX.Element {
 
   /**
    * 키보드 단축키:
-   *  - Space: 답 미공개 → 공개, 공개 상태 → '맞음' 채점
-   *  - 1(틀림) / 2(맞음): 답 공개 후 채점
+   *  - Space: 답 미공개 → 공개, 공개 상태 → '알아요' 채점
+   *  - 1(몰라요) / 2(알아요): 답 공개 후 채점
    *  - R: 현재 카드 다시 발화
    */
   const stateRef = useRef({ revealed, queue, cursor, ttsRate });
@@ -180,7 +180,7 @@ function Player({ area }: { area: AreaKind }): JSX.Element {
           </div>
           <div className="font-semibold text-lg">완료!</div>
           <div className="text-sm text-muted mt-2">
-            {total}회 · 맞음 {stats.correct} · 틀림 {stats.wrong}
+            {total}회 · 알아요 {stats.correct} · 몰라요 {stats.wrong}
           </div>
           <div className="flex justify-center gap-2 mt-5">
             <button
@@ -305,19 +305,19 @@ function Player({ area }: { area: AreaKind }): JSX.Element {
               type="button"
               className="btn-ghost border border-divider flex items-center justify-center gap-2 py-3"
               onClick={() => answer(false)}
-              aria-label="틀림"
+              aria-label="몰라요"
             >
               <CircleX size={18} aria-hidden />
-              <span>틀림</span>
+              <span>몰라요</span>
             </button>
             <button
               type="button"
               className="btn-primary flex items-center justify-center gap-2 py-3"
               onClick={() => answer(true)}
-              aria-label="맞음"
+              aria-label="알아요"
             >
               <Circle size={18} aria-hidden />
-              <span>맞음</span>
+              <span>알아요</span>
             </button>
           </div>
         )}
