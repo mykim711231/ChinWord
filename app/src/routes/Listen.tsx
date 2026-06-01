@@ -13,10 +13,8 @@ export default function Listen() {
   const navigate = useNavigate();
   const {
     scope,
-    display,
     deckFilter,
     setScope,
-    setDisplay,
     setDeckFilter,
   } = useListen();
 
@@ -37,7 +35,7 @@ export default function Listen() {
 
       <p className="text-xs text-muted mt-1 mb-3 px-1">
         선택한 범위의 카드를 순서대로 읽어줍니다.
-        카드 간격·반복·재생 방식은 재생 화면에서 조절할 수 있습니다.
+        표시·카드 간격·반복·재생 방식은 재생 화면에서 조절할 수 있습니다.
       </p>
 
       {/* 범위 */}
@@ -71,36 +69,6 @@ export default function Listen() {
           showUnknown={false}
         />
       </div>
-
-      {/* 표시 */}
-      <section className="card mt-3">
-        <span className="block text-xs text-muted mb-1">표시</span>
-        <div className="flex flex-wrap gap-2">
-          {(["hanzi", "pinyin", "korean"] as const).map((k) => {
-            const label = k === "hanzi" ? "한자" : k === "pinyin" ? "병음" : "한국어";
-            const on = display[k];
-            return (
-              <button
-                key={k}
-                type="button"
-                onClick={() => setDisplay({ [k]: !on })}
-                aria-pressed={on}
-                className={
-                  "rounded-chip px-3 py-1 text-sm border " +
-                  (on
-                    ? "bg-primary text-white border-primary"
-                    : "bg-surface text-fg border-divider")
-                }
-              >
-                {label}
-              </button>
-            );
-          })}
-        </div>
-        <p className="text-[11px] text-muted mt-1">
-          표시 토글은 음성 재생에 영향을 주지 않습니다 (항상 zh로 재생).
-        </p>
-      </section>
 
       <div className="mt-4 flex items-center justify-between px-1">
         <div className="text-sm">
