@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { createIdbStorage } from "@/lib/persist";
+import type { DeckFilter } from "@/lib/deck-filter";
 
 /**
  * 이어듣기 (Marathon Listen) — SMCB-style continuous playback settings.
@@ -36,6 +37,8 @@ type State = {
   loop: boolean;
   /** 무작위 순서로 재생 */
   shuffle: boolean;
+  /** 덱 필터 — 전체 / 즐겨찾기만 / 모름만 (이어듣기·필순 공유, lib/deck-filter). */
+  deckFilter: DeckFilter;
 };
 
 type Actions = {
@@ -47,6 +50,7 @@ type Actions = {
   setStrokeRepeats: (v: number) => void;
   setLoop: (v: boolean) => void;
   setShuffle: (v: boolean) => void;
+  setDeckFilter: (v: DeckFilter) => void;
 };
 
 export const useListen = create<State & Actions>()(
@@ -60,6 +64,7 @@ export const useListen = create<State & Actions>()(
       strokeRepeats: 1,
       loop: false,
       shuffle: false,
+      deckFilter: "all",
       setScope: (v) => set({ scope: v }),
       setArea: (v) => set((s) => ({ area: { ...s.area, ...v } })),
       setDisplay: (v) => set((s) => ({ display: { ...s.display, ...v } })),
@@ -71,6 +76,7 @@ export const useListen = create<State & Actions>()(
         set({ strokeRepeats: Math.max(1, Math.min(10, Math.round(v))) }),
       setLoop: (v) => set({ loop: v }),
       setShuffle: (v) => set({ shuffle: v }),
+      setDeckFilter: (v) => set({ deckFilter: v }),
     }),
     {
       name: "chinword/listen",

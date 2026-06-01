@@ -18,10 +18,13 @@ import {
 } from "lucide-react";
 import { PageShell } from "@/components/PageShell";
 import { buildListenQueue, lessonTitleFor } from "@/lib/content";
+import { useDeckFilter } from "@/lib/deck-filter";
 import { cancelSpeak, speakAsync, speakKoreanAsync, unlock } from "@/lib/tts";
 import { getStrokeDataFromCache, saveStrokeDataToCache, isOnline } from "@/lib/stroke-cache";
 import { useListen } from "@/state/listen";
 import { useSettings } from "@/state/settings";
+import { useFavorites } from "@/state/favorites";
+import { useReview } from "@/state/review";
 import { useStoreHydrated } from "@/lib/useHydrated";
 
 const HANZI_RE = /\p{Script=Han}/u;
@@ -55,15 +58,16 @@ function shuffleArray<T>(arr: T[]): T[] {
 export default function StrokesPlay(): JSX.Element {
   const navigate = useNavigate();
   const {
-    scope, area, display, intervalSec, strokeRepeats, loop, shuffle,
+    scope, area, display, intervalSec, strokeRepeats, loop, shuffle, deckFilter,
     setDisplay, setIntervalSec, setStrokeRepeats, setLoop, setShuffle,
   } = useListen();
   const ttsRate = useSettings((s) => s.ttsRate);
 
-  const rawQueue = useMemo(
+  const scopeQueue = useMemo(
     () => buildListenQueue({ scope, area }).filter((e) => hasHanzi(e.word)),
     [scope, area],
   );
+  const rawQueue = useDeckFilter(scopeQueue, deckFilter);
 
   // shuffleKey: loop 반복 시 매번 증가 → useMemo 무효화 → 재셔플
   const [shuffleKey, setShuffleKey] = useState(0);
@@ -133,7 +137,11 @@ export default function StrokesPlay(): JSX.Element {
   }, []);
 
   // 영속 scope 가 IDB 에서 복원되기 전 기본값으로 잘못 리다이렉트되는 레이스 방지.
-  const hydrated = useStoreHydrated(useListen);
+  // 덱 필터(즐겨찾기/모름)도 favorites·review 복원 전이면 빈 큐로 오판하므로 함께 대기.
+  const hydrated =
+    useStoreHydrated(useListen) &&
+    useStoreHydrated(useFavorites) &&
+    useStoreHydrated(useReview);
 
   useEffect(() => {
     if (!hydrated) return;

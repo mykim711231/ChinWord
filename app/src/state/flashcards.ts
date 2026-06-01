@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { createIdbStorage } from "@/lib/persist";
+import type { DeckFilter } from "@/lib/deck-filter";
 
 /**
  * 플래시카드 설정 — 단어/성어 area는 URL(`/flashcards/:area`)로 결정되고,
@@ -21,12 +22,15 @@ type State = {
   vocabScope: FlashcardScope;
   idiomScope: FlashcardScope;
   direction: FlashcardDirection;
+  /** 덱 필터 — 전체 / 즐겨찾기만 / 모름만 (lib/deck-filter). */
+  deckFilter: DeckFilter;
 };
 
 type Actions = {
   setVocabScope: (v: FlashcardScope) => void;
   setIdiomScope: (v: FlashcardScope) => void;
   setDirection: (v: FlashcardDirection) => void;
+  setDeckFilter: (v: DeckFilter) => void;
 };
 
 export const useFlashcards = create<State & Actions>()(
@@ -35,9 +39,11 @@ export const useFlashcards = create<State & Actions>()(
       vocabScope: { kind: "all" },
       idiomScope: { kind: "all" },
       direction: "hanzi-first",
+      deckFilter: "all",
       setVocabScope: (v) => set({ vocabScope: v }),
       setIdiomScope: (v) => set({ idiomScope: v }),
       setDirection: (v) => set({ direction: v }),
+      setDeckFilter: (v) => set({ deckFilter: v }),
     }),
     {
       name: "chinword/flashcards",

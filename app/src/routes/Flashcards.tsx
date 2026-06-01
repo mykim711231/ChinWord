@@ -3,7 +3,9 @@ import { Link, Navigate, useNavigate, useParams } from "react-router-dom";
 import { Play, Layers } from "lucide-react";
 import { TopBar } from "@/components/TopBar";
 import { PageShell } from "@/components/PageShell";
+import { DeckFilterChips } from "@/components/DeckFilterChips";
 import { buildListenQueue } from "@/lib/content";
+import { useDeckFilter } from "@/lib/deck-filter";
 import {
   buildScopeOptions,
   buildIdiomScopeOptions,
@@ -27,9 +29,11 @@ function FlashcardSetup({ area }: { area: AreaKind }): JSX.Element {
     vocabScope,
     idiomScope,
     direction,
+    deckFilter,
     setVocabScope,
     setIdiomScope,
     setDirection,
+    setDeckFilter,
   } = useFlashcards();
 
   const scope = area === "vocab" ? vocabScope : idiomScope;
@@ -46,7 +50,7 @@ function FlashcardSetup({ area }: { area: AreaKind }): JSX.Element {
     [area],
   );
 
-  const queue = useMemo(
+  const baseQueue = useMemo(
     () =>
       buildListenQueue({
         scope,
@@ -54,6 +58,7 @@ function FlashcardSetup({ area }: { area: AreaKind }): JSX.Element {
       }),
     [scope, area],
   );
+  const queue = useDeckFilter(baseQueue, deckFilter);
 
   const total = queue.length;
   const playable = total > 0;
@@ -150,6 +155,15 @@ function FlashcardSetup({ area }: { area: AreaKind }): JSX.Element {
         </div>
       </section>
 
+      {/* 학습 대상 필터 (전체 / 즐겨찾기 / 모름) */}
+      <div className="mt-3">
+        <DeckFilterChips
+          base={baseQueue}
+          value={deckFilter}
+          onChange={setDeckFilter}
+        />
+      </div>
+
       {/* 통계 + 시작 */}
       <div className="mt-4 flex items-center justify-between px-1">
         <div className="text-sm">
@@ -170,7 +184,11 @@ function FlashcardSetup({ area }: { area: AreaKind }): JSX.Element {
       {!playable ? (
         <div className="mt-3 text-center">
           <div className="text-xs text-muted">
-            이 범위에 카드가 없습니다.
+            {deckFilter === "favorite"
+              ? "이 범위에 즐겨찾기한 카드가 없습니다."
+              : deckFilter === "unknown"
+                ? "이 범위에 '모름'으로 표시한 카드가 없습니다."
+                : "이 범위에 카드가 없습니다."}
           </div>
         </div>
       ) : null}

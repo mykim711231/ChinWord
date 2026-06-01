@@ -3,7 +3,9 @@ import { useNavigate } from "react-router-dom";
 import { PenLine, Minus, Plus, Repeat, Shuffle } from "lucide-react";
 import { TopBar } from "@/components/TopBar";
 import { PageShell } from "@/components/PageShell";
+import { DeckFilterChips } from "@/components/DeckFilterChips";
 import { buildListenQueue } from "@/lib/content";
+import { useDeckFilter } from "@/lib/deck-filter";
 import { buildScopeOptions, scopeKey } from "@/lib/scope-options";
 import { useListen } from "@/state/listen";
 
@@ -21,21 +23,24 @@ export default function Strokes(): JSX.Element {
     strokeRepeats,
     loop,
     shuffle,
+    deckFilter,
     setScope,
     setDisplay,
     setStrokeRepeats,
     setLoop,
     setShuffle,
+    setDeckFilter,
   } = useListen();
 
   const scopeOptions = useMemo(() => buildScopeOptions(), []);
-  const queue = useMemo(
+  const baseQueue = useMemo(
     () =>
       buildListenQueue({ scope, area: { vocab: true, idiom: true } }).filter(
         (e) => hasHanzi(e.word),
       ),
     [scope],
   );
+  const queue = useDeckFilter(baseQueue, deckFilter);
   const count = queue.length;
   const canStart = count > 0;
 
@@ -69,6 +74,15 @@ export default function Strokes(): JSX.Element {
           ))}
         </select>
       </section>
+
+      {/* 학습 대상 필터 (전체 / 즐겨찾기 / 모름) */}
+      <div className="mt-3">
+        <DeckFilterChips
+          base={baseQueue}
+          value={deckFilter}
+          onChange={setDeckFilter}
+        />
+      </div>
 
       {/* 표시 */}
       <section className="card mt-3">

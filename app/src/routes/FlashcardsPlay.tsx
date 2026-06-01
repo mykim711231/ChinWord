@@ -19,7 +19,10 @@ import { SpeakerButton } from "@/components/SpeakerButton";
 import { speakAsync, unlock } from "@/lib/tts";
 import { useSettings } from "@/state/settings";
 import { buildListenQueue, lessonTitleFor } from "@/lib/content";
+import { useDeckFilter } from "@/lib/deck-filter";
 import { useFlashcards } from "@/state/flashcards";
+import { useReview } from "@/state/review";
+import { useFavorites } from "@/state/favorites";
 import { useStoreHydrated } from "@/lib/useHydrated";
 
 type AreaKind = "vocab" | "idiom";
@@ -29,7 +32,12 @@ export default function FlashcardsPlay(): JSX.Element {
   // 영속 scope 가 IDB 에서 복원된 뒤에 Player 를 마운트해야 한다.
   // Player 는 useState(baseQueue) 로 큐를 1회만 초기화하므로, 하이드레이션 전
   // 기본 scope 로 큐가 굳으면 사용자가 고른 범위가 반영되지 않는다.
-  const hydrated = useStoreHydrated(useFlashcards);
+  // 덱 필터(즐겨찾기/모름)는 favorites·review 스토어를 읽으므로 함께 하이드레이션
+  // 완료를 기다린다 — 그렇지 않으면 복원 전 빈 집합으로 큐가 빈 채 굳을 수 있다.
+  const fcHydrated = useStoreHydrated(useFlashcards);
+  const favHydrated = useStoreHydrated(useFavorites);
+  const reviewHydrated = useStoreHydrated(useReview);
+  const hydrated = fcHydrated && favHydrated && reviewHydrated;
   if (area !== "vocab" && area !== "idiom") {
     return <Navigate to="/flashcards/vocab" replace />;
   }
@@ -47,12 +55,14 @@ export default function FlashcardsPlay(): JSX.Element {
 
 function Player({ area }: { area: AreaKind }): JSX.Element {
   const navigate = useNavigate();
-  const { vocabScope, idiomScope, direction } = useFlashcards();
+  const { vocabScope, idiomScope, direction, deckFilter } = useFlashcards();
   const scope = area === "vocab" ? vocabScope : idiomScope;
   const ttsRate = useSettings((s) => s.ttsRate);
+  const markUnknown = useReview((s) => s.markUnknown);
+  const markKnown = useReview((s) => s.markKnown);
 
-  // Build queue once at session start.
-  const baseQueue = useMemo(
+  // Build queue once at session start (범위 → 덱 필터 순으로 추림).
+  const scopeQueue = useMemo(
     () =>
       buildListenQueue({
         scope,
@@ -60,6 +70,7 @@ function Player({ area }: { area: AreaKind }): JSX.Element {
       }),
     [scope, area],
   );
+  const baseQueue = useDeckFilter(scopeQueue, deckFilter);
 
   // 현재 세션 큐 — 틀린 카드가 뒤에 재삽입됨
   const [queue, setQueue] = useState(baseQueue);
@@ -91,18 +102,21 @@ function Player({ area }: { area: AreaKind }): JSX.Element {
       if (c >= q.length) return;
       gradingRef.current = true;
 
+      const entry = q[c];
       if (correct) {
+        // "알아요" → 모름 덱에서 제거(이전에 몰라요였다면 빠진다)
+        if (entry?.id) markKnown(entry.id);
         setStats((s) => ({ ...s, correct: s.correct + 1 }));
       } else {
-        // 틀린 카드는 큐 끝에 재삽입
-        const entry = q[c];
+        // "몰라요" → 모름 덱에 추가 + 현재 세션 큐 끝에 재삽입
+        if (entry?.id) markUnknown(entry.id);
         setQueue((prev) => [...prev, entry]);
         setStats((s) => ({ ...s, wrong: s.wrong + 1 }));
       }
       setRevealed(false);
       setCursor((x) => x + 1);
     },
-    [],
+    [markKnown, markUnknown],
   );
 
   const handleRespeak = useCallback(() => {

@@ -3,7 +3,9 @@ import { useNavigate } from "react-router-dom";
 import { Play, Minus, Plus, Repeat, Shuffle } from "lucide-react";
 import { TopBar } from "@/components/TopBar";
 import { PageShell } from "@/components/PageShell";
+import { DeckFilterChips } from "@/components/DeckFilterChips";
 import { buildListenQueue } from "@/lib/content";
+import { useDeckFilter } from "@/lib/deck-filter";
 import { buildScopeOptions, scopeKey } from "@/lib/scope-options";
 import { useListen } from "@/state/listen";
 
@@ -16,19 +18,23 @@ export default function Listen() {
     repeats,
     loop,
     shuffle,
+    deckFilter,
     setScope,
     setDisplay,
     setIntervalSec,
     setRepeats,
     setLoop,
     setShuffle,
+    setDeckFilter,
   } = useListen();
 
   const scopeOptions = useMemo(() => buildScopeOptions(), []);
-  const count = useMemo(
-    () => buildListenQueue({ scope, area: { vocab: true, idiom: true } }).length,
+  const baseQueue = useMemo(
+    () => buildListenQueue({ scope, area: { vocab: true, idiom: true } }),
     [scope],
   );
+  const filtered = useDeckFilter(baseQueue, deckFilter);
+  const count = filtered.length;
   const canStart = count > 0;
 
   return (
@@ -61,6 +67,15 @@ export default function Listen() {
           ))}
         </select>
       </section>
+
+      {/* 학습 대상 필터 (전체 / 즐겨찾기 / 모름) */}
+      <div className="mt-3">
+        <DeckFilterChips
+          base={baseQueue}
+          value={deckFilter}
+          onChange={setDeckFilter}
+        />
+      </div>
 
       {/* 표시 */}
       <section className="card mt-3">
