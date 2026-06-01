@@ -52,8 +52,10 @@ html.theme-sepia {
   --rgb-surface: 250 249 245;   /* #FAF9F5 */
   --rgb-fg: 51 49 45;
   --rgb-muted: 120 116 108;
-  --rgb-primary: 29 78 180;
-  --rgb-primary-soft: 224 224 216;
+  /* 브랜드 레드(ChinWord 로고색) — SMCB 의 파랑이 아니라 라이트와 통일.
+     종이톤 배경 위에서 대비를 위해 라이트(#DC2626)보다 살짝 깊은 레드. */
+  --rgb-primary: 198 40 40;      /* #C62828 */
+  --rgb-primary-soft: 244 226 224;
   --rgb-accent: 180 83 9;
   --rgb-success: 21 128 61;
   --rgb-divider: 222 220 211;
@@ -68,8 +70,9 @@ html.theme-warmdark {
   --rgb-surface: 41 35 28;
   --rgb-fg: 237 230 218;
   --rgb-muted: 178 165 148;
-  --rgb-primary: 129 164 246;
-  --rgb-primary-soft: 60 50 38;
+  /* 브랜드 레드 — 어두운 웜 배경에서 밝게 보이도록 다크 계열 레드(#F87171). */
+  --rgb-primary: 248 113 113;
+  --rgb-primary-soft: 90 40 36;
   --rgb-accent: 251 146 60;
   --rgb-success: 74 222 128;
   --rgb-divider: 64 56 46;
