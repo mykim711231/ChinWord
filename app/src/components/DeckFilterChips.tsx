@@ -26,7 +26,7 @@ export function DeckFilterChips({
   return (
     <section className="card">
       <span className="block text-xs text-muted mb-2">학습 대상</span>
-      <div className="grid grid-cols-3 gap-2">
+      <div className="flex flex-wrap gap-2">
         {FILTERS.map(({ value: v, label, Icon }) => {
           const on = value === v;
           const n = counts[v];
@@ -37,21 +37,15 @@ export function DeckFilterChips({
               onClick={() => onChange(v)}
               aria-pressed={on}
               className={
-                "rounded-btn border px-2 py-2 text-sm inline-flex flex-col items-center gap-1 " +
+                "inline-flex items-center gap-1 rounded-chip px-3 py-1 text-sm border " +
                 (on
-                  ? "bg-primary text-white border-primary font-medium"
+                  ? "bg-primary text-white border-primary"
                   : "bg-surface text-fg border-divider")
               }
             >
-              <Icon size={16} aria-hidden />
+              <Icon size={14} aria-hidden />
               <span>{label}</span>
-              <span
-                className={
-                  "text-[11px] tabular-nums " + (on ? "text-white/80" : "text-muted")
-                }
-              >
-                {n}개
-              </span>
+              <span className="tabular-nums">({n})</span>
             </button>
           );
         })}
