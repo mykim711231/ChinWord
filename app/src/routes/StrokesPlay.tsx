@@ -67,7 +67,11 @@ export default function StrokesPlay(): JSX.Element {
     () => buildListenQueue({ scope, area }).filter((e) => hasHanzi(e.word)),
     [scope, area],
   );
-  const rawQueue = useDeckFilter(scopeQueue, deckFilter);
+  // 필순은 "모름" 필터를 노출하지 않으므로 영속된 unknown 은 전체로 취급.
+  const rawQueue = useDeckFilter(
+    scopeQueue,
+    deckFilter === "unknown" ? "all" : deckFilter,
+  );
 
   // shuffleKey: loop 반복 시 매번 증가 → useMemo 무효화 → 재셔플
   const [shuffleKey, setShuffleKey] = useState(0);

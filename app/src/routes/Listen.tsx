@@ -33,7 +33,9 @@ export default function Listen() {
     () => buildListenQueue({ scope, area: { vocab: true, idiom: true } }),
     [scope],
   );
-  const filtered = useDeckFilter(baseQueue, deckFilter);
+  // 이어듣기는 "모름" 미노출 → 혹시 영속된 unknown 은 전체로 취급.
+  const effectiveFilter = deckFilter === "unknown" ? "all" : deckFilter;
+  const filtered = useDeckFilter(baseQueue, effectiveFilter);
   const count = filtered.length;
   const canStart = count > 0;
 
@@ -72,8 +74,9 @@ export default function Listen() {
       <div className="mt-3">
         <DeckFilterChips
           base={baseQueue}
-          value={deckFilter}
+          value={effectiveFilter}
           onChange={setDeckFilter}
+          showUnknown={false}
         />
       </div>
 

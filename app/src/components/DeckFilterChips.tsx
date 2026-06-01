@@ -6,6 +6,9 @@ import { useDeckFilterCounts, type DeckFilter } from "@/lib/deck-filter";
  * 학습 덱 필터 칩 — 전체 / 즐겨찾기 / 모름.
  * 범위(scope)로 추린 base 큐 안의 해당 카드 수를 함께 표시한다.
  * 플래시카드·이어듣기·필순 설정 화면 공통 컴포넌트.
+ *
+ * "모름"은 플래시카드에서 답한 결과라 플래시카드에서만 의미가 크므로,
+ * 이어듣기·필순은 showUnknown=false 로 전체/즐겨찾기만 노출한다.
  */
 const FILTERS: { value: DeckFilter; label: string; Icon: typeof Layers }[] = [
   { value: "all", label: "전체", Icon: Layers },
@@ -17,17 +20,23 @@ export function DeckFilterChips({
   base,
   value,
   onChange,
+  showUnknown = true,
 }: {
   base: AnyEntry[];
   value: DeckFilter;
   onChange: (f: DeckFilter) => void;
+  /** "모름" 칩 노출 여부(기본 true). 이어듣기·필순은 false. */
+  showUnknown?: boolean;
 }): JSX.Element {
   const counts = useDeckFilterCounts(base);
+  const filters = showUnknown
+    ? FILTERS
+    : FILTERS.filter((f) => f.value !== "unknown");
   return (
     <section className="card">
       <span className="block text-xs text-muted mb-2">학습 대상</span>
       <div className="flex flex-wrap gap-2">
-        {FILTERS.map(({ value: v, label, Icon }) => {
+        {filters.map(({ value: v, label, Icon }) => {
           const on = value === v;
           const n = counts[v];
           return (
@@ -51,7 +60,9 @@ export function DeckFilterChips({
         })}
       </div>
       <p className="text-[11px] text-muted mt-2">
-        즐겨찾기는 ⭐ 표시한 카드, 모름은 플래시카드에서 "몰라요"로 답한 카드입니다.
+        {showUnknown
+          ? '즐겨찾기는 ⭐ 표시한 카드, 모름은 플래시카드에서 "몰라요"로 답한 카드입니다.'
+          : "즐겨찾기는 ⭐ 표시한 카드만 학습합니다."}
       </p>
     </section>
   );

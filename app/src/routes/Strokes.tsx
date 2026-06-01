@@ -40,7 +40,9 @@ export default function Strokes(): JSX.Element {
       ),
     [scope],
   );
-  const queue = useDeckFilter(baseQueue, deckFilter);
+  // 필순은 "모름" 미노출 → 혹시 영속된 unknown 은 전체로 취급.
+  const effectiveFilter = deckFilter === "unknown" ? "all" : deckFilter;
+  const queue = useDeckFilter(baseQueue, effectiveFilter);
   const count = queue.length;
   const canStart = count > 0;
 
@@ -79,8 +81,9 @@ export default function Strokes(): JSX.Element {
       <div className="mt-3">
         <DeckFilterChips
           base={baseQueue}
-          value={deckFilter}
+          value={effectiveFilter}
           onChange={setDeckFilter}
+          showUnknown={false}
         />
       </div>
 
