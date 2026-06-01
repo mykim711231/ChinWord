@@ -90,7 +90,7 @@ export const useSettings = create<State & Actions>()(
   persist(
     (set, get) => ({
       fontScale: "md",
-      themeMode: "system",
+      themeMode: "sepia",
       displayMode: "all",
       ttsRate: 0.9,
       ttsGapMs: 1000,
