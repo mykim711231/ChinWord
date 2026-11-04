@@ -1,5 +1,6 @@
 import { TopBar } from "@/components/TopBar";
 import { PageShell } from "@/components/PageShell";
+import { ShareQr } from "@/components/ShareQr";
 
 export default function About() {
   return (
@@ -13,6 +14,8 @@ export default function About() {
           v0.1.0 · 빌드 {new Date().toISOString().slice(0, 7)}
         </div>
       </div>
+
+      <ShareQr />
 
       <section className="card mt-4">
         <h3 className="font-semibold">콘텐츠 출처 및 이용 안내</h3>
