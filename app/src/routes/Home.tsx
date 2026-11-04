@@ -1,3 +1,4 @@
+import { ShareQr } from "@/components/ShareQr";
 import { Link } from "react-router-dom";
 import { useMemo } from "react";
 import {
@@ -99,6 +100,7 @@ export default function Home() {
             <BookOpen size={16} aria-hidden />
             단어장
           </Link>
+          <ShareQr variant="hero" />
         </div>
       </section>
 

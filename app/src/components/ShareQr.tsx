@@ -3,7 +3,7 @@ import QRCode from "qrcode";
 import { Camera, Check, Copy, QrCode, X } from "lucide-react";
 
 /** "QR 코드" 버튼 → 모달에 앱 주소 QR + 주소 복사. */
-export function ShareQr() {
+export function ShareQr({ variant = "default" }: { variant?: "default" | "hero" }) {
   const url = `${window.location.origin}${import.meta.env.BASE_URL}`;
   const [open, setOpen] = useState(false);
   const [qr, setQr] = useState("");
@@ -33,16 +33,27 @@ export function ShareQr() {
 
   return (
     <>
-      <div className="mt-4 text-center">
+      {variant === "hero" ? (
         <button
           type="button"
           onClick={() => setOpen(true)}
-          className="inline-flex items-center gap-2 rounded-full bg-primary text-white text-sm font-semibold px-5 py-2.5 shadow"
+          className="ml-auto inline-flex items-center gap-1.5 rounded-full bg-white/20 text-white px-4 py-2 text-sm font-medium active:bg-white/30 transition"
         >
-          <QrCode size={18} aria-hidden />
+          <QrCode size={16} aria-hidden />
           QR 코드
         </button>
-      </div>
+      ) : (
+        <div className="mt-4 text-center">
+          <button
+            type="button"
+            onClick={() => setOpen(true)}
+            className="inline-flex items-center gap-2 rounded-full bg-primary text-white text-sm font-semibold px-5 py-2.5 shadow"
+          >
+            <QrCode size={18} aria-hidden />
+            QR 코드
+          </button>
+        </div>
+      )}
 
       {open && (
         <div
