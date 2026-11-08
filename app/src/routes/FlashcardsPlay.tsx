@@ -163,7 +163,7 @@ function Player({ area }: { area: AreaKind }): JSX.Element {
   }, [handleAnswer, handleRespeak]);
 
   // 카드가 바뀌면 자동 음성 1회 재생.
-  // 한자→뜻: 카드가 나타날 때 / 뜻→한자: 한자를 공개한 뒤에 재생(정답 노출 방지).
+  // 한자→뜻: 카드가 나타날 때 + "답 보기"를 눌렀을 때 / 뜻→한자: 한자를 공개한 뒤에 재생(정답 노출 방지).
   const curEntry = queue[cursor];
   const curId = curEntry?.id ?? "";
   const hanziFirst = direction === "hanzi-first";
@@ -184,7 +184,7 @@ function Player({ area }: { area: AreaKind }): JSX.Element {
       ac.abort();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [autoplay, cursor, curId, hanziFirst, revealed && !hanziFirst]);
+  }, [autoplay, cursor, curId, hanziFirst, revealed]);
 
   // empty deck
   if (queue.length === 0) {

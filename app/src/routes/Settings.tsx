@@ -41,6 +41,7 @@ import {
   getStorageInfo,
   type StorageInfo,
 } from "@/lib/storage";
+import { useFlashcards } from "@/state/flashcards";
 import { exportBackup, importBackup, type ChinWordBackup } from "@/lib/backup";
 import {
   bulkDownloadTier,
@@ -126,6 +127,8 @@ function SegmentedButtons<T extends string>({
 
 export default function Settings() {
   const s = useSettings();
+  const fcAutoplay = useFlashcards((f) => f.autoplay);
+  const setFcAutoplay = useFlashcards((f) => f.setAutoplay);
   // 모달 alert() 대신 비차단적 토스트. 캐시 정리 후 사용자가 흐름을 잃지 않도록
   // 페이지 하단에 잠깐 떴다 사라지는 알림으로 결과만 전달. aria-live=polite 로
   // 스크린리더에도 변경을 알린다.
@@ -286,6 +289,20 @@ export default function Settings() {
               { value: "device", label: "기기 음성" },
             ]}
             onChange={(v) => s.setVoiceMode(v)}
+          />
+        </Row>
+
+        <Row
+          label="자동 음성 재생"
+          hint="플래시카드에서 카드가 바뀌면 자동으로 중국어 음성이 한 번 재생돼요. 도서관 등 조용한 곳에서는 꺼 두세요."
+        >
+          <SegmentedButtons<"on" | "off">
+            value={fcAutoplay ? "on" : "off"}
+            options={[
+              { value: "on", label: "켜짐" },
+              { value: "off", label: "꺼짐" },
+            ]}
+            onChange={(v) => setFcAutoplay(v === "on")}
           />
         </Row>
 
