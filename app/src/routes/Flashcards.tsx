@@ -30,10 +30,12 @@ function FlashcardSetup({ area }: { area: AreaKind }): JSX.Element {
     idiomScope,
     direction,
     deckFilter,
+    autoplay,
     setVocabScope,
     setIdiomScope,
     setDirection,
     setDeckFilter,
+    setAutoplay,
   } = useFlashcards();
 
   const scope = area === "vocab" ? vocabScope : idiomScope;
@@ -153,6 +155,24 @@ function FlashcardSetup({ area }: { area: AreaKind }): JSX.Element {
             <div className="text-xs text-muted mt-0.5">뜻을 보고 한자를 떠올려요</div>
           </button>
         </div>
+      </section>
+
+      {/* 자동 음성 재생 */}
+      <section className="card mt-3">
+        <label className="flex items-center justify-between gap-3 cursor-pointer">
+          <span>
+            <span className="block font-semibold text-sm">자동 음성 재생</span>
+            <span className="block text-xs text-muted mt-0.5">
+              카드가 바뀌면 중국어 음성이 한 번 재생돼요
+            </span>
+          </span>
+          <input
+            type="checkbox"
+            checked={autoplay}
+            onChange={(e) => setAutoplay(e.target.checked)}
+            className="w-5 h-5 accent-primary flex-none"
+          />
+        </label>
       </section>
 
       {/* 학습 대상 필터 (전체 / 즐겨찾기 / 모름) */}

@@ -24,6 +24,8 @@ type State = {
   direction: FlashcardDirection;
   /** 덱 필터 — 전체 / 즐겨찾기만 / 모름만 (lib/deck-filter). */
   deckFilter: DeckFilter;
+  /** 카드가 바뀌면 중국어 음성을 자동으로 1회 재생. */
+  autoplay: boolean;
 };
 
 type Actions = {
@@ -31,6 +33,7 @@ type Actions = {
   setIdiomScope: (v: FlashcardScope) => void;
   setDirection: (v: FlashcardDirection) => void;
   setDeckFilter: (v: DeckFilter) => void;
+  setAutoplay: (v: boolean) => void;
 };
 
 export const useFlashcards = create<State & Actions>()(
@@ -40,10 +43,12 @@ export const useFlashcards = create<State & Actions>()(
       idiomScope: { kind: "all" },
       direction: "hanzi-first",
       deckFilter: "all",
+      autoplay: true,
       setVocabScope: (v) => set({ vocabScope: v }),
       setIdiomScope: (v) => set({ idiomScope: v }),
       setDirection: (v) => set({ direction: v }),
       setDeckFilter: (v) => set({ deckFilter: v }),
+      setAutoplay: (v) => set({ autoplay: v }),
     }),
     {
       name: "chinword/flashcards",

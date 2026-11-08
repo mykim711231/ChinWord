@@ -55,7 +55,8 @@ export default function FlashcardsPlay(): JSX.Element {
 
 function Player({ area }: { area: AreaKind }): JSX.Element {
   const navigate = useNavigate();
-  const { vocabScope, idiomScope, direction, deckFilter } = useFlashcards();
+  const { vocabScope, idiomScope, direction, deckFilter, autoplay } =
+    useFlashcards();
   const scope = area === "vocab" ? vocabScope : idiomScope;
   const ttsRate = useSettings((s) => s.ttsRate);
   const markUnknown = useReview((s) => s.markUnknown);
@@ -101,6 +102,7 @@ function Player({ area }: { area: AreaKind }): JSX.Element {
       const { queue: q, cursor: c } = stateRef.current;
       if (c >= q.length) return;
       gradingRef.current = true;
+      unlock(); // iOS: 사용자 제스처 안에서 오디오 잠금 해제 → 자동재생 허용
 
       const entry = q[c];
       if (correct) {
@@ -159,6 +161,30 @@ function Player({ area }: { area: AreaKind }): JSX.Element {
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, [handleAnswer, handleRespeak]);
+
+  // 카드가 바뀌면 자동 음성 1회 재생.
+  // 한자→뜻: 카드가 나타날 때 / 뜻→한자: 한자를 공개한 뒤에 재생(정답 노출 방지).
+  const curEntry = queue[cursor];
+  const curId = curEntry?.id ?? "";
+  const hanziFirst = direction === "hanzi-first";
+  useEffect(() => {
+    if (!autoplay || !curEntry) return;
+    if (!hanziFirst && !revealed) return;
+    const text = curEntry.word || curEntry.pinyin || "";
+    if (!text) return;
+    const ac = new AbortController();
+    const t = window.setTimeout(() => {
+      void speakAsync(text, {
+        rate: stateRef.current.ttsRate,
+        signal: ac.signal,
+      }).catch(() => {});
+    }, 250);
+    return () => {
+      window.clearTimeout(t);
+      ac.abort();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [autoplay, cursor, curId, hanziFirst, revealed && !hanziFirst]);
 
   // empty deck
   if (queue.length === 0) {
@@ -233,6 +259,7 @@ function Player({ area }: { area: AreaKind }): JSX.Element {
   function skip() {
     if (gradingRef.current) return;
     gradingRef.current = true;
+    unlock();
     setRevealed(false);
     setCursor((c) => c + 1);
   }
