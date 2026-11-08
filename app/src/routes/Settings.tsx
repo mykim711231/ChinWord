@@ -41,7 +41,7 @@ import {
   getStorageInfo,
   type StorageInfo,
 } from "@/lib/storage";
-import { useFlashcards } from "@/state/flashcards";
+import { useFlashcards, type FlashcardDirection } from "@/state/flashcards";
 import { exportBackup, importBackup, type ChinWordBackup } from "@/lib/backup";
 import {
   bulkDownloadTier,
@@ -129,6 +129,8 @@ export default function Settings() {
   const s = useSettings();
   const fcAutoplay = useFlashcards((f) => f.autoplay);
   const setFcAutoplay = useFlashcards((f) => f.setAutoplay);
+  const fcDirection = useFlashcards((f) => f.direction);
+  const setFcDirection = useFlashcards((f) => f.setDirection);
   // 모달 alert() 대신 비차단적 토스트. 캐시 정리 후 사용자가 흐름을 잃지 않도록
   // 페이지 하단에 잠깐 떴다 사라지는 알림으로 결과만 전달. aria-live=polite 로
   // 스크린리더에도 변경을 알린다.
@@ -289,6 +291,49 @@ export default function Settings() {
               { value: "device", label: "기기 음성" },
             ]}
             onChange={(v) => s.setVoiceMode(v)}
+          />
+        </Row>
+
+        <Row
+          label="플래시카드 문제 방향(기본)"
+          hint="한자→뜻: 한자 보고 뜻 맞히기 · 뜻→한자: 뜻 보고 한자 떠올리기 · 혼합: 둘을 섞어서 출제."
+        >
+          <SegmentedButtons<FlashcardDirection>
+            value={fcDirection}
+            options={[
+              { value: "hanzi-first", label: "한자→뜻" },
+              { value: "meaning-first", label: "뜻→한자" },
+              { value: "mixed", label: "혼합" },
+            ]}
+            onChange={setFcDirection}
+          />
+        </Row>
+
+        <Row
+          label="답 보기 때 음성"
+          hint="한자→뜻 방향에서 '답 보기'를 누르면 음성을 한 번 더 들려줘요. 자동 음성 재생이 켜져 있을 때 적용돼요."
+        >
+          <SegmentedButtons<"on" | "off">
+            value={s.revealSpeak ? "on" : "off"}
+            options={[
+              { value: "on", label: "켜짐" },
+              { value: "off", label: "꺼짐" },
+            ]}
+            onChange={(v) => s.setRevealSpeak(v === "on")}
+          />
+        </Row>
+
+        <Row
+          label="5회 학습 듣기 방식(기본)"
+          hint="전체 5바퀴: 간격을 두어 오래 기억 · 단어별 5회: 한 단어를 연달아 5회(발음 따라하기)."
+        >
+          <SegmentedButtons<"round" | "word">
+            value={s.learnMode}
+            options={[
+              { value: "round", label: "전체 5바퀴" },
+              { value: "word", label: "단어별 5회" },
+            ]}
+            onChange={(v) => s.setLearnMode(v)}
           />
         </Row>
 

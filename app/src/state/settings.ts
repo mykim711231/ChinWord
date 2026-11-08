@@ -69,6 +69,10 @@ type State = {
   ttsRate: number;          // 0.5 ~ 1.5
   ttsGapMs: number;         // 500 ~ 3000
   voiceMode: VoiceMode;     // 'recorded'(기본) | 'device'
+  /** 플래시카드 "답 보기" 시 음성 재생(한자→뜻 방향). */
+  revealSpeak: boolean;
+  /** 5회 학습 듣기 방식 — round: 전체 5바퀴 / word: 단어별 5회. */
+  learnMode: "round" | "word";
   ttsBulkTiers: Record<TtsTier, TtsTierState>;
   blueLight: BlueLightLevel; // 청색광 차단 필터 강도(0=끔)
   installPromptDismissedAt: number | null;
@@ -81,6 +85,8 @@ type Actions = {
   setTtsRate: (v: number) => void;
   setTtsGapMs: (v: number) => void;
   setVoiceMode: (v: VoiceMode) => void;
+  setRevealSpeak: (v: boolean) => void;
+  setLearnMode: (v: "round" | "word") => void;
   setTtsBulkTier: (tier: TtsTier, patch: Partial<TtsTierState>) => void;
   setBlueLight: (v: BlueLightLevel) => void;
   dismissInstallPrompt: () => void;
@@ -95,6 +101,8 @@ export const useSettings = create<State & Actions>()(
       ttsRate: 0.9,
       ttsGapMs: 1000,
       voiceMode: "recorded",
+      revealSpeak: true,
+      learnMode: "round",
       ttsBulkTiers: defaultTtsBulkTiers(),
       blueLight: 0,
       installPromptDismissedAt: null,
@@ -103,6 +111,8 @@ export const useSettings = create<State & Actions>()(
       setDisplayMode: (v) => set({ displayMode: v }),
       setTtsRate: (v) => set({ ttsRate: v }),
       setTtsGapMs: (v) => set({ ttsGapMs: v }),
+      setRevealSpeak: (v) => set({ revealSpeak: v }),
+      setLearnMode: (v) => set({ learnMode: v }),
       setVoiceMode: (v) => {
         // 모드 전환 시 진행 중인 발화를 즉시 종료 — 직전 utterance/audio 가
         // 새 모드와 다른 경로에서 끝나며 잘못된 컨텍스트로 콜백되는 것을 막는다.

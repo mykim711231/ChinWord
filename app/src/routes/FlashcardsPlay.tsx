@@ -27,6 +27,14 @@ import { useStoreHydrated } from "@/lib/useHydrated";
 
 type AreaKind = "vocab" | "idiom";
 
+/** 혼합 방향 — id·순번 문자열의 간단한 해시 패리티로 카드별 방향을 고정. */
+function mixedHanziFirst(id: string, cursor: number): boolean {
+  const str = `${id}:${cursor}`;
+  let h = 0;
+  for (let i = 0; i < str.length; i++) h = (h * 31 + str.charCodeAt(i)) | 0;
+  return (h & 1) === 0;
+}
+
 export default function FlashcardsPlay(): JSX.Element {
   const { area } = useParams<{ area?: string }>();
   // 영속 scope 가 IDB 에서 복원된 뒤에 Player 를 마운트해야 한다.
@@ -59,6 +67,7 @@ function Player({ area }: { area: AreaKind }): JSX.Element {
     useFlashcards();
   const scope = area === "vocab" ? vocabScope : idiomScope;
   const ttsRate = useSettings((s) => s.ttsRate);
+  const revealSpeak = useSettings((s) => s.revealSpeak);
   const markUnknown = useReview((s) => s.markUnknown);
   const markKnown = useReview((s) => s.markKnown);
 
@@ -166,10 +175,19 @@ function Player({ area }: { area: AreaKind }): JSX.Element {
   // 한자→뜻: 카드가 나타날 때 + "답 보기"를 눌렀을 때 / 뜻→한자: 한자를 공개한 뒤에 재생(정답 노출 방지).
   const curEntry = queue[cursor];
   const curId = curEntry?.id ?? "";
-  const hanziFirst = direction === "hanzi-first";
+  // 혼합: 카드(순번+id)마다 방향을 고정된 해시로 정한다(렌더마다 바뀌지 않음).
+  const hanziFirst =
+    direction === "mixed"
+      ? mixedHanziFirst(curId, cursor)
+      : direction === "hanzi-first";
   useEffect(() => {
     if (!autoplay || !curEntry) return;
-    if (!hanziFirst && !revealed) return;
+    if (hanziFirst) {
+      // 한자→뜻: 카드 등장 시 재생, "답 보기" 때 재재생은 설정에 따름
+      if (revealed && !revealSpeak) return;
+    } else if (!revealed) {
+      return;
+    }
     const text = curEntry.word || curEntry.pinyin || "";
     if (!text) return;
     const ac = new AbortController();
@@ -184,7 +202,7 @@ function Player({ area }: { area: AreaKind }): JSX.Element {
       ac.abort();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [autoplay, cursor, curId, hanziFirst, revealed]);
+  }, [autoplay, cursor, curId, hanziFirst, revealed, revealSpeak]);
 
   // empty deck
   if (queue.length === 0) {
@@ -265,7 +283,7 @@ function Player({ area }: { area: AreaKind }): JSX.Element {
   }
 
   // Front/back content depends on direction
-  const hanziFront = direction === "hanzi-first";
+  const hanziFront = hanziFirst;
 
   return (
     <div className="min-h-[calc(100vh-3.5rem)] bg-primary-soft/40">

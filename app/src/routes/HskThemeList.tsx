@@ -57,23 +57,8 @@ export default function HskThemeList() {
   );
   const [learnDone, setLearnDone] = useState(false);
   // 학습 듣기 방식: round = 전체 단어를 5바퀴(분산 학습), word = 단어 하나씩 5회
-  const [learnMode, setLearnMode] = useState<"round" | "word">(() => {
-    try {
-      return localStorage.getItem("chinword/learnMode") === "word"
-        ? "word"
-        : "round";
-    } catch {
-      return "round";
-    }
-  });
-  function chooseLearnMode(m: "round" | "word"): void {
-    setLearnMode(m);
-    try {
-      localStorage.setItem("chinword/learnMode", m);
-    } catch {
-      /* ignore */
-    }
-  }
+  const learnMode = useSettings((s) => s.learnMode);
+  const chooseLearnMode = useSettings((s) => s.setLearnMode);
   // 단어 전체 듣기 중 현재 단어 인덱스 (자동 스크롤·강조용)
   const [playIndex, setPlayIndex] = useState<number | null>(null);
 

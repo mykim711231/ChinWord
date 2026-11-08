@@ -125,7 +125,7 @@ function FlashcardSetup({ area }: { area: AreaKind }): JSX.Element {
       {/* 방향 */}
       <section className="card mt-3">
         <span className="block text-xs text-muted mb-1">출제 방향</span>
-        <div className="grid grid-cols-2 gap-2">
+        <div className="grid grid-cols-3 gap-2">
           <button
             type="button"
             onClick={() => setDirection("hanzi-first")}
@@ -153,6 +153,20 @@ function FlashcardSetup({ area }: { area: AreaKind }): JSX.Element {
           >
             <div className="font-semibold text-sm">뜻 → 한자</div>
             <div className="text-xs text-muted mt-0.5">뜻을 보고 한자를 떠올려요</div>
+          </button>
+          <button
+            type="button"
+            onClick={() => setDirection("mixed")}
+            aria-pressed={direction === "mixed"}
+            className={
+              "card text-left p-3 " +
+              (direction === "mixed"
+                ? "border-primary text-primary"
+                : "border-divider")
+            }
+          >
+            <div className="font-semibold text-sm">혼합</div>
+            <div className="text-xs text-muted mt-0.5">두 방향을 섞어서 출제해요</div>
           </button>
         </div>
       </section>

@@ -16,7 +16,7 @@ export type FlashcardScope =
   | { kind: "vol"; vol: 1 | 2 | 3 }
   | { kind: "lesson"; groupId: string };
 
-export type FlashcardDirection = "hanzi-first" | "meaning-first";
+export type FlashcardDirection = "hanzi-first" | "meaning-first" | "mixed";
 
 type State = {
   vocabScope: FlashcardScope;
