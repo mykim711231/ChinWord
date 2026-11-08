@@ -56,6 +56,24 @@ export default function HskThemeList() {
     null,
   );
   const [learnDone, setLearnDone] = useState(false);
+  // 학습 듣기 방식: round = 전체 단어를 5바퀴(분산 학습), word = 단어 하나씩 5회
+  const [learnMode, setLearnMode] = useState<"round" | "word">(() => {
+    try {
+      return localStorage.getItem("chinword/learnMode") === "word"
+        ? "word"
+        : "round";
+    } catch {
+      return "round";
+    }
+  });
+  function chooseLearnMode(m: "round" | "word"): void {
+    setLearnMode(m);
+    try {
+      localStorage.setItem("chinword/learnMode", m);
+    } catch {
+      /* ignore */
+    }
+  }
   // 단어 전체 듣기 중 현재 단어 인덱스 (자동 스크롤·강조용)
   const [playIndex, setPlayIndex] = useState<number | null>(null);
 
@@ -129,21 +147,35 @@ export default function HskThemeList() {
       });
     const list = group.entries;
     try {
-      for (let pass = 0; pass < VOCAB_PASSES.length; pass++) {
+      const step = async (index: number, pass: number): Promise<boolean> => {
+        if (ac.signal.aborted) return false;
+        setLearn({ index, pass });
+        const lead = VOCAB_PASSES[pass].leadMs ?? 0;
+        if (lead) {
+          await sleep(lead);
+          if (ac.signal.aborted) return false;
+        }
+        await speakAsync(list[index].word || list[index].pinyin, {
+          rate: ttsRate,
+          signal: ac.signal,
+        });
+        if (ac.signal.aborted) return false;
+        await sleep(gap);
+        return !ac.signal.aborted;
+      };
+      if (learnMode === "word") {
+        // 단어 하나를 5회(회차별 표시 변화) 끝낸 뒤 다음 단어로
         for (let index = 0; index < list.length; index++) {
-          if (ac.signal.aborted) return;
-          setLearn({ index, pass });
-          const lead = VOCAB_PASSES[pass].leadMs ?? 0;
-          if (lead) {
-            await sleep(lead);
-            if (ac.signal.aborted) return;
+          for (let pass = 0; pass < VOCAB_PASSES.length; pass++) {
+            if (!(await step(index, pass))) return;
           }
-          await speakAsync(list[index].word || list[index].pinyin, {
-            rate: ttsRate,
-            signal: ac.signal,
-          });
-          if (ac.signal.aborted) return;
-          await sleep(gap);
+        }
+      } else {
+        // 전체 단어를 한 바퀴씩, 5바퀴
+        for (let pass = 0; pass < VOCAB_PASSES.length; pass++) {
+          for (let index = 0; index < list.length; index++) {
+            if (!(await step(index, pass))) return;
+          }
         }
       }
       if (!ac.signal.aborted) setLearnDone(true);
@@ -275,6 +307,32 @@ export default function HskThemeList() {
               )}
               {learn ? "학습 듣기 멈추기" : "단어 5회 학습 듣기"}
             </button>
+            <div
+              role="group"
+              aria-label="학습 듣기 방식"
+              className="inline-flex rounded-full border border-divider overflow-hidden text-xs"
+            >
+              {(
+                [
+                  ["round", "전체 5바퀴"],
+                  ["word", "단어별 5회"],
+                ] as const
+              ).map(([m, label]) => (
+                <button
+                  key={m}
+                  type="button"
+                  disabled={learn !== null}
+                  aria-pressed={learnMode === m}
+                  onClick={() => chooseLearnMode(m)}
+                  className={
+                    "px-3 py-1.5 disabled:opacity-60 " +
+                    (learnMode === m ? "bg-primary text-white" : "text-fg")
+                  }
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
             {learn ? (
               <span role="status" className="text-xs text-muted">
                 {learn.pass + 1}/{PASS_COUNT}회 · {VOCAB_PASSES[learn.pass].label} ·{" "}
@@ -288,7 +346,10 @@ export default function HskThemeList() {
             </p>
           ) : null}
           <p id="learning-listening-guide" className="mt-2 text-xs text-muted">
-            {GUIDE_TEXT} 매회 단어 전체를 듣고, 종료하면 원래 표시로 돌아와요.
+            {GUIDE_TEXT}{" "}
+            {learnMode === "word"
+              ? "단어 하나를 5회 끝낸 뒤 다음 단어로 넘어가요(발음 따라하기에 좋아요)."
+              : "매회 단어 전체를 듣고 다시 처음부터 돌아요(간격을 두어 기억에 오래 남아요)."}
           </p>
 
           <div className="mt-3">
