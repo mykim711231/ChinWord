@@ -15,6 +15,8 @@ import {
   type LearnStep,
 } from "@/lib/learningListening";
 import { useReview } from "@/state/review";
+import { useThemeDone } from "@/state/themeDone";
+import { Check } from "lucide-react";
 import { useSettings } from "@/state/settings";
 import {
   findHskThemeGroup,
@@ -57,6 +59,10 @@ export default function HskThemeList() {
   const [learn, setLearn] = useState<LearnStep | null>(null);
   const [revealed, setRevealed] = useState(false);
   const [learnDone, setLearnDone] = useState(false);
+  const doneIds = useThemeDone((s) => s.doneIds);
+  const markDone = useThemeDone((s) => s.markDone);
+  const toggleDone = useThemeDone((s) => s.toggleDone);
+  const themeDone = groupId ? Boolean(doneIds[groupId]) : false;
   // 학습 듣기 방식: round = 전체 단어를 5바퀴(분산 학습), word = 단어 하나씩 5회
   const learnMode = useSettings((s) => s.learnMode);
   const chooseLearnMode = useSettings((s) => s.setLearnMode);
@@ -162,7 +168,10 @@ export default function HskThemeList() {
         await sleep(Math.max(gap, st.revealAfter ? 1200 : 0) + shadowMs);
         if (ac.signal.aborted) return;
       }
-      if (!ac.signal.aborted) setLearnDone(true);
+      if (!ac.signal.aborted) {
+        setLearnDone(true);
+        if (groupId) markDone(groupId);
+      }
     } finally {
       if (abortRef.current === ac) setLearn(null);
     }
@@ -242,7 +251,7 @@ export default function HskThemeList() {
                   : "bg-surface text-fg border-divider")
               }
             >
-              {g.title}
+              {doneIds[g.id] ? "✔ " : ""}{g.title}
             </Link>
           ))}
         </div>
@@ -259,6 +268,20 @@ export default function HskThemeList() {
         <>
           <div className="mt-2 text-xs text-muted px-1">
             {group.entries.length}개 단어 · {tierLabel} 테마
+          </div>
+          <div className="mt-2 flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => groupId && toggleDone(groupId)}
+              aria-pressed={themeDone}
+              className={
+                "inline-flex items-center gap-1.5 rounded-full border text-sm font-semibold px-3 py-1.5 " +
+                (themeDone ? "bg-primary text-white border-primary" : "border-divider text-fg")
+              }
+            >
+              <Check size={14} aria-hidden />
+              {themeDone ? "학습 완료 (눌러서 미완료)" : "학습 완료로 표시"}
+            </button>
           </div>
 
           <div className="mt-3 flex flex-wrap items-center gap-2">
@@ -326,7 +349,7 @@ export default function HskThemeList() {
           </div>
           {learnDone ? (
             <p role="status" className="mt-2 text-sm text-primary">
-              학습 듣기를 마쳤어요.
+              학습 듣기를 마쳤어요. 학습 완료로 표시했어요.
             </p>
           ) : null}
           <p id="learning-listening-guide" className="mt-2 text-xs text-muted">

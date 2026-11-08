@@ -6,6 +6,7 @@ import { PageShell } from "@/components/PageShell";
 import { FavStar } from "@/components/FavStar";
 import { SpeakerButton } from "@/components/SpeakerButton";
 import { hskThemesByTier } from "@/lib/hsk-themes";
+import { DoneBadge } from "@/components/DoneBadge";
 import type { VocabEntry } from "@/types";
 
 const PAGE_SIZE = 50;
@@ -107,9 +108,10 @@ function BasicTier() {
             <li key={t.id}>
               <Link
                 to={`/vocab/theme/${t.id}`}
-                className="card flex flex-col items-center text-center py-4 hover:shadow-lg transition"
+                className="card relative flex flex-col items-center text-center py-4 hover:shadow-lg transition"
               >
                 <div className="font-medium text-sm">{t.title}</div>
+                <DoneBadge id={t.id} />
                 <div className="text-[10px] text-muted mt-0.5">
                   {t.entries.length}개
                 </div>
@@ -202,9 +204,10 @@ function MidTier() {
             <li key={t.id}>
               <Link
                 to={`/vocab/theme/${t.id}`}
-                className="card flex flex-col items-center text-center py-4 hover:shadow-lg transition"
+                className="card relative flex flex-col items-center text-center py-4 hover:shadow-lg transition"
               >
                 <div className="font-medium text-sm">{t.title}</div>
+                <DoneBadge id={t.id} />
                 <div className="text-[10px] text-muted mt-0.5">
                   {t.entries.length}개
                 </div>
@@ -316,9 +319,10 @@ function AdvTier() {
           <li key={g.id}>
             <Link
               to={`/vocab/theme/${g.id}`}
-              className="card flex flex-col items-center text-center py-4 hover:shadow-lg transition"
+              className="card relative flex flex-col items-center text-center py-4 hover:shadow-lg transition"
             >
               <div className="font-medium text-sm">{g.title}</div>
+                <DoneBadge id={g.id} />
               <div className="text-[10px] text-muted mt-0.5">
                 {g.entries.length}개
               </div>
