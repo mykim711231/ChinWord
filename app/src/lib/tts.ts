@@ -626,6 +626,8 @@ export async function speakSequenceWithKorean(
     betweenMs?: number;
     korean?: boolean;
     signal?: AbortSignal;
+    /** 각 항목 재생 시작 시 호출 (현재 인덱스) — 자동 스크롤 등에 사용. */
+    onItem?: (index: number) => void;
   } = {},
 ): Promise<void> {
   if (!isTtsAvailable()) return;
@@ -633,8 +635,9 @@ export async function speakSequenceWithKorean(
   const gap = opts.gapMs ?? 1000;
   const between = opts.betweenMs ?? 300;
   const withKo = opts.korean ?? true;
-  for (const item of items) {
+  for (const [idx, item] of items.entries()) {
     if (opts.signal?.aborted) return;
+    opts.onItem?.(idx);
     await speakAsync(item.zh, { rate: opts.rate, signal: opts.signal });
     if (opts.signal?.aborted) return;
     if (withKo && item.ko) {

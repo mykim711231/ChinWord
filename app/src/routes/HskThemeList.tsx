@@ -56,6 +56,8 @@ export default function HskThemeList() {
     null,
   );
   const [learnDone, setLearnDone] = useState(false);
+  // 단어 전체 듣기 중 현재 단어 인덱스 (자동 스크롤·강조용)
+  const [playIndex, setPlayIndex] = useState<number | null>(null);
 
   useEffect(() => () => { abortRef.current?.abort(); cancelSpeak(); }, []);
 
@@ -64,6 +66,7 @@ export default function HskThemeList() {
     abortRef.current?.abort();
     cancelSpeak();
     setPlaying(false);
+    setPlayIndex(null);
     setLearn(null);
     setLearnDone(false);
   }, [groupId]);
@@ -95,6 +98,7 @@ export default function HskThemeList() {
     abortRef.current?.abort();
     cancelSpeak();
     setPlaying(false);
+    setPlayIndex(null);
     setLearn(null);
   }
 
@@ -150,13 +154,15 @@ export default function HskThemeList() {
 
   // 재생 중 단어를 화면 가운데로 따라가기
   useEffect(() => {
-    if (!learn || !group) return;
-    const id = group.entries[learn.index]?.id;
+    if (!group) return;
+    const idx = learn ? learn.index : playIndex;
+    if (idx === null) return;
+    const id = group.entries[idx]?.id;
     if (!id) return;
     document
       .getElementById(id)
       ?.scrollIntoView({ behavior: "smooth", block: "center" });
-  }, [learn?.index, learn?.pass, group]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [learn?.index, learn?.pass, playIndex, group]); // eslint-disable-line react-hooks/exhaustive-deps
 
   async function playAll() {
     if (!group) return;
@@ -169,12 +175,21 @@ export default function HskThemeList() {
     const ac = new AbortController();
     abortRef.current = ac;
     setPlaying(true);
+    setFilter("");
     // 단어(중국어) 재생 후 한국어 뜻까지 읽어 주어 듣기만으로 의미 학습 가능.
     await speakSequenceWithKorean(
       group.entries.map((e) => ({ zh: e.word || e.pinyin, ko: e.meaning })),
-      { rate: ttsRate, gapMs: gap, signal: ac.signal },
+      {
+        rate: ttsRate,
+        gapMs: gap,
+        signal: ac.signal,
+        onItem: (i) => setPlayIndex(i),
+      },
     );
-    setPlaying(false);
+    if (abortRef.current === ac) {
+      setPlaying(false);
+      setPlayIndex(null);
+    }
   }
 
   const tierLabel =
@@ -293,7 +308,9 @@ export default function HskThemeList() {
                   entry={e}
                   ordinal={i + 1}
                   display={learn ? VOCAB_PASSES[learn.pass].display : undefined}
-                  active={learn !== null && group.entries[learn.index]?.id === e.id}
+                  active={
+                    group.entries[learn ? learn.index : playIndex ?? -1]?.id === e.id
+                  }
                 />
               </li>
             ))}

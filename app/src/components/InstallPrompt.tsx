@@ -371,6 +371,14 @@ function SamsungInstallModal({
       <p className="text-sm text-muted mb-4">
         자동 설치 창이 뜨지 않으면 아래 방법을 따라주세요.
       </p>
+      <p className="text-xs text-fg mb-4 p-3 rounded-lg bg-primary-soft inline-flex items-start gap-1.5">
+        <Lightbulb size={14} aria-hidden className="flex-none mt-0.5" />
+        <span>
+          삼성 인터넷은 설치 중 경고가 날 수 있어요. 크롬으로 설치하거나{" "}
+          <b>"무시하고 설치하기"</b>를 누르세요. 설치가 부담스러우면 메뉴의{" "}
+          <b>"홈 화면에 추가"</b>로 바로가기만 만들어도 됩니다.
+        </span>
+      </p>
       <p className="text-sm font-bold text-fg mb-2">방법 1 — 주소창 + 아이콘</p>
       <ol className="space-y-3 text-sm text-fg mb-4">
         <Step n={1}>
