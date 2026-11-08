@@ -41,6 +41,7 @@ import {
   getStorageInfo,
   type StorageInfo,
 } from "@/lib/storage";
+import type { LearnMode } from "@/lib/learningListening";
 import { useFlashcards, type FlashcardDirection } from "@/state/flashcards";
 import { exportBackup, importBackup, type ChinWordBackup } from "@/lib/backup";
 import {
@@ -324,16 +325,52 @@ export default function Settings() {
         </Row>
 
         <Row
-          label="5회 학습 듣기 방식(기본)"
-          hint="전체 5바퀴: 간격을 두어 오래 기억 · 단어별 5회: 한 단어를 연달아 5회(발음 따라하기)."
+          label="학습 듣기 방식(기본)"
+          hint="맞춤: 묶음·따라 말하기·회상 · 전체 5바퀴: 간격을 두어 반복 · 단어별 5회: 한 단어를 연달아 5회."
         >
-          <SegmentedButtons<"round" | "word">
+          <SegmentedButtons<LearnMode>
             value={s.learnMode}
             options={[
-              { value: "round", label: "전체 5바퀴" },
-              { value: "word", label: "단어별 5회" },
+              { value: "custom", label: "맞춤" },
+              { value: "round", label: "5바퀴" },
+              { value: "word", label: "단어별" },
             ]}
             onChange={(v) => s.setLearnMode(v)}
+          />
+        </Row>
+
+        <Row label="맞춤: 묶음 크기" hint="한 번에 외울 단어 수예요. 5개 안팎이 기억에 효과적이에요.">
+          <SegmentedButtons<"3" | "5" | "7" | "10">
+            value={String(s.chunkSize) as "3" | "5" | "7" | "10"}
+            options={[
+              { value: "3", label: "3개" },
+              { value: "5", label: "5개" },
+              { value: "7", label: "7개" },
+              { value: "10", label: "10개" },
+            ]}
+            onChange={(v) => s.setChunkSize(Number(v))}
+          />
+        </Row>
+
+        <Row label="맞춤: 따라 말하기 공백" hint="음성 뒤에 따라 말할 시간을 둬요.">
+          <SegmentedButtons<"on" | "off">
+            value={s.shadowGap ? "on" : "off"}
+            options={[
+              { value: "on", label: "켜짐" },
+              { value: "off", label: "꺼짐" },
+            ]}
+            onChange={(v) => s.setShadowGap(v === "on")}
+          />
+        </Row>
+
+        <Row label="맞춤: 느리게 시작" hint="첫 회차는 느린 속도로 들려주고 이후 보통 속도로 들려줘요.">
+          <SegmentedButtons<"on" | "off">
+            value={s.slowStart ? "on" : "off"}
+            options={[
+              { value: "on", label: "켜짐" },
+              { value: "off", label: "꺼짐" },
+            ]}
+            onChange={(v) => s.setSlowStart(v === "on")}
           />
         </Row>
 

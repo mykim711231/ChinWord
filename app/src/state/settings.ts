@@ -6,6 +6,7 @@ import { createIdbStorage } from "@/lib/persist";
 // 초기 차단 번들로 끌려와 첫 페인트가 느려진다. → 타입만 정적 import 하고
 // 런타임 함수(provider 등록·cancelSpeak)는 동적 import 로 분리(비차단 백그라운드).
 import type { VoiceMode } from "@/lib/tts";
+import type { LearnMode } from "@/lib/learningListening";
 // 타입만 정적 import — ttsBulkDownload 는 매니페스트+테마 JSON 을 끌어오므로
 // 런타임 import 는 부팅 차단 번들을 키운다. 급수 키 타입만 빌려온다.
 import type { TtsTier } from "@/lib/ttsBulkDownload";
@@ -72,7 +73,13 @@ type State = {
   /** 플래시카드 "답 보기" 시 음성 재생(한자→뜻 방향). */
   revealSpeak: boolean;
   /** 5회 학습 듣기 방식 — round: 전체 5바퀴 / word: 단어별 5회. */
-  learnMode: "round" | "word";
+  learnMode: LearnMode;
+  /** 맞춤 학습 듣기: 한 묶음 단어 수. */
+  chunkSize: number;
+  /** 맞춤 학습 듣기: 음성 뒤 따라 말하기 공백. */
+  shadowGap: boolean;
+  /** 맞춤 학습 듣기: 첫 회차 느린 속도. */
+  slowStart: boolean;
   ttsBulkTiers: Record<TtsTier, TtsTierState>;
   blueLight: BlueLightLevel; // 청색광 차단 필터 강도(0=끔)
   installPromptDismissedAt: number | null;
@@ -86,7 +93,10 @@ type Actions = {
   setTtsGapMs: (v: number) => void;
   setVoiceMode: (v: VoiceMode) => void;
   setRevealSpeak: (v: boolean) => void;
-  setLearnMode: (v: "round" | "word") => void;
+  setLearnMode: (v: LearnMode) => void;
+  setChunkSize: (v: number) => void;
+  setShadowGap: (v: boolean) => void;
+  setSlowStart: (v: boolean) => void;
   setTtsBulkTier: (tier: TtsTier, patch: Partial<TtsTierState>) => void;
   setBlueLight: (v: BlueLightLevel) => void;
   dismissInstallPrompt: () => void;
@@ -102,7 +112,10 @@ export const useSettings = create<State & Actions>()(
       ttsGapMs: 1000,
       voiceMode: "recorded",
       revealSpeak: true,
-      learnMode: "round",
+      learnMode: "custom",
+      chunkSize: 5,
+      shadowGap: true,
+      slowStart: true,
       ttsBulkTiers: defaultTtsBulkTiers(),
       blueLight: 0,
       installPromptDismissedAt: null,
@@ -113,6 +126,9 @@ export const useSettings = create<State & Actions>()(
       setTtsGapMs: (v) => set({ ttsGapMs: v }),
       setRevealSpeak: (v) => set({ revealSpeak: v }),
       setLearnMode: (v) => set({ learnMode: v }),
+      setChunkSize: (v) => set({ chunkSize: v }),
+      setShadowGap: (v) => set({ shadowGap: v }),
+      setSlowStart: (v) => set({ slowStart: v }),
       setVoiceMode: (v) => {
         // 모드 전환 시 진행 중인 발화를 즉시 종료 — 직전 utterance/audio 가
         // 새 모드와 다른 경로에서 끝나며 잘못된 컨텍스트로 콜백되는 것을 막는다.

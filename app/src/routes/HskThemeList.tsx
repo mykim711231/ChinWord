@@ -8,11 +8,13 @@ import { SpeakerButton } from "@/components/SpeakerButton";
 import { splitPinyin } from "@/lib/pinyin";
 import { speakSequenceWithKorean, speakAsync, cancelSpeak, unlock } from "@/lib/tts";
 import {
-  GUIDE_TEXT,
-  PASS_COUNT,
-  VOCAB_PASSES,
+  buildPlan,
+  guideText,
   type CaptionDisplay,
+  type LearnMode,
+  type LearnStep,
 } from "@/lib/learningListening";
+import { useReview } from "@/state/review";
 import { useSettings } from "@/state/settings";
 import {
   findHskThemeGroup,
@@ -52,13 +54,15 @@ export default function HskThemeList() {
   const gap = useSettings((s) => s.ttsGapMs);
 
   // 5회 학습 듣기 상태 (index: 현재 단어, pass: 현재 회차)
-  const [learn, setLearn] = useState<{ index: number; pass: number } | null>(
-    null,
-  );
+  const [learn, setLearn] = useState<LearnStep | null>(null);
+  const [revealed, setRevealed] = useState(false);
   const [learnDone, setLearnDone] = useState(false);
   // 학습 듣기 방식: round = 전체 단어를 5바퀴(분산 학습), word = 단어 하나씩 5회
   const learnMode = useSettings((s) => s.learnMode);
   const chooseLearnMode = useSettings((s) => s.setLearnMode);
+  const chunkSize = useSettings((s) => s.chunkSize);
+  const shadowGap = useSettings((s) => s.shadowGap);
+  const slowStart = useSettings((s) => s.slowStart);
   // 단어 전체 듣기 중 현재 단어 인덱스 (자동 스크롤·강조용)
   const [playIndex, setPlayIndex] = useState<number | null>(null);
 
@@ -131,37 +135,32 @@ export default function HskThemeList() {
         );
       });
     const list = group.entries;
+    const unknownMap = useReview.getState().unknownIds;
+    const plan = buildPlan(learnMode, {
+      count: list.length,
+      unknown: list.map((e) => Boolean(unknownMap[e.id])),
+      chunkSize,
+      shadow: shadowGap,
+      slowStart,
+    });
     try {
-      const step = async (index: number, pass: number): Promise<boolean> => {
-        if (ac.signal.aborted) return false;
-        setLearn({ index, pass });
-        const lead = VOCAB_PASSES[pass].leadMs ?? 0;
-        if (lead) {
-          await sleep(lead);
-          if (ac.signal.aborted) return false;
+      for (const st of plan) {
+        if (ac.signal.aborted) return;
+        setLearn(st);
+        setRevealed(false);
+        if (st.leadMs) {
+          await sleep(st.leadMs);
+          if (ac.signal.aborted) return;
         }
-        await speakAsync(list[index].word || list[index].pinyin, {
-          rate: ttsRate,
-          signal: ac.signal,
-        });
-        if (ac.signal.aborted) return false;
-        await sleep(gap);
-        return !ac.signal.aborted;
-      };
-      if (learnMode === "word") {
-        // 단어 하나를 5회(회차별 표시 변화) 끝낸 뒤 다음 단어로
-        for (let index = 0; index < list.length; index++) {
-          for (let pass = 0; pass < VOCAB_PASSES.length; pass++) {
-            if (!(await step(index, pass))) return;
-          }
-        }
-      } else {
-        // 전체 단어를 한 바퀴씩, 5바퀴
-        for (let pass = 0; pass < VOCAB_PASSES.length; pass++) {
-          for (let index = 0; index < list.length; index++) {
-            if (!(await step(index, pass))) return;
-          }
-        }
+        const text = list[st.index].word || list[st.index].pinyin;
+        const rate = Math.max(0.5, ttsRate * (st.rateMul ?? 1));
+        await speakAsync(text, { rate, signal: ac.signal });
+        if (ac.signal.aborted) return;
+        if (st.revealAfter) setRevealed(true);
+        // 따라 말하기 공백: 음성 길이만큼(최소 1.5초) 더 기다림
+        const shadowMs = st.shadow ? Math.max(1500, text.length * 600) : 0;
+        await sleep(Math.max(gap, st.revealAfter ? 1200 : 0) + shadowMs);
+        if (ac.signal.aborted) return;
       }
       if (!ac.signal.aborted) setLearnDone(true);
     } finally {
@@ -179,7 +178,7 @@ export default function HskThemeList() {
     document
       .getElementById(id)
       ?.scrollIntoView({ behavior: "smooth", block: "center" });
-  }, [learn?.index, learn?.pass, playIndex, group]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [learn?.index, playIndex, group]); // eslint-disable-line react-hooks/exhaustive-deps
 
   async function playAll() {
     if (!group) return;
@@ -290,7 +289,7 @@ export default function HskThemeList() {
               ) : (
                 <Repeat size={14} aria-hidden />
               )}
-              {learn ? "학습 듣기 멈추기" : "단어 5회 학습 듣기"}
+              {learn ? "학습 듣기 멈추기" : "단어 학습 듣기"}
             </button>
             <div
               role="group"
@@ -299,9 +298,10 @@ export default function HskThemeList() {
             >
               {(
                 [
+                  ["custom", "맞춤"],
                   ["round", "전체 5바퀴"],
                   ["word", "단어별 5회"],
-                ] as const
+                ] as [LearnMode, string][]
               ).map(([m, label]) => (
                 <button
                   key={m}
@@ -320,21 +320,17 @@ export default function HskThemeList() {
             </div>
             {learn ? (
               <span role="status" className="text-xs text-muted">
-                {learn.pass + 1}/{PASS_COUNT}회 · {VOCAB_PASSES[learn.pass].label} ·{" "}
-                {learn.index + 1}/{group.entries.length}단어
+                {learn.progress} · {learn.label} · {learn.index + 1}/{group.entries.length}단어
               </span>
             ) : null}
           </div>
           {learnDone ? (
             <p role="status" className="mt-2 text-sm text-primary">
-              {PASS_COUNT}회 학습 듣기를 마쳤어요.
+              학습 듣기를 마쳤어요.
             </p>
           ) : null}
           <p id="learning-listening-guide" className="mt-2 text-xs text-muted">
-            {GUIDE_TEXT}{" "}
-            {learnMode === "word"
-              ? "단어 하나를 5회 끝낸 뒤 다음 단어로 넘어가요(발음 따라하기에 좋아요)."
-              : "매회 단어 전체를 듣고 다시 처음부터 돌아요(간격을 두어 기억에 오래 남아요)."}
+            {guideText(learnMode)}
           </p>
 
           <div className="mt-3">
@@ -353,7 +349,13 @@ export default function HskThemeList() {
                 <VocabEntrySection
                   entry={e}
                   ordinal={i + 1}
-                  display={learn ? VOCAB_PASSES[learn.pass].display : undefined}
+                  display={
+                    learn
+                      ? learn.revealAfter && revealed
+                        ? undefined
+                        : learn.display
+                      : undefined
+                  }
                   active={
                     group.entries[learn ? learn.index : playIndex ?? -1]?.id === e.id
                   }
