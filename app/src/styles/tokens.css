@@ -90,7 +90,7 @@ html, body {
   /* 스마트폰에서 가로(좌우) 스크롤 차단 — bleed nav(-mx-4)·긴 단어 등으로
      생길 수 있는 의도치 않은 가로 오버플로를 스크롤 루트에서 잘라낸다.
      (스크롤 루트에만 적용해 sticky 헤더/칩 네비는 그대로 동작) */
-  overflow-x: hidden;
+  overflow-x: clip;
   /* 가로 스와이프 시 페이지 단위 고무줄/뒤로가기 제스처 방지 */
   overscroll-behavior-x: none;
   max-width: 100%;
@@ -108,6 +108,12 @@ body {
 html, body, #root {
   height: 100%;
   min-height: 100%;
+}
+
+/* html·body 모두 overflow 가 visible 이 아니면 body 가 별도 스크롤 컨테이너가 되어
+   scrollIntoView 시 고정 하단 메뉴가 밀려 보일 수 있다 → body 는 clip(스크롤 컨테이너 아님). */
+body {
+  overflow-x: clip;
 }
 
 /* 청색광 차단 필터 — 화면 전체에 따뜻한 앰버 톤을 곱연산으로 덧씌운다.

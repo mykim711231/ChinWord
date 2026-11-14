@@ -184,9 +184,12 @@ export default function HskThemeList() {
     if (idx === null) return;
     const id = group.entries[idx]?.id;
     if (!id) return;
-    document
-      .getElementById(id)
-      ?.scrollIntoView({ behavior: "smooth", block: "center" });
+    // scrollIntoView 는 중첩 스크롤 컨테이너·고정 메뉴를 밀 수 있어 window 만 직접 스크롤
+    const el = document.getElementById(id);
+    if (!el) return;
+    const r = el.getBoundingClientRect();
+    const top = window.scrollY + r.top - (window.innerHeight - r.height) / 2;
+    window.scrollTo({ top: Math.max(0, top), behavior: "smooth" });
   }, [learn?.index, playIndex, group]); // eslint-disable-line react-hooks/exhaustive-deps
 
   async function playAll() {
